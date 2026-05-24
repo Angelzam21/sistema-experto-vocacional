@@ -316,6 +316,24 @@ def pantalla_resultados() -> None:
     ranking = ranking_carreras(vector, elegibles)
     top5 = ranking[:5]
 
+    # === VALIDACIÓN DEL VECTOR NULO (Usuario que responde todo igual) ===
+    if top5 and top5[0]["afinidad_pct"] == 0:
+        st.warning(
+            " **¡Ups! Notamos un patrón en tus respuestas.**"
+            "Parece que respondiste lo mismo en todas las preguntas. "
+            "Para que nuestro motor matemático pueda recomendarte la carrera ideal, "
+            "necesitamos que marques diferencias entre lo que te encanta y lo que "
+            "no te gusta tanto."
+        )
+        
+        # Aprovechamos tu excelente función reiniciar()
+        if st.button("🔄 Volver a hacer el test", type="primary"):
+            reiniciar()
+            
+        # El return es clave: frena la función acá para que no dibuje las tarjetas
+        return 
+    # ====================================================================
+
     st.markdown(f"### Top {len(top5)} de carreras recomendadas")
     st.caption(
         f"Calculado sobre {len(elegibles)} carreras viables (de "
