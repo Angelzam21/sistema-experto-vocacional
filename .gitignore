@@ -1,0 +1,57 @@
+# =========================================================
+# .gitignore - Sistema Experto Vocacional
+# =========================================================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# --- Entornos virtuales ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Caché de Streamlit ---
+.streamlit/secrets.toml
+.streamlit/cache/
+
+# --- Backups del ETL ---
+data/*.bak
+
+# --- IDEs / editores ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# --- Logs y temporales ---
+*.log
+*.tmp
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Jupyter ---
+.ipynb_checkpoints/

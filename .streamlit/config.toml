@@ -1,0 +1,38 @@
+# =========================================================
+# CONFIGURACIÓN DE TEMA GLOBAL - STREAMLIT
+# =========================================================
+# Implementa el Paso 4.1 del plan técnico: paleta monocromática
+# blanca/negra de alto contraste para evitar el aspecto genérico
+# por defecto del framework y proyectar una estética analítica
+# minimalista y premium.
+# =========================================================
+
+[theme]
+# Color primario: usado para botones principales, sliders y elementos
+# interactivos clave. Negro puro proyecta autoridad y foco.
+primaryColor = "#000000"
+
+# Fondo principal de la aplicación: blanco puro para máxima limpieza
+# visual y contraste con el texto.
+backgroundColor = "#FFFFFF"
+
+# Fondo secundario: usado por widgets de input (selectbox, text_input),
+# expanders y sidebar. Gris ultra claro = separación sin ruido visual.
+secondaryBackgroundColor = "#F5F5F5"
+
+# Color del texto: gris casi negro en lugar de #000 puro para reducir
+# fatiga visual en sesiones largas manteniendo legibilidad.
+textColor = "#111111"
+
+# Tipografía: sans serif limpia. El CSS personalizado (Paso 4.2)
+# fuerza fuentes geométricas modernas (Inter / system fonts).
+font = "sans serif"
+
+[server]
+# Deshabilita la telemetría de uso por privacidad del usuario final.
+# Coherente con el principio de "Anonimato por Diseño" del Paso 3.1.
+enableStaticServing = true
+
+[browser]
+# No enviar estadísticas de uso a Streamlit Cloud.
+gatherUsageStats = false
