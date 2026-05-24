@@ -162,7 +162,7 @@ def pantalla_filtros() -> None:
     st.markdown("##(opcional)")
     st.markdown(
         "Antes de analizar tus intereses, contanos en qué zonas del pais "
-        podes cursar y qué modalidad preferis. Asi evitamos recomendarte opciones que no se ajusten a tus posibilidades."
+        "podes cursar y qué modalidad preferis. Asi evitamos recomendarte opciones que no se ajusten a tus posibilidades."
     )
     st.markdown("---")
 
