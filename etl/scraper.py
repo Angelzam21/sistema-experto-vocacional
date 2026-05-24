@@ -86,14 +86,14 @@ SEED_SOURCES: list[dict] = [
         "sigla": "UNR",
         "nombre": "Universidad Nacional de Rosario",
         "zona": "Santa Fe",
-        "url_carreras": "https://www.unt.edu.ar/expount/facultades-y-escuelas/",
+        "url_carreras": "https://unr.edu.ar/carreras-de-grado/",
         "render": "static",
     },
     {
         "sigla": "UNT",
         "nombre": "Universidad Nacional de Tucumán",
         "zona": "Tucumán",
-        "url_carreras": "https://www.unt.edu.ar/index.php/carreras/",
+        "url_carreras": "https://www.unt.edu.ar/expount/facultades-y-escuelas/",
         "render": "static",
     },
     {

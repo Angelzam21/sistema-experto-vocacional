@@ -1,580 +1,944 @@
 {
   "_meta": {
-    "descripcion": "Dataset maestro del Sistema Experto Vocacional - Salida final de la Fase 1 (ETL). Contiene 30 carreras universitarias de mayor demanda en Argentina, enriquecidas con vectores de afinidad RIASEC derivados del estándar O*NET y normalizados a escala 1-5.",
-    "fases_aplicadas": [
-      "1.1 - Web scraping de oferta académica",
-      "1.2 - Normalización y unificación de sinónimos",
-      "1.3 - Enriquecimiento RIASEC desde O*NET (escala 1-5)"
-    ],
-    "esquema_riasec": {
-      "R": "Realista - tareas físicas, mecánicas, técnicas",
-      "I": "Investigador - análisis, ciencia, abstracción",
-      "A": "Artístico - creatividad, expresión, estética",
-      "S": "Social - ayudar, enseñar, vincularse",
-      "E": "Emprendedor - liderar, persuadir, vender",
-      "C": "Convencional - orden, datos, normas"
-    },
-    "escala": "1 = afinidad muy baja, 5 = afinidad muy alta",
-    "total_carreras": 30,
-    "fuente_riasec": "O*NET Interests (Interest Profile, escala original 0-7) re-escalada linealmente a 1-5",
-    "modalidades_validas": ["Presencial", "Híbrida", "A Distancia"],
-    "zonas_validas": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán", "Mendoza", "Bahía Blanca", "Nordeste"]
+    "descripcion": "Dataset maestro generado por build_dataset.py",
+    "total_carreras": 55,
+    "pipeline_version": "1.0"
   },
-
   "carreras": [
     {
-      "id": "medicina",
-      "nombre": "Medicina",
-      "sinonimos": ["Med", "Doctorado en Medicina", "Médico"],
-      "area_conocimiento": "Salud",
-      "duracion_anios": 6,
-      "onet_soc_code": "29-1221.00",
-      "onet_occupation": "Family Medicine Physicians",
-      "riasec": {"R": 2, "I": 5, "A": 1, "S": 4, "E": 2, "C": 3},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán", "Mendoza"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"},
-        {"sigla": "UNR", "nombre": "Universidad Nacional de Rosario", "ciudad": "Rosario"},
-        {"sigla": "UNT", "nombre": "Universidad Nacional de Tucumán", "ciudad": "Tucumán"},
-        {"sigla": "UNCuyo", "nombre": "Universidad Nacional de Cuyo", "ciudad": "Mendoza"}
-      ],
-      "descripcion": "Formación integral para el diagnóstico, tratamiento y prevención de enfermedades en seres humanos."
+      "id": "tecnologias_digitales",
+      "nombre": "Licenciatura en Tecnologías Digitales",
+      "universidad_sigla": "UdelaCiudad",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 81.69014084507043,
+      "url_carrera": "https://www.udelaciudad.edu.ar/escuelas/#tecnologia",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 3,
+        "S": 3,
+        "E": 3,
+        "C": 4
+      }
     },
     {
-      "id": "ingenieria_sistemas",
-      "nombre": "Ingeniería en Sistemas de Información",
-      "sinonimos": ["Ing. en Sistemas", "Ingeniería de Sistemas", "Lic. en Sistemas", "Ing. Informática"],
-      "area_conocimiento": "Ingenierías y Tecnología",
-      "duracion_anios": 5,
-      "onet_soc_code": "15-1252.00",
-      "onet_occupation": "Software Developers",
-      "riasec": {"R": 3, "I": 5, "A": 2, "S": 2, "E": 2, "C": 4},
-      "modalidad": ["Presencial", "Híbrida", "A Distancia"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán", "Bahía Blanca"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UTN", "nombre": "Universidad Tecnológica Nacional", "ciudad": "Multisede"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"},
-        {"sigla": "UNS", "nombre": "Universidad Nacional del Sur", "ciudad": "Bahía Blanca"}
-      ],
-      "descripcion": "Diseño, desarrollo y mantenimiento de sistemas informáticos y software a escala empresarial."
+      "id": "profesorado_educacion_primaria",
+      "nombre": "Profesorado Universitario de Educación Primaria",
+      "universidad_sigla": "UdelaCiudad",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.udelaciudad.edu.ar/profesorado-educacion-primaria/",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 3,
+        "S": 5,
+        "E": 3,
+        "C": 3
+      }
     },
     {
-      "id": "abogacia",
-      "nombre": "Abogacía",
-      "sinonimos": ["Derecho", "Ciencias Jurídicas"],
-      "area_conocimiento": "Ciencias Sociales",
-      "duracion_anios": 5,
-      "onet_soc_code": "23-1011.00",
-      "onet_occupation": "Lawyers",
-      "riasec": {"R": 1, "I": 3, "A": 2, "S": 4, "E": 5, "C": 4},
-      "modalidad": ["Presencial", "Híbrida"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán", "Mendoza"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"},
-        {"sigla": "UNR", "nombre": "Universidad Nacional de Rosario", "ciudad": "Rosario"}
-      ],
-      "descripcion": "Estudio del ordenamiento jurídico y formación para la defensa, asesoramiento y administración de justicia."
+      "id": "profesorado_ciencias_exactas",
+      "nombre": "Profesorado Universitario en Ciencias Exactas y Naturales",
+      "universidad_sigla": "UdelaCiudad",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 83.82352941176471,
+      "url_carrera": "https://www.udelaciudad.edu.ar/profesorado-universitario-en-ciencias-exactas-y-naturales-para-nivel-secundario/",
+      "riasec": {
+        "R": 4,
+        "I": 2,
+        "A": 3,
+        "S": 5,
+        "E": 3,
+        "C": 2
+      }
     },
     {
-      "id": "psicologia",
-      "nombre": "Psicología",
-      "sinonimos": ["Lic. en Psicología", "Psico"],
-      "area_conocimiento": "Salud / Ciencias Sociales",
-      "duracion_anios": 5,
-      "onet_soc_code": "19-3033.00",
-      "onet_occupation": "Clinical and Counseling Psychologists",
-      "riasec": {"R": 1, "I": 4, "A": 3, "S": 5, "E": 2, "C": 2},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán", "Mendoza"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"},
-        {"sigla": "UNR", "nombre": "Universidad Nacional de Rosario", "ciudad": "Rosario"}
-      ],
-      "descripcion": "Estudio del comportamiento humano y los procesos mentales, con orientaciones clínicas, educativas u organizacionales."
+      "id": "tecnologias_digitales",
+      "nombre": "Licenciatura en Tecnologías Digitales",
+      "universidad_sigla": "UdelaCiudad",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 84.0909090909091,
+      "url_carrera": "https://www.udelaciudad.edu.ar/licenciatura-en-ensenanza-con-tecnologias-digitales/",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 3,
+        "S": 3,
+        "E": 3,
+        "C": 4
+      }
     },
     {
-      "id": "contador_publico",
-      "nombre": "Contador Público",
-      "sinonimos": ["Contabilidad", "Cont. Público", "CP"],
-      "area_conocimiento": "Ciencias Económicas",
-      "duracion_anios": 5,
-      "onet_soc_code": "13-2011.00",
-      "onet_occupation": "Accountants and Auditors",
-      "riasec": {"R": 1, "I": 3, "A": 1, "S": 2, "E": 3, "C": 5},
-      "modalidad": ["Presencial", "Híbrida", "A Distancia"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán", "Mendoza", "Bahía Blanca"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"},
-        {"sigla": "UNR", "nombre": "Universidad Nacional de Rosario", "ciudad": "Rosario"},
-        {"sigla": "UNS", "nombre": "Universidad Nacional del Sur", "ciudad": "Bahía Blanca"}
-      ],
-      "descripcion": "Formación en contabilidad, auditoría, impuestos y administración financiera para empresas y organismos públicos."
+      "id": "creacion_videojuegos",
+      "nombre": "Desarrollo y Producción de Videojuegos",
+      "universidad_sigla": "UdelaCiudad",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 82.6086956521739,
+      "url_carrera": "https://www.udelaciudad.edu.ar/licenciatura-en-desarrollo-y-produccion-de-videojuegos/",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 4,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      }
     },
     {
-      "id": "administracion_empresas",
-      "nombre": "Administración de Empresas",
-      "sinonimos": ["Lic. en Administración", "Adm. de Empresas"],
-      "area_conocimiento": "Ciencias Económicas",
-      "duracion_anios": 5,
-      "onet_soc_code": "11-1021.00",
-      "onet_occupation": "General and Operations Managers",
-      "riasec": {"R": 1, "I": 2, "A": 1, "S": 3, "E": 5, "C": 4},
-      "modalidad": ["Presencial", "Híbrida", "A Distancia"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán", "Mendoza"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"},
-        {"sigla": "UNSAM", "nombre": "Universidad Nacional de San Martín", "ciudad": "Buenos Aires"}
-      ],
-      "descripcion": "Gestión integral de organizaciones: planificación estratégica, finanzas, marketing, RRHH y operaciones."
+      "id": "tecnologias_digitales",
+      "nombre": "Licenciatura en Tecnologías Digitales",
+      "universidad_sigla": "UdelaCiudad",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.udelaciudad.edu.ar/licenciatura-en-tecnologias-digitales/",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 3,
+        "S": 3,
+        "E": 3,
+        "C": 4
+      }
     },
     {
-      "id": "ingenieria_civil",
-      "nombre": "Ingeniería Civil",
-      "sinonimos": ["Ing. Civil"],
-      "area_conocimiento": "Ingenierías y Tecnología",
-      "duracion_anios": 5,
-      "onet_soc_code": "17-2051.00",
-      "onet_occupation": "Civil Engineers",
-      "riasec": {"R": 4, "I": 4, "A": 2, "S": 1, "E": 3, "C": 3},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán", "Bahía Blanca"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UTN", "nombre": "Universidad Tecnológica Nacional", "ciudad": "Multisede"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Diseño, cálculo y construcción de obras de infraestructura: edificios, puentes, rutas, presas y sistemas hidráulicos."
+      "id": "tecnologias_digitales",
+      "nombre": "Licenciatura en Tecnologías Digitales",
+      "universidad_sigla": "UdelaCiudad",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 81.69014084507043,
+      "url_carrera": "https://www.udelaciudad.edu.ar/escuelas/#tecnologia",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 3,
+        "S": 3,
+        "E": 3,
+        "C": 4
+      }
     },
     {
-      "id": "ingenieria_industrial",
-      "nombre": "Ingeniería Industrial",
-      "sinonimos": ["Ing. Industrial"],
-      "area_conocimiento": "Ingenierías y Tecnología",
-      "duracion_anios": 5,
-      "onet_soc_code": "17-2112.00",
-      "onet_occupation": "Industrial Engineers",
-      "riasec": {"R": 3, "I": 4, "A": 1, "S": 2, "E": 4, "C": 4},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Bahía Blanca"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UTN", "nombre": "Universidad Tecnológica Nacional", "ciudad": "Multisede"},
-        {"sigla": "UNS", "nombre": "Universidad Nacional del Sur", "ciudad": "Bahía Blanca"}
-      ],
-      "descripcion": "Optimización de procesos productivos y de servicios: logística, calidad, cadenas de suministro y gestión de operaciones."
+      "id": "profesorado_educacion_primaria",
+      "nombre": "Profesorado Universitario de Educación Primaria",
+      "universidad_sigla": "UdelaCiudad",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.udelaciudad.edu.ar/profesorado-educacion-primaria/",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 3,
+        "S": 5,
+        "E": 3,
+        "C": 3
+      }
     },
     {
-      "id": "ingenieria_electronica",
-      "nombre": "Ingeniería Electrónica",
-      "sinonimos": ["Ing. Electrónica"],
-      "area_conocimiento": "Ingenierías y Tecnología",
-      "duracion_anios": 5,
-      "onet_soc_code": "17-2072.00",
-      "onet_occupation": "Electronics Engineers, Except Computer",
-      "riasec": {"R": 4, "I": 5, "A": 2, "S": 1, "E": 2, "C": 3},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Bahía Blanca"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UTN", "nombre": "Universidad Tecnológica Nacional", "ciudad": "Multisede"},
-        {"sigla": "UNS", "nombre": "Universidad Nacional del Sur", "ciudad": "Bahía Blanca"}
-      ],
-      "descripcion": "Diseño de sistemas electrónicos, telecomunicaciones, automatización y control industrial."
+      "id": "profesorado_ciencias_exactas",
+      "nombre": "Profesorado Universitario en Ciencias Exactas y Naturales",
+      "universidad_sigla": "UdelaCiudad",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 83.82352941176471,
+      "url_carrera": "https://www.udelaciudad.edu.ar/profesorado-universitario-en-ciencias-exactas-y-naturales-para-nivel-secundario/",
+      "riasec": {
+        "R": 4,
+        "I": 2,
+        "A": 3,
+        "S": 5,
+        "E": 3,
+        "C": 2
+      }
     },
     {
-      "id": "ingenieria_mecanica",
-      "nombre": "Ingeniería Mecánica",
-      "sinonimos": ["Ing. Mecánica"],
-      "area_conocimiento": "Ingenierías y Tecnología",
-      "duracion_anios": 5,
-      "onet_soc_code": "17-2141.00",
-      "onet_occupation": "Mechanical Engineers",
-      "riasec": {"R": 5, "I": 4, "A": 1, "S": 1, "E": 2, "C": 3},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UTN", "nombre": "Universidad Tecnológica Nacional", "ciudad": "Multisede"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Diseño, fabricación y mantenimiento de máquinas, motores y sistemas mecánicos industriales."
+      "id": "tecnologias_digitales",
+      "nombre": "Licenciatura en Tecnologías Digitales",
+      "universidad_sigla": "UdelaCiudad",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 84.0909090909091,
+      "url_carrera": "https://www.udelaciudad.edu.ar/licenciatura-en-ensenanza-con-tecnologias-digitales/",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 3,
+        "S": 3,
+        "E": 3,
+        "C": 4
+      }
     },
     {
-      "id": "ingenieria_quimica",
-      "nombre": "Ingeniería Química",
-      "sinonimos": ["Ing. Química"],
-      "area_conocimiento": "Ingenierías y Tecnología",
-      "duracion_anios": 5,
-      "onet_soc_code": "17-2041.00",
-      "onet_occupation": "Chemical Engineers",
-      "riasec": {"R": 4, "I": 5, "A": 1, "S": 1, "E": 2, "C": 3},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Bahía Blanca"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UTN", "nombre": "Universidad Tecnológica Nacional", "ciudad": "Multisede"},
-        {"sigla": "UNL", "nombre": "Universidad Nacional del Litoral", "ciudad": "Santa Fe"},
-        {"sigla": "UNS", "nombre": "Universidad Nacional del Sur", "ciudad": "Bahía Blanca"}
-      ],
-      "descripcion": "Aplicación de la química a procesos industriales: petróleo, alimentos, farmacéutica y biotecnología."
+      "id": "creacion_videojuegos",
+      "nombre": "Desarrollo y Producción de Videojuegos",
+      "universidad_sigla": "UdelaCiudad",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 82.6086956521739,
+      "url_carrera": "https://www.udelaciudad.edu.ar/licenciatura-en-desarrollo-y-produccion-de-videojuegos/",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 4,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      }
     },
     {
-      "id": "arquitectura",
-      "nombre": "Arquitectura",
-      "sinonimos": ["Arq."],
-      "area_conocimiento": "Arte y Diseño",
-      "duracion_anios": 6,
-      "onet_soc_code": "17-1011.00",
-      "onet_occupation": "Architects, Except Landscape and Naval",
-      "riasec": {"R": 3, "I": 3, "A": 5, "S": 2, "E": 3, "C": 2},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán", "Mendoza"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"},
-        {"sigla": "UNR", "nombre": "Universidad Nacional de Rosario", "ciudad": "Rosario"}
-      ],
-      "descripcion": "Diseño y proyección de espacios arquitectónicos y urbanos integrando estética, función y técnica."
+      "id": "tecnologias_digitales",
+      "nombre": "Licenciatura en Tecnologías Digitales",
+      "universidad_sigla": "UdelaCiudad",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.udelaciudad.edu.ar/licenciatura-en-tecnologias-digitales/",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 3,
+        "S": 3,
+        "E": 3,
+        "C": 4
+      }
     },
     {
-      "id": "diseno_grafico",
-      "nombre": "Diseño Gráfico",
-      "sinonimos": ["Dis. Gráfico", "DG"],
-      "area_conocimiento": "Arte y Diseño",
-      "duracion_anios": 5,
-      "onet_soc_code": "27-1024.00",
-      "onet_occupation": "Graphic Designers",
-      "riasec": {"R": 2, "I": 2, "A": 5, "S": 1, "E": 3, "C": 2},
-      "modalidad": ["Presencial", "Híbrida"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Comunicación visual mediante tipografía, ilustración, identidad de marca y diseño editorial."
+      "id": "recursos_humanos",
+      "nombre": "Recursos Humanos",
+      "universidad_sigla": "UBA",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.uba.ar/facultades",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 2,
+        "S": 4,
+        "E": 5,
+        "C": 4
+      }
     },
     {
-      "id": "diseno_industrial",
-      "nombre": "Diseño Industrial",
-      "sinonimos": ["Dis. Industrial", "Dis. de Productos"],
-      "area_conocimiento": "Arte y Diseño",
-      "duracion_anios": 5,
-      "onet_soc_code": "27-1021.00",
-      "onet_occupation": "Commercial and Industrial Designers",
-      "riasec": {"R": 4, "I": 3, "A": 4, "S": 1, "E": 2, "C": 2},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Diseño de objetos y productos industriales considerando ergonomía, materiales y proceso productivo."
+      "id": "recursos_humanos",
+      "nombre": "Recursos Humanos",
+      "universidad_sigla": "UBA",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.uba.ar/facultades#fullMenu",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 2,
+        "S": 4,
+        "E": 5,
+        "C": 4
+      }
     },
     {
-      "id": "comunicacion_social",
-      "nombre": "Comunicación Social / Periodismo",
-      "sinonimos": ["Comunicación", "Periodismo", "Lic. en Comunicación"],
-      "area_conocimiento": "Ciencias Sociales",
-      "duracion_anios": 5,
-      "onet_soc_code": "27-3023.00",
-      "onet_occupation": "News Analysts, Reporters, and Journalists",
-      "riasec": {"R": 1, "I": 3, "A": 4, "S": 4, "E": 3, "C": 2},
-      "modalidad": ["Presencial", "Híbrida"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"},
-        {"sigla": "UNR", "nombre": "Universidad Nacional de Rosario", "ciudad": "Rosario"}
-      ],
-      "descripcion": "Producción periodística, narrativa audiovisual, análisis de medios y comunicación institucional."
+      "id": "traductorado",
+      "nombre": "Traducción",
+      "universidad_sigla": "UNLP",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 80.0,
+      "url_carrera": "https://unlp.edu.ar/produccion/",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 4,
+        "S": 4,
+        "E": 3,
+        "C": 3
+      }
     },
     {
-      "id": "marketing",
-      "nombre": "Marketing y Publicidad",
-      "sinonimos": ["Lic. en Marketing", "Publicidad"],
-      "area_conocimiento": "Ciencias Económicas",
-      "duracion_anios": 4,
-      "onet_soc_code": "11-2021.00",
-      "onet_occupation": "Marketing Managers",
-      "riasec": {"R": 1, "I": 2, "A": 4, "S": 3, "E": 5, "C": 2},
-      "modalidad": ["Presencial", "Híbrida", "A Distancia"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba"],
-      "universidades": [
-        {"sigla": "UNLAM", "nombre": "Universidad Nacional de La Matanza", "ciudad": "Buenos Aires"},
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNQ", "nombre": "Universidad Nacional de Quilmes", "ciudad": "Buenos Aires"}
-      ],
-      "descripcion": "Estrategia de marca, comportamiento del consumidor, comunicación publicitaria y marketing digital."
+      "id": "musica",
+      "nombre": "Música",
+      "universidad_sigla": "UNLP",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://unlp.edu.ar/musica/",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 5,
+        "S": 3,
+        "E": 3,
+        "C": 2
+      }
     },
     {
-      "id": "economia",
-      "nombre": "Economía",
-      "sinonimos": ["Lic. en Economía", "Cs. Económicas"],
-      "area_conocimiento": "Ciencias Económicas",
-      "duracion_anios": 5,
-      "onet_soc_code": "19-3011.00",
-      "onet_occupation": "Economists",
-      "riasec": {"R": 1, "I": 4, "A": 1, "S": 2, "E": 3, "C": 4},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Análisis del comportamiento de mercados, política económica, finanzas públicas e indicadores macroeconómicos."
+      "id": "actuacion",
+      "nombre": "Teatro",
+      "universidad_sigla": "UNLP",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://teatro.unlp.edu.ar/",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 5,
+        "S": 3,
+        "E": 4,
+        "C": 2
+      }
     },
     {
-      "id": "sociologia",
-      "nombre": "Sociología",
-      "sinonimos": ["Lic. en Sociología"],
-      "area_conocimiento": "Ciencias Sociales",
-      "duracion_anios": 5,
-      "onet_soc_code": "19-3041.00",
-      "onet_occupation": "Sociologists",
-      "riasec": {"R": 1, "I": 4, "A": 2, "S": 4, "E": 1, "C": 2},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Mendoza"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"},
-        {"sigla": "UNCuyo", "nombre": "Universidad Nacional de Cuyo", "ciudad": "Mendoza"}
-      ],
-      "descripcion": "Análisis científico de estructuras sociales, instituciones, desigualdades y cambio cultural."
+      "id": "traductorado",
+      "nombre": "Traducción",
+      "universidad_sigla": "UNLP",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 80.0,
+      "url_carrera": "https://unlp.edu.ar/produccion/",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 4,
+        "S": 4,
+        "E": 3,
+        "C": 3
+      }
     },
     {
-      "id": "trabajo_social",
-      "nombre": "Trabajo Social",
-      "sinonimos": ["Lic. en Trabajo Social", "Servicio Social"],
-      "area_conocimiento": "Ciencias Sociales",
-      "duracion_anios": 5,
-      "onet_soc_code": "21-1029.00",
-      "onet_occupation": "Social Workers, All Other",
-      "riasec": {"R": 1, "I": 2, "A": 2, "S": 5, "E": 2, "C": 2},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Intervención profesional en problemáticas sociales, políticas públicas y promoción de derechos."
+      "id": "musica",
+      "nombre": "Música",
+      "universidad_sigla": "UNLP",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://unlp.edu.ar/musica/",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 5,
+        "S": 3,
+        "E": 3,
+        "C": 2
+      }
     },
     {
-      "id": "ciencias_educacion",
-      "nombre": "Ciencias de la Educación",
-      "sinonimos": ["Lic. en Educación", "Cs. de la Educación"],
-      "area_conocimiento": "Ciencias Sociales",
-      "duracion_anios": 5,
-      "onet_soc_code": "25-9031.00",
-      "onet_occupation": "Instructional Coordinators",
-      "riasec": {"R": 1, "I": 3, "A": 3, "S": 5, "E": 2, "C": 2},
-      "modalidad": ["Presencial", "A Distancia"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Estudio teórico y aplicado de procesos educativos, políticas pedagógicas y gestión institucional."
+      "id": "actuacion",
+      "nombre": "Teatro",
+      "universidad_sigla": "UNLP",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://teatro.unlp.edu.ar/",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 5,
+        "S": 3,
+        "E": 4,
+        "C": 2
+      }
     },
     {
-      "id": "enfermeria",
-      "nombre": "Licenciatura en Enfermería",
-      "sinonimos": ["Enfermería", "Lic. en Enfermería"],
-      "area_conocimiento": "Salud",
-      "duracion_anios": 5,
-      "onet_soc_code": "29-1141.00",
-      "onet_occupation": "Registered Nurses",
-      "riasec": {"R": 3, "I": 3, "A": 1, "S": 5, "E": 1, "C": 2},
-      "modalidad": ["Presencial", "Híbrida"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán", "Mendoza"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Cuidado integral del paciente, gestión sanitaria y promoción de la salud comunitaria."
+      "id": "agronomia",
+      "nombre": "Ciencias Agrarias",
+      "universidad_sigla": "UNR",
+      "zona_geografica": "Santa Fe",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://unr.edu.ar/ciencias-agrarias/",
+      "riasec": {
+        "R": 5,
+        "I": 4,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      }
     },
     {
-      "id": "kinesiologia",
-      "nombre": "Kinesiología y Fisiatría",
-      "sinonimos": ["Kinesiología", "Fisioterapia", "Kine"],
-      "area_conocimiento": "Salud",
-      "duracion_anios": 5,
-      "onet_soc_code": "29-1123.00",
-      "onet_occupation": "Physical Therapists",
-      "riasec": {"R": 4, "I": 3, "A": 1, "S": 5, "E": 2, "C": 2},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNR", "nombre": "Universidad Nacional de Rosario", "ciudad": "Rosario"}
-      ],
-      "descripcion": "Rehabilitación física, terapia del movimiento y prevención de lesiones musculoesqueléticas."
-    },
-    {
-      "id": "odontologia",
-      "nombre": "Odontología",
-      "sinonimos": ["Dentista", "Odonto"],
-      "area_conocimiento": "Salud",
-      "duracion_anios": 5,
-      "onet_soc_code": "29-1021.00",
-      "onet_occupation": "Dentists, General",
-      "riasec": {"R": 4, "I": 4, "A": 2, "S": 3, "E": 2, "C": 2},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Tucumán"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Diagnóstico, prevención y tratamiento de patologías bucodentales y cirugía maxilofacial."
-    },
-    {
-      "id": "veterinaria",
-      "nombre": "Veterinaria",
-      "sinonimos": ["Cs. Veterinarias", "Médico Veterinario"],
-      "area_conocimiento": "Salud / Cs. Naturales",
-      "duracion_anios": 6,
-      "onet_soc_code": "29-1131.00",
-      "onet_occupation": "Veterinarians",
-      "riasec": {"R": 4, "I": 4, "A": 1, "S": 3, "E": 2, "C": 2},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNL", "nombre": "Universidad Nacional del Litoral", "ciudad": "Santa Fe"}
-      ],
-      "descripcion": "Medicina aplicada a animales domésticos, producción agropecuaria y sanidad animal."
-    },
-    {
-      "id": "biologia",
-      "nombre": "Ciencias Biológicas",
-      "sinonimos": ["Biología", "Lic. en Biología", "Biotec"],
-      "area_conocimiento": "Ciencias Naturales",
-      "duracion_anios": 5,
-      "onet_soc_code": "19-1029.00",
-      "onet_occupation": "Biological Scientists, All Other",
-      "riasec": {"R": 3, "I": 5, "A": 2, "S": 2, "E": 1, "C": 2},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Tucumán"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Investigación de los seres vivos, ecología, genética, biotecnología y conservación."
-    },
-    {
-      "id": "farmacia",
-      "nombre": "Farmacia",
-      "sinonimos": ["Lic. en Farmacia", "Farmacéutico"],
-      "area_conocimiento": "Salud",
-      "duracion_anios": 5,
-      "onet_soc_code": "29-1051.00",
-      "onet_occupation": "Pharmacists",
-      "riasec": {"R": 3, "I": 4, "A": 1, "S": 2, "E": 2, "C": 4},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Tucumán"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Diseño, producción y dispensa de medicamentos; análisis farmacológico y farmacovigilancia."
-    },
-    {
-      "id": "nutricion",
-      "nombre": "Licenciatura en Nutrición",
-      "sinonimos": ["Nutrición", "Lic. en Nutrición"],
-      "area_conocimiento": "Salud",
-      "duracion_anios": 5,
-      "onet_soc_code": "29-1031.00",
-      "onet_occupation": "Dietitians and Nutritionists",
-      "riasec": {"R": 2, "I": 4, "A": 2, "S": 4, "E": 2, "C": 3},
-      "modalidad": ["Presencial", "Híbrida"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Tucumán"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"},
-        {"sigla": "UNT", "nombre": "Universidad Nacional de Tucumán", "ciudad": "Tucumán"}
-      ],
-      "descripcion": "Diseño de planes alimentarios, salud pública nutricional y manejo de patologías metabólicas."
+      "id": "quimica",
+      "nombre": "Ciencias Químicas",
+      "universidad_sigla": "UNR",
+      "zona_geografica": "Santa Fe",
+      "modalidad": "Presencial",
+      "score_match": 84.84848484848484,
+      "url_carrera": "https://unr.edu.ar/ciencias-medicas/",
+      "riasec": {
+        "R": 4,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 3
+      }
     },
     {
       "id": "ciencia_politica",
       "nombre": "Ciencia Política",
-      "sinonimos": ["Cs. Política", "Politología"],
-      "area_conocimiento": "Ciencias Sociales",
-      "duracion_anios": 5,
-      "onet_soc_code": "19-3094.00",
-      "onet_occupation": "Political Scientists",
-      "riasec": {"R": 1, "I": 4, "A": 2, "S": 4, "E": 4, "C": 2},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Santa Fe", "Mendoza"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNR", "nombre": "Universidad Nacional de Rosario", "ciudad": "Rosario"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Análisis de sistemas políticos, relaciones internacionales y políticas públicas."
+      "universidad_sigla": "UNR",
+      "zona_geografica": "Santa Fe",
+      "modalidad": "Presencial",
+      "score_match": 82.05128205128204,
+      "url_carrera": "https://unr.edu.ar/ciencia-politica-y-rrii/",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 3,
+        "S": 4,
+        "E": 4,
+        "C": 2
+      }
     },
     {
-      "id": "letras",
-      "nombre": "Letras",
-      "sinonimos": ["Lic. en Letras", "Filología"],
-      "area_conocimiento": "Humanidades",
-      "duracion_anios": 5,
-      "onet_soc_code": "27-3043.00",
-      "onet_occupation": "Writers and Authors",
-      "riasec": {"R": 1, "I": 4, "A": 5, "S": 3, "E": 1, "C": 2},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["CABA", "Buenos Aires", "Córdoba", "Tucumán"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNC", "nombre": "Universidad Nacional de Córdoba", "ciudad": "Córdoba"}
-      ],
-      "descripcion": "Estudio de la literatura, lingüística y producción crítica de textos en español y otras lenguas."
+      "id": "veterinaria",
+      "nombre": "Ciencias Veterinarias",
+      "universidad_sigla": "UNR",
+      "zona_geografica": "Santa Fe",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://unr.edu.ar/facultad-de-ciencias-veterinarias/",
+      "riasec": {
+        "R": 4,
+        "I": 5,
+        "A": 2,
+        "S": 3,
+        "E": 3,
+        "C": 2
+      }
     },
     {
-      "id": "agronomia",
-      "nombre": "Ingeniería Agronómica",
-      "sinonimos": ["Agronomía", "Ing. Agrónomo"],
-      "area_conocimiento": "Cs. Naturales / Ingenierías",
-      "duracion_anios": 5,
-      "onet_soc_code": "17-2021.00",
-      "onet_occupation": "Agricultural Engineers",
-      "riasec": {"R": 5, "I": 4, "A": 1, "S": 2, "E": 3, "C": 3},
-      "modalidad": ["Presencial"],
-      "zona_geografica": ["Buenos Aires", "Córdoba", "Santa Fe", "Tucumán", "Bahía Blanca"],
-      "universidades": [
-        {"sigla": "UBA", "nombre": "Universidad de Buenos Aires", "ciudad": "CABA"},
-        {"sigla": "UNLP", "nombre": "Universidad Nacional de La Plata", "ciudad": "La Plata"},
-        {"sigla": "UNS", "nombre": "Universidad Nacional del Sur", "ciudad": "Bahía Blanca"}
-      ],
-      "descripcion": "Producción agropecuaria sustentable, manejo de cultivos, suelos, ganadería y agronegocios."
+      "id": "abogacia",
+      "nombre": "Derecho",
+      "universidad_sigla": "UNR",
+      "zona_geografica": "Santa Fe",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://unr.edu.ar/derecho/",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 3,
+        "S": 4,
+        "E": 5,
+        "C": 4
+      }
+    },
+    {
+      "id": "odontologia",
+      "nombre": "Odontología",
+      "universidad_sigla": "UNR",
+      "zona_geografica": "Santa Fe",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://unr.edu.ar/odontologia/",
+      "riasec": {
+        "R": 4,
+        "I": 4,
+        "A": 3,
+        "S": 3,
+        "E": 3,
+        "C": 2
+      }
+    },
+    {
+      "id": "psicologia",
+      "nombre": "Psicología",
+      "universidad_sigla": "UNR",
+      "zona_geografica": "Santa Fe",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://unr.edu.ar/psicologia/",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 3,
+        "S": 5,
+        "E": 2,
+        "C": 2
+      }
+    },
+    {
+      "id": "archivologia",
+      "nombre": "Bibliotecología",
+      "universidad_sigla": "UNSAM",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 80.0,
+      "url_carrera": "https://www.unsam.edu.ar/estudiantes/guia/biblioteca.php",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 2,
+        "S": 4,
+        "E": 2,
+        "C": 5
+      }
+    },
+    {
+      "id": "comercio_internacional",
+      "nombre": "Comercio Internacional",
+      "universidad_sigla": "UNA",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 80.85106382978724,
+      "url_carrera": "https://una.edu.ar/contenidos/convenios-internacionales_13810",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 2,
+        "S": 2,
+        "E": 4,
+        "C": 4
+      }
+    },
+    {
+      "id": "artes_audiovisuales",
+      "nombre": "Artes Audiovisuales",
+      "universidad_sigla": "UNA",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://audiovisuales.una.edu.ar",
+      "riasec": {
+        "R": 4,
+        "I": 3,
+        "A": 5,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      }
+    },
+    {
+      "id": "actuacion",
+      "nombre": "Artes Dramáticas",
+      "universidad_sigla": "UNA",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://dramaticas.una.edu.ar",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 5,
+        "S": 3,
+        "E": 4,
+        "C": 2
+      }
+    },
+    {
+      "id": "artes_visuales",
+      "nombre": "Artes Visuales",
+      "universidad_sigla": "UNA",
+      "zona_geografica": "CABA",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://visuales.una.edu.ar",
+      "riasec": {
+        "R": 3,
+        "I": 2,
+        "A": 5,
+        "S": 2,
+        "E": 2,
+        "C": 2
+      }
+    },
+    {
+      "id": "arquitectura",
+      "nombre": "Arquitectura",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 80.0,
+      "url_carrera": "https://www.unq.edu.ar/carrera/arquitectura-naval/",
+      "riasec": {
+        "R": 3,
+        "I": 3,
+        "A": 5,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      }
+    },
+    {
+      "id": "biologia",
+      "nombre": "Lic. en Biología",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 81.4814814814815,
+      "url_carrera": "https://www.unq.edu.ar/carrera/73-licenciatura-en-bioinformatica/",
+      "riasec": {
+        "R": 3,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 3
+      }
+    },
+    {
+      "id": "biotecnologia",
+      "nombre": "Lic. en Biotecnología",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.unq.edu.ar/carrera/21-licenciatura-en-biotecnologia/",
+      "riasec": {
+        "R": 3,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 3
+      }
+    },
+    {
+      "id": "farmacia",
+      "nombre": "Lic. en Farmacia",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 86.27450980392157,
+      "url_carrera": "https://www.unq.edu.ar/carrera/58-licenciatura-en-informatica/",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 2,
+        "S": 3,
+        "E": 3,
+        "C": 4
+      }
+    },
+    {
+      "id": "comunicacion_social",
+      "nombre": "Lic. en Comunicación",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 88.88888888888889,
+      "url_carrera": "https://www.unq.edu.ar/carrera/24-licenciatura-en-comunicacion-social/",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 4,
+        "S": 4,
+        "E": 3,
+        "C": 2
+      }
+    },
+    {
+      "id": "comunicacion_social",
+      "nombre": "Lic. en Comunicación",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 88.88888888888889,
+      "url_carrera": "https://www.unq.edu.ar/carrera/licenciatura-en-comunicacion-social-ccc/",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 4,
+        "S": 4,
+        "E": 3,
+        "C": 2
+      }
+    },
+    {
+      "id": "ciencias_educacion",
+      "nombre": "Lic. en Educación",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.unq.edu.ar/carrera/26-licenciatura-en-educacion/",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 3,
+        "S": 5,
+        "E": 3,
+        "C": 2
+      }
+    },
+    {
+      "id": "ciencias_educacion",
+      "nombre": "Lic. en Educación",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.unq.edu.ar/carrera/83-licenciatura-en-educacion-ccc/",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 3,
+        "S": 5,
+        "E": 3,
+        "C": 2
+      }
+    },
+    {
+      "id": "ciencias_educacion",
+      "nombre": "Lic. en Educación",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.unq.edu.ar/carrera/licenciatura-en-educacion-ccc-virtual/",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 3,
+        "S": 5,
+        "E": 3,
+        "C": 2
+      }
+    },
+    {
+      "id": "enfermeria",
+      "nombre": "Licenciatura en Enfermería",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.unq.edu.ar/carrera/47-licenciatura-en-enfermeria/",
+      "riasec": {
+        "R": 3,
+        "I": 3,
+        "A": 2,
+        "S": 5,
+        "E": 2,
+        "C": 3
+      }
+    },
+    {
+      "id": "farmacia",
+      "nombre": "Lic. en Farmacia",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 81.63265306122449,
+      "url_carrera": "https://www.unq.edu.ar/carrera/89-licenciatura-en-geografia-ccc/",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 2,
+        "S": 3,
+        "E": 3,
+        "C": 4
+      }
+    },
+    {
+      "id": "fisica",
+      "nombre": "Licenciatura en Física",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 86.95652173913044,
+      "url_carrera": "https://www.unq.edu.ar/carrera/55-licenciatura-en-historia/",
+      "riasec": {
+        "R": 3,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 3
+      }
+    },
+    {
+      "id": "fisica",
+      "nombre": "Licenciatura en Física",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 86.95652173913044,
+      "url_carrera": "https://www.unq.edu.ar/carrera/licenciatura-en-historia-ccc/",
+      "riasec": {
+        "R": 3,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 3
+      }
+    },
+    {
+      "id": "trabajo_social",
+      "nombre": "Lic. en Trabajo Social",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 80.0,
+      "url_carrera": "https://www.unq.edu.ar/carrera/28-licenciatura-en-terapia-ocupacional/",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 2,
+        "S": 5,
+        "E": 3,
+        "C": 2
+      }
+    },
+    {
+      "id": "profesorado_educacion_fisica",
+      "nombre": "Profesorado de Educación Física",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 87.27272727272728,
+      "url_carrera": "https://www.unq.edu.ar/carrera/31-profesorado-de-educacion/",
+      "riasec": {
+        "R": 4,
+        "I": 2,
+        "A": 3,
+        "S": 5,
+        "E": 3,
+        "C": 2
+      }
+    },
+    {
+      "id": "contador_publico",
+      "nombre": "Contador Público",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.unq.edu.ar/carrera/contador-publico-nacional/",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 5
+      }
+    },
+    {
+      "id": "administracion_empresas",
+      "nombre": "Lic. en Administración",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 86.95652173913044,
+      "url_carrera": "https://www.unq.edu.ar/carrera/carrera-licenciatura-en-administracion-hotelera/",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 2,
+        "S": 3,
+        "E": 5,
+        "C": 4
+      }
+    },
+    {
+      "id": "administracion_empresas",
+      "nombre": "Lic. en Administración",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 86.95652173913044,
+      "url_carrera": "https://www.unq.edu.ar/carrera/licenciatura-en-administracion-hotelera-ccc/",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 2,
+        "S": 3,
+        "E": 5,
+        "C": 4
+      }
+    },
+    {
+      "id": "administracion_empresas",
+      "nombre": "Lic. en Administración",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.unq.edu.ar/carrera/35-licenciatura-en-administracion/",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 2,
+        "S": 3,
+        "E": 5,
+        "C": 4
+      }
+    },
+    {
+      "id": "administracion_empresas",
+      "nombre": "Lic. en Administración",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 100.0,
+      "url_carrera": "https://www.unq.edu.ar/carrera/licenciatura-en-administracion-ccc/",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 2,
+        "S": 3,
+        "E": 5,
+        "C": 4
+      }
+    },
+    {
+      "id": "psicologia",
+      "nombre": "Lic. en Psicología",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 81.9672131147541,
+      "url_carrera": "https://www.unq.edu.ar/carrera/27-licenciatura-en-musica-y-tecnologia/",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 3,
+        "S": 5,
+        "E": 2,
+        "C": 2
+      }
+    },
+    {
+      "id": "tecnologias_digitales",
+      "nombre": "Licenciatura en Tecnologías Digitales",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 86.11111111111111,
+      "url_carrera": "https://www.unq.edu.ar/carrera/50-licenciatura-en-artes-y-tecnologias-ccc/",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 3,
+        "S": 3,
+        "E": 3,
+        "C": 4
+      }
+    },
+    {
+      "id": "comunicacion_social",
+      "nombre": "Comunicación Social",
+      "universidad_sigla": "UNQ",
+      "zona_geografica": "Buenos Aires",
+      "modalidad": "Presencial",
+      "score_match": 80.0,
+      "url_carrera": "https://www.unq.edu.ar/379-comunicacion-institucional/",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 4,
+        "S": 4,
+        "E": 3,
+        "C": 2
+      }
     }
   ]
 }
