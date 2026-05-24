@@ -128,9 +128,8 @@ def avanzar_a(etapa: str) -> None:
 
 def pantalla_bienvenida() -> None:
     """Landing inicial: explicación + CTA para empezar."""
-    st.markdown("# Test Vocacional"
-               "## Sistema Experto")
-    st.markdown("## Sistema Experto")
+    st.markdown("# Test Vocacional")
+    st.caption("Sistema Experto")
     st.markdown(
         "##### Este breve test te ayudará a elegir tu carrera ideal y en cual universidad pública argentina podes cursarla."
     )
@@ -161,7 +160,7 @@ def pantalla_bienvenida() -> None:
 def pantalla_filtros() -> None:
     """Captura los Filtros Duros: zona y modalidad (Paso 3.2)."""
     st.markdown("# Restricciones Previas")
-    st.markdown("## (opcional)")
+    st.caption("(opcional)")
     st.markdown(
         "Antes de analizar tus intereses, contanos en qué zonas del pais "
         "podes cursar y qué modalidad preferis. Asi evitamos recomendarte opciones que no se ajusten a tus posibilidades."
