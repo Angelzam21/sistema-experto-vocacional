@@ -32,6 +32,8 @@ import time
 from dataclasses import dataclass, field, asdict
 from typing import Iterable
 
+from urllib.parse import urljoin
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -146,7 +148,7 @@ def scrape_static(source: dict, timeout: int = 15) -> list[CarreraCruda]:
     url = source["url_carreras"]
     headers = {
         # User-Agent identificable: cortesía con los webmasters.
-        "User-Agent": "SistemaExpertoVocacional/1.0 (proyecto académico, UADE 2026)"
+        "User-Agent": "SistemaExperto-TestVocacional"
     }
 
     try:
@@ -168,9 +170,13 @@ def scrape_static(source: dict, timeout: int = 15) -> list[CarreraCruda]:
     for a in candidatos:
         texto = (a.get_text() or "").strip()
         # Heurística mínima de filtro: nombres de carrera suelen
-        # tener entre 5 y 80 caracteres y contienen letras.
-        if not (5 <= len(texto) <= 80) or not any(c.isalpha() for c in texto):
+        # tener entre 5 y 120 caracteres y contienen letras.
+        if not (5 <= len(texto) <= 120) or not any(c.isalpha() for c in texto):
             continue
+
+        # SOLUCIÓN: Capturamos el href crudo y lo unimos con la URL base
+        href_crudo = a.get("href")
+        url_absoluta = urljoin(url, href_crudo) if href_crudo else None
 
         resultados.append(
             CarreraCruda(
@@ -178,7 +184,7 @@ def scrape_static(source: dict, timeout: int = 15) -> list[CarreraCruda]:
                 universidad_sigla=source["sigla"],
                 zona_geografica=source["zona"],
                 modalidad="Presencial",  # se ajusta luego en normalizer
-                url_carrera=a.get("href"),
+                url_carrera=url_absoluta, # Guardamos la URL completa y segura
             )
         )
 
