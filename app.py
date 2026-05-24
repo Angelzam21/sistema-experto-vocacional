@@ -128,7 +128,8 @@ def avanzar_a(etapa: str) -> None:
 
 def pantalla_bienvenida() -> None:
     """Landing inicial: explicación + CTA para empezar."""
-    st.markdown("# Test Vocacional")
+    st.markdown("# Test Vocacional"
+               "## Sistema Experto")
     st.markdown("## Sistema Experto")
     st.markdown(
         "##### Este breve test te ayudará a elegir tu carrera ideal y en cual universidad pública argentina podes cursarla."
