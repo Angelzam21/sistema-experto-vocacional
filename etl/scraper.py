@@ -48,6 +48,13 @@ log = logging.getLogger(__name__)
 # -----------------------------------------------------------------
 SEED_SOURCES: list[dict] = [
     {
+        "sigla": "UdelaCiudad",
+        "nombre": "Universidad de la Ciudad de Buenos Aires",
+        "zona": "CABA",
+        "url_carreras": "https://www.udelaciudad.edu.ar/", 
+        "render": "static", 
+    },
+    {
         "sigla": "UBA",
         "nombre": "Universidad de Buenos Aires",
         "zona": "CABA",
