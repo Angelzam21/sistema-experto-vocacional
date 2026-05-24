@@ -85,15 +85,17 @@ def calcular_vector_usuario(
 # -----------------------------------------------------------------
 # Paso 2.2 - Similitud de coseno
 # -----------------------------------------------------------------
+
 def _a_array(vec: dict[str, float] | dict[str, int]) -> np.ndarray:
-    """Convierte un dict RIASEC a ndarray y centra por la media del propio vector.
-    Esto transforma la similitud de coseno en Correlación de Pearson.
+    """Convierte un dict RIASEC al ndarray ordenado canónicamente y centra la media.
+
+    Al restar la media del propio vector, transformamos la similitud
+    de coseno en el Coeficiente de Correlación de Pearson, calibrando
+    la escala personal del usuario (sesgo de indulgencia).
     """
     arr = np.array([float(vec[d]) for d in DIMENSIONES_RIASEC], dtype=np.float64)
-    media = np.mean(arr)
-    # Al restar la media, los intereses más fuertes del usuario quedan positivos 
-    # y los más débiles quedan negativos, calibrando el perfil perfectamente.
-    return arr - media
+    # Restamos la media exacta (con decimales) a todo el arreglo
+    return arr - np.mean(arr)
 
 
 def similitud_coseno(
@@ -106,9 +108,9 @@ def similitud_coseno(
                 cos(θ) = ─────────────
                           ‖A‖ · ‖B‖
 
-    Devuelve un valor en [-1.0, 1.0]. En este dominio, como todos los
-    componentes son positivos (1..5), el rango efectivo será [0.0, 1.0]
-    donde 1.0 = perfil idéntico y 0.0 = perfiles ortogonales.
+    Devuelve un valor en [-1.0, 1.0], donde 1.0 es una correlación perfecta (perfiles idénticos),
+    0.0 es falta de correlación, 
+    y -1.0 son perfiles completamente opuestos.
     """
     a = _a_array(vector_usuario)
     b = _a_array(vector_carrera)
@@ -133,21 +135,27 @@ def ranking_carreras(
 ) -> list[dict]:
     """Devuelve la lista de carreras ordenada por similitud DESC.
 
-    Cada elemento de salida es un dict {**carrera, similitud: float,
-    afinidad_pct: int}. La afinidad porcentual es una métrica más
-    legible para el usuario final (0-100%).
+    Aplica un castigo exponencial (al cubo) sobre la correlación
+    positiva para aumentar la varianza y mejorar la experiencia de
+    usuario, hundiendo los porcentajes de carreras mediocres.
     """
     ranking = []
     for c in carreras:
         sim = similitud_coseno(vector_usuario, c["riasec"])
+        
+        # 1. Ignoramos correlaciones negativas (intereses opuestos = 0%)
+        sim_positiva = max(0.0, sim)
+        
+        # 2. Elevamos al CUBO para castigar perfiles que no encajan 
+        # perfectamente y pasamos a porcentaje.
+        afinidad_pct = int(round((sim_positiva ** 3) * 100))
+        
         ranking.append({
             **c,
             "similitud": sim,
-            # Mapeamos cos∈[0,1] -> %∈[0,100]. (Si en el dominio real
-            # hay valores negativos por algún edge case, los clamp a 0.)
-            "afinidad_pct": int(round(max(0.0, sim) * 100)),
+            "afinidad_pct": afinidad_pct,
         })
 
-    # Orden descendente: del más afín al menos afín.
+    # Orden descendente: del más afín al menos afín, usando el valor crudo
     ranking.sort(key=lambda x: x["similitud"], reverse=True)
     return ranking
