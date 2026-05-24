@@ -230,17 +230,28 @@ def normalizar_lote(
     descartadas = 0
 
     for cruda in carreras_crudas:
-        nombre = getattr(cruda, "nombre_raw", None) or cruda.get("nombre_raw", "")
-        sigla = getattr(cruda, "universidad_sigla", None) or cruda.get("universidad_sigla", "")
-        zona = getattr(cruda, "zona_geografica", None) or cruda.get("zona_geografica", "")
-        modalidad = getattr(cruda, "modalidad", None) or cruda.get("modalidad", "Presencial")
-        url_c = getattr(cruda, "url_carrera", None) or cruda.get("url_carrera", None)
+        # Al ser dataclasses, accedemos siempre por atributo
+        nombre = getattr(cruda, "nombre_raw", "")
+        sigla = getattr(cruda, "universidad_sigla", "")
+        zona = getattr(cruda, "zona_geografica", "")
+        modalidad = getattr(cruda, "modalidad", "Presencial")
+        url_c = getattr(cruda, "url_carrera", None)
 
         id_m, nombre_canon, score = match_carrera(nombre)
         if id_m is None:
             descartadas += 1
             continue
 
+        carrera_norm = CarreraNormalizada(
+            id=id_m,
+            nombre=nombre_canon,
+            universidad_sigla=sigla,
+            zona_geografica=zona,
+            modalidad=modalidad,
+            score_match=score,
+            url_carrera=url_c,
+        )
+        
         resultado.append(
             CarreraNormalizada(
                 id=id_m,
