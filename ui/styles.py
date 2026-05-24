@@ -2,8 +2,7 @@
 =================================================================
 PASO 4.2 - INYECCIÓN DE CSS PERSONALIZADO (CLEAN UI)
 =================================================================
-Anula los estilos por defecto de Streamlit que delatan el framework
-y aplica la estética monocromática descrita en el plan:
+estética monocromática descrita en el plan:
 
   - Tipografía geométrica moderna (Inter como primaria, luego stack
     nativo del SO como fallback).
