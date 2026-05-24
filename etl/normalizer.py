@@ -36,7 +36,7 @@ log = logging.getLogger(__name__)
 # Balanceado: 10 carreras por dimensión RIASEC (60 en total).
 # -----------------------------------------------------------------
 CANONICO: dict[str, list[str]] = {
-    # 1. REALISTA (10)
+    # 1. REALISTA
     "ingenieria_mecanica": ["Ingeniería Mecánica", "Mecánica"],
     "ingenieria_civil": ["Ingeniería Civil", "Civil"],
     "ingenieria_electronica": ["Ingeniería Electrónica", "Electrónica"],
@@ -47,8 +47,14 @@ CANONICO: dict[str, list[str]] = {
     "tec_mantenimiento_industrial": ["Tecnicatura en Mantenimiento Industrial", "Mantenimiento Industrial"],
     "tec_higiene_seguridad": ["Tecnicatura en Higiene y Seguridad", "Higiene y Seguridad en el Trabajo"],
     "tec_produccion_agropecuaria": ["Tecnicatura en Producción Agropecuaria", "Producción Agropecuaria"],
+    "ingenieria_industrial": ["Ingeniería Industrial"],
+    "ingenieria_quimica": ["Ingeniería Química"],
+    "gastronomia": ["Gastronomía", "Artes Culinarias", "Gestión Gastronómica"],
+    "tec_instrumentacion_quirurgica": ["Instrumentación Quirúrgica", "Tecnicatura en Instrumentación Quirúrgica", "Instrumentador Quirúrgico"],
+    "ingenieria_mecatronica": ["Ingeniería Mecatrónica", "Mecatrónica", "Automatización y Control"],
+    "ingenieria_electrica": ["Ingeniería Eléctrica", "Ingeniería en Energía Eléctrica"],
 
-    # 2. INVESTIGADOR (10)
+    # 2. INVESTIGADOR
     "medicina": ["Medicina", "Doctorado en Medicina", "Médico"],
     "ingenieria_sistemas": ["Ingeniería en Sistemas", "Ingeniería Informática", "Lic. en Sistemas"],
     "biologia": ["Ciencias Biológicas", "Biología", "Lic. en Biología"],
@@ -59,8 +65,11 @@ CANONICO: dict[str, list[str]] = {
     "farmacia": ["Farmacia", "Lic. en Farmacia"],
     "tec_programacion": ["Tecnicatura en Programación", "Desarrollo de Software", "Analista de Sistemas"],
     "tec_laboratorio": ["Tecnicatura en Laboratorio", "Análisis Clínicos", "Laboratorio Clínico"],
+    "ciberseguridad": ["Ciberseguridad", "Seguridad Informática", "Lic. en Seguridad Informática"],
+    "tec_anestesia": ["Técnico en Anestesia", "Tecnicatura en Anestesia", "Anestesiología"],
+    "tecnologias_digitales": ["Tecnologías Digitales", "Licenciatura en Tecnologías Digitales", "Enseñanza con Tecnologías Digitales"],
 
-    # 3. ARTÍSTICO (10)
+    # 3. ARTÍSTICO 
     "diseno_grafico": ["Diseño Gráfico", "Lic. en Diseño Gráfico", "Diseño Visual"],
     "diseno_industrial": ["Diseño Industrial", "Diseño de Productos"],
     "diseno_indumentaria": ["Diseño de Indumentaria", "Diseño Textil", "Indumentaria"],
@@ -71,8 +80,10 @@ CANONICO: dict[str, list[str]] = {
     "letras": ["Letras", "Lic. en Letras", "Literatura"],
     "fotografia": ["Fotografía", "Tecnicatura en Fotografía"],
     "diseno_multimedial": ["Diseño Multimedial", "Animación", "Artes Digitales"],
+    "traductorado": ["Traductorado Público", "Traducción", "Traductorado Literario"],
+    "creacion_videojuegos": ["Desarrollo y Producción de Videojuegos", "Creación de Videojuegos", "Diseño de Videojuegos"],
 
-    # 4. SOCIAL (10)
+    # 4. SOCIAL 
     "psicologia": ["Psicología", "Lic. en Psicología"],
     "trabajo_social": ["Trabajo Social", "Lic. en Trabajo Social", "Servicio Social"],
     "ciencias_educacion": ["Ciencias de la Educación", "Lic. en Educación", "Pedagogía"],
@@ -83,8 +94,11 @@ CANONICO: dict[str, list[str]] = {
     "odontologia": ["Odontología", "Odontólogo"],
     "profesorado_educacion_fisica": ["Profesorado de Educación Física", "Educación Física"],
     "acompanamiento_terapeutico": ["Acompañamiento Terapéutico", "Tecnicatura en Acompañamiento Terapéutico"],
+    "sociologia": ["Sociología", "Lic. en Sociología"],
+    "profesorado_educacion_primaria": ["Profesorado Universitario de Educación Primaria", "Profesorado de Educación Primaria", "Educación Primaria"],
+    "profesorado_ciencias_exactas": ["Profesorado Universitario en Ciencias Exactas y Naturales", "Profesorado de Ciencias Exactas", "Profesorado de Matemática y Física"],
 
-    # 5. EMPRENDEDOR (10)
+    # 5. EMPRENDEDOR 
     "administracion_empresas": ["Administración de Empresas", "Lic. en Administración"],
     "abogacia": ["Abogacía", "Derecho", "Ciencias Jurídicas"],
     "marketing": ["Marketing", "Lic. en Marketing", "Comercialización"],
@@ -95,8 +109,9 @@ CANONICO: dict[str, list[str]] = {
     "ciencia_politica": ["Ciencia Política", "Politología", "Ciencias Políticas"],
     "tec_turismo": ["Tecnicatura en Turismo", "Turismo y Hotelería", "Guía de Turismo"],
     "martillero_publico": ["Martillero Público", "Corredor Inmobiliario", "Bienes Raíces"],
+    "negocios_digitales": ["Negocios Digitales", "Lic. en Negocios Digitales", "E-commerce"],
 
-    # 6. CONVENCIONAL (10)
+    # 6. CONVENCIONAL 
     "contador_publico": ["Contador Público", "Contabilidad"],
     "economia": ["Economía", "Lic. en Economía", "Ciencias Económicas"],
     "finanzas": ["Finanzas", "Lic. en Finanzas"],
