@@ -103,6 +103,20 @@ SEED_SOURCES: list[dict] = [
         "url_carreras": "https://www.unsam.edu.ar/oferta/grado.asp",
         "render": "static",
     },
+    {
+        "sigla": "UNA",
+        "nombre": "Universidad Nacional de las Artes",
+        "zona": "CABA",
+        "url_carreras": "https://una.edu.ar/carreras/",
+        "render": "static",
+    },
+    {
+        "sigla": "UNQ",
+        "nombre": "Universidad Nacional de Quilmes",
+        "zona": "Buenos Aires",
+        "url_carreras": "https://www.unq.edu.ar/carreras/",
+        "render": "static",
+    },
 ]
 
 
