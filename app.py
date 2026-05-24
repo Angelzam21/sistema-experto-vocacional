@@ -128,30 +128,26 @@ def avanzar_a(etapa: str) -> None:
 
 def pantalla_bienvenida() -> None:
     """Landing inicial: explicación + CTA para empezar."""
-    st.markdown("# Sistema Experto Vocacional")
+    st.markdown("# Test Vocacional - Sistema Experto")
     st.markdown(
-        "##### Recomendaciones de carrera basadas en el modelo "
-        "RIASEC (Holland) y la oferta académica pública argentina."
+        "##### Este breve test te ayudará a elegir tu carrera ideal y en cual universidad pública argentina podes cursarla."
     )
     st.markdown("---")
 
     st.markdown(
         """
-        Este test cruza tus **intereses personales** con datos del
-        estándar internacional **O\\*NET** y la oferta real de las
-        principales universidades públicas del país (UBA, UTN, UNLP,
-        UNC, UNR, entre otras).
+       Este sistema analiza tus **intereses personales** basándose en el Modelo de Holland y los cruza con la oferta académica de las 
+       principales universidades públicas del país, utilizando el estándar internacional **O*NET.** 
 
         **Cómo funciona:**
 
         1. Indicás tus restricciones (zona donde podés cursar y modalidad).
-        2. Respondés un test corto de 36 preguntas (≈ 5 minutos).
-        3. El motor calcula tu vector RIASEC y lo compara con cada
-           carrera mediante **similitud de coseno**.
+        2. Respondés un test corto de 36 preguntas.
+        3. Nuestro algoritmo traza tu perfil vocacional y calcula matemáticamente el porcentaje de coincidencia con los requisitos de cada carrera.
         4. Recibís un ranking de afinidad y un análisis visual de tu perfil.
 
-        **Privacidad:** tus respuestas viven sólo en esta sesión. Nada
-        se guarda ni se envía a servidores externos.
+        **Privacidad:** tus respuestas viven sólo en esta sesión. Nada 
+        se guarda ni se envía a servidores externos. 
         """
     )
 
@@ -162,11 +158,11 @@ def pantalla_bienvenida() -> None:
 
 def pantalla_filtros() -> None:
     """Captura los Filtros Duros: zona y modalidad (Paso 3.2)."""
-    st.markdown("# Restricciones previas")
+    st.markdown("# Restricciones Previas")
+    st.markdown("##(opcional)")
     st.markdown(
-        "Antes de analizar tus intereses, contanos qué carreras "
-        "*son posibles* para vos. Esto evita recomendarte opciones "
-        "inviables por ubicación o modalidad."
+        "Antes de analizar tus intereses, contanos en qué zonas del pais "
+        podes cursar y qué modalidad preferis. Asi evitamos recomendarte opciones que no se ajusten a tus posibilidades."
     )
     st.markdown("---")
 
@@ -184,7 +180,7 @@ def pantalla_filtros() -> None:
     )
 
     st.markdown("### Modalidad")
-    st.caption("Mismo criterio: vacío = todas las modalidades aceptadas.")
+    st.caption("Seleccioná las que te sirvan. Si no elegís ninguna todas las modalidades aceptadas.")
     modalidades = st.multiselect(
         label="Modalidades aceptadas",
         options=modas_disp,
