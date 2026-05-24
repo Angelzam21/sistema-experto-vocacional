@@ -86,11 +86,14 @@ def calcular_vector_usuario(
 # Paso 2.2 - Similitud de coseno
 # -----------------------------------------------------------------
 def _a_array(vec: dict[str, float] | dict[str, int]) -> np.ndarray:
-    """Convierte un dict RIASEC al ndarray ordenado y aplica mean-centering."""
-    # Restamos 3.0 para centrar la escala en 0. 
-    # Así, los valores 1 y 2 se vuelven negativos (rechazo), 
-    # el 3 es neutro (0), y 4 y 5 son positivos (interés).
-    return np.array([float(vec[d]) - 3.0 for d in DIMENSIONES_RIASEC], dtype=np.float64)
+    """Convierte un dict RIASEC a ndarray y centra por la media del propio vector.
+    Esto transforma la similitud de coseno en Correlación de Pearson.
+    """
+    arr = np.array([float(vec[d]) for d in DIMENSIONES_RIASEC], dtype=np.float64)
+    media = np.mean(arr)
+    # Al restar la media, los intereses más fuertes del usuario quedan positivos 
+    # y los más débiles quedan negativos, calibrando el perfil perfectamente.
+    return arr - media
 
 
 def similitud_coseno(
