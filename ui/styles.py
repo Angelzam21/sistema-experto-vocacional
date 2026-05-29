@@ -38,7 +38,7 @@ _CSS = """
 }
 
 /* ---------- 1. Tipografía ---------- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
 
 html, body, [class*="css"] {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont,
@@ -219,12 +219,21 @@ div[role="radiogroup"] > label {
     padding: 0.55rem 1.0rem;
     cursor: pointer;
     font-weight: 600;
-    transition: all 0.15s ease-out;
+    /* Excluimos background-color de la transición para evitar el flash
+       lime→violet al seleccionar una opción. */
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
 }
-div[role="radiogroup"] > label:hover {
+/* Hover solo cuando NO está seleccionado, para no solapar con violet */
+div[role="radiogroup"] > label:hover:not([data-checked="true"]):not(:has(input:checked)) {
     transform: translate(2px, 2px);
     box-shadow: 2px 2px 0px var(--ink);
     background-color: var(--lime);
+}
+/* Al presionar (active) va directo a violet sin pasar por lime */
+div[role="radiogroup"] > label:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px var(--ink);
+    background-color: var(--violet);
 }
 
 /* Estado seleccionado (doble selector: Streamlit data-attr + CSS nativo) */
@@ -233,6 +242,7 @@ div[role="radiogroup"] > label:has(input:checked) {
     transform: translate(4px, 4px);
     box-shadow: 0px 0px 0px var(--ink);
     background-color: var(--violet);
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
 }
 
 /* ---------- 8b. Atajos de teclado ("teclas físicas") ---------- */
@@ -364,6 +374,27 @@ hr {
     font-size: 0.85rem;
     color: #6b7280;
     margin-top: 0.3rem;
+}
+
+/* ---------- 16a. Header compacto en la vista del test (mobile) ---------- */
+@media (max-width: 768px) {
+    .orientai-header--quiz {
+        padding: 8px 12px;
+        margin-bottom: 0.5rem;
+    }
+    .orientai-header--quiz .orientai-subtitle {
+        display: none;
+    }
+    .orientai-header--quiz .orientai-logo-link svg {
+        height: 32px;
+    }
+}
+
+/* ---------- 16b. Plotly: evitar captura de scroll táctil ---------- */
+[data-testid="stPlotlyChart"],
+[data-testid="stPlotlyChart"] .js-plotly-plot,
+[data-testid="stPlotlyChart"] .plotly {
+    touch-action: pan-y !important;
 }
 
 /* ---------- 16. Mobile / Responsive ---------- */

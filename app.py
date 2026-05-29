@@ -187,7 +187,7 @@ def pantalla_bienvenida() -> None:
 
 def pantalla_test() -> None:
     """Test reactivo: una pregunta RIASEC a la vez con escala Likert 1-5."""
-    render_header()
+    render_header(is_quiz=True)
     preguntas = cargar_preguntas()
     total = len(preguntas)
     idx = st.session_state["indice_pregunta"]
@@ -201,19 +201,22 @@ def pantalla_test() -> None:
     st.markdown(f"##### Dimensión: *{dimension_humana}*")
     st.markdown(f"### ¿Cuánto te gustaría {pregunta['pregunta'].lower()}?")
 
-    # Recuperamos la respuesta previa (si el usuario volvió) o 3 (neutro).
-    respuesta_previa = st.session_state["respuestas"].get(pregunta["id"], 3)
+    # None si el usuario aún no respondió esta pregunta (sin selección por defecto).
+    respuesta_previa = st.session_state["respuestas"].get(pregunta["id"])
+    _opciones = list(OPCIONES_LIKERT.keys())
+    _idx = _opciones.index(respuesta_previa) if respuesta_previa is not None else None
 
     seleccion = st.radio(
         label="Tu respuesta",
-        options=list(OPCIONES_LIKERT.keys()),
+        options=_opciones,
         format_func=lambda v: OPCIONES_LIKERT[v],
-        index=list(OPCIONES_LIKERT.keys()).index(respuesta_previa),
+        index=_idx,
         horizontal=True,
         label_visibility="collapsed",
         key=f"radio_{pregunta['id']}",
     )
-    st.session_state["respuestas"][pregunta["id"]] = int(seleccion)
+    if seleccion is not None:
+        st.session_state["respuestas"][pregunta["id"]] = int(seleccion)
 
     # Pista de descubribilidad de los atajos de teclado.
     st.markdown(
@@ -221,10 +224,16 @@ def pantalla_test() -> None:
         unsafe_allow_html=True,
     )
 
+    # Mensaje de validación (se muestra si el usuario intentó avanzar sin responder).
+    if (st.session_state.get("_error_seleccion")
+            and st.session_state.get("_error_q_idx") == idx):
+        st.error("Debes seleccionar una opción para continuar.")
+
     st.markdown("---")
     col_a, col_b, col_c = st.columns([1, 1, 1])
     with col_a:
         if st.button("← Anterior", use_container_width=True, disabled=(idx == 0), type="secondary"):
+            st.session_state.pop("_error_seleccion", None)
             st.session_state["indice_pregunta"] = max(0, idx - 1)
             st.rerun()
     with col_b:
@@ -234,15 +243,22 @@ def pantalla_test() -> None:
         es_ultima = idx == total - 1
         label_btn = "Definir límites →" if es_ultima else "Siguiente →"
         if st.button(label_btn, use_container_width=True, type="primary"):
-            if es_ultima:
-                # Calculamos el vector RIASEC ANTES de pasar a la 2da capa.
-                st.session_state["vector_usuario"] = calcular_vector_usuario(
-                    st.session_state["respuestas"], preguntas,
-                )
-                avanzar_a(ETAPA_FILTROS)
-            else:
-                st.session_state["indice_pregunta"] = idx + 1
+            respuesta_actual = st.session_state["respuestas"].get(pregunta["id"])
+            if respuesta_actual is None:
+                st.session_state["_error_seleccion"] = True
+                st.session_state["_error_q_idx"] = idx
                 st.rerun()
+            else:
+                st.session_state.pop("_error_seleccion", None)
+                if es_ultima:
+                    # Calculamos el vector RIASEC ANTES de pasar a la 2da capa.
+                    st.session_state["vector_usuario"] = calcular_vector_usuario(
+                        st.session_state["respuestas"], preguntas,
+                    )
+                    avanzar_a(ETAPA_FILTROS)
+                else:
+                    st.session_state["indice_pregunta"] = idx + 1
+                    st.rerun()
 
     # Atajos de teclado (1..5 = responder, Enter = avanzar). Se inyecta al
     # final, ya construido el DOM de la pregunta: el puente JS hace click
@@ -318,7 +334,8 @@ def pantalla_resultados() -> None:
 
     # --------- Panel 2: Radar Chart ---------
     fig = radar_chart_riasec(vector, titulo="")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True,
+                    config={"scrollZoom": False, "displayModeBar": False, "doubleClick": False})
     st.markdown("---")
 
     # --------- 2da capa: aplicar filtros de aversión ---------

@@ -128,6 +128,7 @@ def radar_chart_riasec(
         ),
         margin=dict(l=40, r=40, t=60, b=40),
         paper_bgcolor="#FFFFFF",
+        dragmode=False,
     )
 
     return fig
@@ -196,4 +197,5 @@ def tarjeta_recomendacion(carrera: dict, posicion: int) -> None:
                 carrera["riasec"],
                 titulo=f"Tu perfil vs. {carrera['nombre']}",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True,
+                            config={"scrollZoom": False, "displayModeBar": False, "doubleClick": False})
