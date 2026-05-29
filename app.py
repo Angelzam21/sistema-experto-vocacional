@@ -152,8 +152,6 @@ def reiniciar() -> None:
 def pantalla_bienvenida() -> None:
     """Landing inicial: explicación + CTA para empezar."""
     render_header()
-    st.markdown("# Test Vocacional")
-    st.caption("Sistema Experto")
     st.markdown(
         "##### Descubrí qué carreras de grado se ajustan mejor a tus intereses."
     )

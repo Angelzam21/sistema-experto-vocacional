@@ -26,10 +26,7 @@ def render_header() -> None:
     st.markdown(
         f"""<div class="orientai-header">
             <a href="/" class="orientai-logo-link">{_logo_svg()}</a>
-            <div class="orientai-brand">
-                <span class="orientai-title">ORIENTAI</span>
-                <span class="orientai-subtitle">Sistema experto para el proceso de orientación vocacional</span>
-            </div>
+            <span class="orientai-subtitle">Sistema experto para el proceso de orientación vocacional</span>
         </div>""",
         unsafe_allow_html=True,
     )

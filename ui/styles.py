@@ -103,9 +103,9 @@ header         { visibility: hidden; }
     letter-spacing: -0.02em;
 }
 .orientai-subtitle {
-    font-weight: 300;
-    font-size: 0.82rem;
-    color: var(--violet);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--ink);
     line-height: 1.3;
 }
 @media (max-width: 640px) {
