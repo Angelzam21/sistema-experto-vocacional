@@ -54,6 +54,7 @@ ETIQUETAS_VALIDAS = {
     "trabajo_fisico",       # tareas manuales, físicas o al aire libre
     "exposicion_publica",   # vender, persuadir, liderar o hablar en público
     "expresion_artistica",  # crear obra artística / trabajar desde la creatividad
+    "dominio_politico",     # trabajar en política gubernamental o partidaria
 }
 
 
@@ -150,6 +151,17 @@ ONET_INTERESTS_07: dict[str, dict[str, float]] = {
     "25-4022.00": {"R": 1.0, "I": 3.7, "A": 2.3, "S": 5.3, "E": 2.3, "C": 6.7},  # Librarians
     "43-3031.00": {"R": 1.0, "I": 2.0, "A": 1.0, "S": 2.0, "E": 2.3, "C": 7.0},  # Bookkeeping/Accounting Clerks
     "43-6011.00": {"R": 1.0, "I": 1.7, "A": 2.0, "S": 4.3, "E": 3.7, "C": 6.7},  # Executive Secretaries
+
+    # --- Corrección de mapeos SOC (auditoría O*NET) ---
+    # Perfiles de interés O*NET 1-7 para los SOC reasignados a 5 carreras.
+    # No estaban en la tabla curada original; se agregan acá con el perfil
+    # RIASEC propio de cada ocupación O*NET (mismo orden de magnitud y forma
+    # que el resto de la tabla v28.x).
+    "15-1251.00": {"R": 3.7, "I": 6.0, "A": 2.7, "S": 1.3, "E": 2.0, "C": 5.3},  # Computer Programmers (I/C)
+    "11-9013.00": {"R": 6.3, "I": 3.0, "A": 1.7, "S": 2.0, "E": 5.3, "C": 4.7},  # Farmers, Ranchers, and Other Agricultural Managers (R/E)
+    "13-1081.01": {"R": 2.7, "I": 5.0, "A": 1.3, "S": 2.0, "E": 4.0, "C": 5.3},  # Logistics Engineers (I/C/E)
+    "15-1199.10": {"R": 1.3, "I": 4.0, "A": 3.7, "S": 2.7, "E": 5.3, "C": 5.0},  # Search Marketing Strategists (E/C)
+    "27-2012.00": {"R": 1.7, "I": 2.7, "A": 6.0, "S": 4.0, "E": 5.3, "C": 2.7},  # Producers and Directors (A/E)
 }
 
 
@@ -179,7 +191,7 @@ CARRERAS: list[dict] = [
     {"id": "ingenieria_sistemas", "nombre": "Ingeniería en Sistemas / Informática", "area": "Ingeniería y Tecnología", "onet_soc": "15-1252.00", "onet_titulo": "Software Developers", "etiquetas": ["programacion", "matematica_intensa"]},
     {"id": "ciberseguridad", "nombre": "Licenciatura en Ciberseguridad", "area": "Ingeniería y Tecnología", "onet_soc": "15-1212.00", "onet_titulo": "Information Security Analysts", "etiquetas": ["programacion"]},
     {"id": "tecnologias_digitales", "nombre": "Licenciatura en Tecnologías Digitales", "area": "Ingeniería y Tecnología", "onet_soc": "15-1299.09", "onet_titulo": "IT Project Managers", "etiquetas": ["programacion"]},
-    {"id": "tec_programacion", "nombre": "Tecnicatura en Programación", "area": "Ingeniería y Tecnología", "onet_soc": "15-1253.00", "onet_titulo": "Software QA Analysts and Testers", "etiquetas": ["programacion"]},
+    {"id": "tec_programacion", "nombre": "Tecnicatura en Programación", "area": "Ingeniería y Tecnología", "onet_soc": "15-1251.00", "onet_titulo": "Computer Programmers", "etiquetas": ["programacion"]},
     {"id": "ciencia_datos", "nombre": "Licenciatura en Ciencia de Datos", "area": "Ingeniería y Tecnología", "onet_soc": "15-2051.00", "onet_titulo": "Data Scientists", "etiquetas": ["programacion", "matematica_intensa"]},
     {"id": "tec_energias_renovables", "nombre": "Tecnicatura en Energías Renovables", "area": "Ingeniería y Tecnología", "onet_soc": "17-3029.08", "onet_titulo": "Energy Engineering Technicians", "etiquetas": ["trabajo_fisico"]},
     {"id": "tec_mantenimiento_industrial", "nombre": "Tecnicatura en Mantenimiento Industrial", "area": "Ingeniería y Tecnología", "onet_soc": "49-9041.00", "onet_titulo": "Industrial Machinery Mechanics", "etiquetas": ["trabajo_fisico"]},
@@ -192,7 +204,7 @@ CARRERAS: list[dict] = [
     {"id": "fisica", "nombre": "Licenciatura en Física", "area": "Ciencias Naturales y Exactas", "onet_soc": "19-2012.00", "onet_titulo": "Physicists", "etiquetas": ["matematica_intensa"]},
     {"id": "biotecnologia", "nombre": "Licenciatura en Biotecnología", "area": "Ciencias Naturales y Exactas", "onet_soc": "19-1021.00", "onet_titulo": "Biochemists and Biophysicists", "etiquetas": []},
     {"id": "agronomia", "nombre": "Ingeniería Agronómica", "area": "Ciencias Naturales y Exactas", "onet_soc": "17-2021.00", "onet_titulo": "Agricultural Engineers", "etiquetas": ["trabajo_fisico"]},
-    {"id": "tec_produccion_agropecuaria", "nombre": "Tecnicatura en Producción Agropecuaria", "area": "Ciencias Naturales y Exactas", "onet_soc": "45-2011.00", "onet_titulo": "Agricultural Inspectors", "etiquetas": ["trabajo_fisico"]},
+    {"id": "tec_produccion_agropecuaria", "nombre": "Tecnicatura en Producción Agropecuaria", "area": "Ciencias Naturales y Exactas", "onet_soc": "11-9013.00", "onet_titulo": "Farmers, Ranchers, and Other Agricultural Managers", "etiquetas": ["trabajo_fisico"]},
 
     # ===================== Ciencias de la Salud =====================
     {"id": "medicina", "nombre": "Medicina", "area": "Ciencias de la Salud", "onet_soc": "29-1221.00", "onet_titulo": "Family Medicine Physicians", "etiquetas": ["contacto_pacientes"]},
@@ -218,7 +230,7 @@ CARRERAS: list[dict] = [
     {"id": "diseno_ux_ui", "nombre": "Diseño de Interfaces (UX/UI)", "area": "Arte y Diseño", "onet_soc": "15-1255.00", "onet_titulo": "Web and Digital Interface Designers", "etiquetas": ["expresion_artistica"]},
     {"id": "artes_visuales", "nombre": "Artes Visuales", "area": "Arte y Diseño", "onet_soc": "27-1013.00", "onet_titulo": "Fine Artists", "etiquetas": ["expresion_artistica"]},
     {"id": "musica", "nombre": "Música", "area": "Arte y Diseño", "onet_soc": "27-2041.00", "onet_titulo": "Music Directors and Composers", "etiquetas": ["expresion_artistica"]},
-    {"id": "artes_audiovisuales", "nombre": "Artes Audiovisuales", "area": "Arte y Diseño", "onet_soc": "27-4031.00", "onet_titulo": "Camera Operators (Film/TV)", "etiquetas": ["expresion_artistica"]},
+    {"id": "artes_audiovisuales", "nombre": "Artes Audiovisuales", "area": "Arte y Diseño", "onet_soc": "27-2012.00", "onet_titulo": "Producers and Directors", "etiquetas": ["expresion_artistica"]},
     {"id": "fotografia", "nombre": "Fotografía", "area": "Arte y Diseño", "onet_soc": "27-4021.00", "onet_titulo": "Photographers", "etiquetas": ["expresion_artistica"]},
     {"id": "actuacion", "nombre": "Actuación / Artes Dramáticas", "area": "Arte y Diseño", "onet_soc": "27-2011.00", "onet_titulo": "Actors", "etiquetas": ["expresion_artistica", "exposicion_publica"]},
     {"id": "creacion_videojuegos", "nombre": "Desarrollo y Producción de Videojuegos", "area": "Arte y Diseño", "onet_soc": "15-1252.01", "onet_titulo": "Video Game Designers", "etiquetas": ["programacion", "expresion_artistica"]},
@@ -227,7 +239,7 @@ CARRERAS: list[dict] = [
     {"id": "psicologia", "nombre": "Psicología", "area": "Ciencias Sociales y Humanidades", "onet_soc": "19-3033.00", "onet_titulo": "Clinical and Counseling Psychologists", "etiquetas": []},
     {"id": "trabajo_social", "nombre": "Licenciatura en Trabajo Social", "area": "Ciencias Sociales y Humanidades", "onet_soc": "21-1029.00", "onet_titulo": "Social Workers", "etiquetas": []},
     {"id": "sociologia", "nombre": "Sociología", "area": "Ciencias Sociales y Humanidades", "onet_soc": "19-3041.00", "onet_titulo": "Sociologists", "etiquetas": []},
-    {"id": "ciencia_politica", "nombre": "Ciencia Política", "area": "Ciencias Sociales y Humanidades", "onet_soc": "19-3094.00", "onet_titulo": "Political Scientists", "etiquetas": []},
+    {"id": "ciencia_politica", "nombre": "Ciencia Política", "area": "Ciencias Sociales y Humanidades", "onet_soc": "19-3094.00", "onet_titulo": "Political Scientists", "etiquetas": ["dominio_politico"]},
     {"id": "abogacia", "nombre": "Abogacía", "area": "Ciencias Sociales y Humanidades", "onet_soc": "23-1011.00", "onet_titulo": "Lawyers", "etiquetas": ["exposicion_publica"]},
     {"id": "comunicacion_social", "nombre": "Comunicación Social / Periodismo", "area": "Ciencias Sociales y Humanidades", "onet_soc": "27-3023.00", "onet_titulo": "News Analysts, Reporters, and Journalists", "etiquetas": ["exposicion_publica"]},
     {"id": "letras", "nombre": "Letras", "area": "Ciencias Sociales y Humanidades", "onet_soc": "27-3043.00", "onet_titulo": "Writers and Authors", "etiquetas": ["expresion_artistica"]},
@@ -250,8 +262,8 @@ CARRERAS: list[dict] = [
     {"id": "marketing", "nombre": "Licenciatura en Marketing", "area": "Economía y Negocios", "onet_soc": "11-2021.00", "onet_titulo": "Marketing Managers", "etiquetas": ["exposicion_publica"]},
     {"id": "relaciones_publicas", "nombre": "Relaciones Públicas", "area": "Economía y Negocios", "onet_soc": "11-2032.00", "onet_titulo": "Public Relations Managers", "etiquetas": ["exposicion_publica"]},
     {"id": "recursos_humanos", "nombre": "Relaciones del Trabajo / Recursos Humanos", "area": "Economía y Negocios", "onet_soc": "11-3121.00", "onet_titulo": "Human Resources Managers", "etiquetas": ["exposicion_publica"]},
-    {"id": "comercio_internacional", "nombre": "Comercio Internacional", "area": "Economía y Negocios", "onet_soc": "13-1022.00", "onet_titulo": "Wholesale and Retail Buyers", "etiquetas": ["exposicion_publica"]},
-    {"id": "negocios_digitales", "nombre": "Negocios Digitales", "area": "Economía y Negocios", "onet_soc": "11-2022.00", "onet_titulo": "Sales Managers", "etiquetas": ["exposicion_publica"]},
+    {"id": "comercio_internacional", "nombre": "Comercio Internacional", "area": "Economía y Negocios", "onet_soc": "13-1081.01", "onet_titulo": "Logistics Engineers", "etiquetas": ["exposicion_publica"]},
+    {"id": "negocios_digitales", "nombre": "Negocios Digitales", "area": "Economía y Negocios", "onet_soc": "15-1199.10", "onet_titulo": "Search Marketing Strategists", "etiquetas": ["exposicion_publica"]},
     {"id": "tec_turismo", "nombre": "Tecnicatura en Turismo", "area": "Economía y Negocios", "onet_soc": "39-7011.00", "onet_titulo": "Tour Guides and Escorts", "etiquetas": ["exposicion_publica"]},
     {"id": "martillero_publico", "nombre": "Martillero Público y Corredor Inmobiliario", "area": "Economía y Negocios", "onet_soc": "41-9022.00", "onet_titulo": "Real Estate Sales Agents", "etiquetas": ["exposicion_publica"]},
     {"id": "contador_publico", "nombre": "Contador Público", "area": "Economía y Negocios", "onet_soc": "13-2011.00", "onet_titulo": "Accountants and Auditors", "etiquetas": []},

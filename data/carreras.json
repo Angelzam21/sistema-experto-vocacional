@@ -192,15 +192,15 @@
       "id": "tec_programacion",
       "nombre": "Tecnicatura en Programación",
       "area": "Ingeniería y Tecnología",
-      "onet_soc": "15-1253.00",
-      "onet_titulo": "Software QA Analysts and Testers",
+      "onet_soc": "15-1251.00",
+      "onet_titulo": "Computer Programmers",
       "riasec": {
-        "R": 2.33,
-        "I": 4.13,
-        "A": 1.67,
+        "R": 2.8,
+        "I": 4.33,
+        "A": 2.13,
         "S": 1.2,
-        "E": 1.47,
-        "C": 4.33
+        "E": 1.67,
+        "C": 3.87
       },
       "etiquetas": [
         "programacion"
@@ -385,15 +385,15 @@
       "id": "tec_produccion_agropecuaria",
       "nombre": "Tecnicatura en Producción Agropecuaria",
       "area": "Ciencias Naturales y Exactas",
-      "onet_soc": "45-2011.00",
-      "onet_titulo": "Agricultural Inspectors",
+      "onet_soc": "11-9013.00",
+      "onet_titulo": "Farmers, Ranchers, and Other Agricultural Managers",
       "riasec": {
-        "R": 4.8,
-        "I": 2.53,
-        "A": 1.2,
+        "R": 4.53,
+        "I": 2.33,
+        "A": 1.47,
         "S": 1.67,
-        "E": 2.33,
-        "C": 2.8
+        "E": 3.87,
+        "C": 3.47
       },
       "etiquetas": [
         "trabajo_fisico"
@@ -778,15 +778,15 @@
       "id": "artes_audiovisuales",
       "nombre": "Artes Audiovisuales",
       "area": "Arte y Diseño",
-      "onet_soc": "27-4031.00",
-      "onet_titulo": "Camera Operators (Film/TV)",
+      "onet_soc": "27-2012.00",
+      "onet_titulo": "Producers and Directors",
       "riasec": {
-        "R": 3.47,
+        "R": 1.47,
         "I": 2.13,
-        "A": 4.8,
-        "S": 1.67,
-        "E": 2.33,
-        "C": 2.33
+        "A": 4.33,
+        "S": 3.0,
+        "E": 3.87,
+        "C": 2.13
       },
       "etiquetas": [
         "expresion_artistica"
@@ -910,7 +910,9 @@
         "E": 3.67,
         "C": 1.87
       },
-      "etiquetas": ["dominio_politico"]
+      "etiquetas": [
+        "dominio_politico"
+      ]
     },
     {
       "id": "abogacia",
@@ -1124,15 +1126,15 @@
       "id": "comercio_internacional",
       "nombre": "Comercio Internacional",
       "area": "Economía y Negocios",
-      "onet_soc": "13-1022.00",
-      "onet_titulo": "Wholesale and Retail Buyers",
+      "onet_soc": "13-1081.01",
+      "onet_titulo": "Logistics Engineers",
       "riasec": {
-        "R": 1.2,
-        "I": 2.53,
+        "R": 2.13,
+        "I": 3.67,
         "A": 1.2,
         "S": 1.67,
-        "E": 4.13,
-        "C": 4.13
+        "E": 3.0,
+        "C": 3.87
       },
       "etiquetas": [
         "exposicion_publica"
@@ -1142,15 +1144,15 @@
       "id": "negocios_digitales",
       "nombre": "Negocios Digitales",
       "area": "Economía y Negocios",
-      "onet_soc": "11-2022.00",
-      "onet_titulo": "Sales Managers",
+      "onet_soc": "15-1199.10",
+      "onet_titulo": "Search Marketing Strategists",
       "riasec": {
-        "R": 1.0,
-        "I": 2.53,
+        "R": 1.2,
+        "I": 3.0,
         "A": 2.8,
         "S": 2.13,
-        "E": 4.8,
-        "C": 3.0
+        "E": 3.87,
+        "C": 3.67
       },
       "etiquetas": [
         "exposicion_publica"
