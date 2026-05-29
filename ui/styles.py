@@ -2,18 +2,21 @@
 =================================================================
 SISTEMA VISUAL "NEO-BRUTALISMO GAMIFICADO" — MARCA ORIENTAI
 =================================================================
-Reemplaza la antigua estética monocromática plana por un sistema
-de diseño táctil de alto contraste:
+Paleta oficial ORIENTAI:
 
-  - Sombras sólidas (sin blur) tipo Neo-Brutalismo.
-  - Bordes gruesos oscuros y radios moderados (12px).
-  - Feedback de "presión" al seleccionar / enfocar (el elemento se
-    desplaza hacia su sombra y ésta desaparece).
-  - Atajos de teclado renderizados como "teclas físicas".
-  - Acentos "Tech-Pop" (violeta) para el estado seleccionado.
+  --ink    #111111  bordes y sombras
+  --paper  #f6f1e7  fondo principal (tono cálido tipo papel)
+  --card   #fffdf8  fondo de tarjetas y botones inactivos
+  --violet #c4b5fd  acento primario (seleccionado)
+  --lime   #c6ff4d  acento secundario / destellos (hover)
 
-Toda la paleta vive en variables CSS en :root para mantener un
-único punto de verdad. Se inyecta una sola vez con `inject_css()`.
+Bug fix de selección visual (v2):
+  Se agrega :has(input:checked) junto a [data-checked="true"].
+  Streamlit no siempre establece el atributo data-checked en el
+  render inicial (option pre-seleccionada por defecto), pero el
+  estado nativo del <input type="radio"> SIEMPRE está correcto.
+  :has(input:checked) lee ese estado directamente desde el DOM,
+  garantizando feedback visual en todos los casos.
 =================================================================
 """
 
@@ -22,24 +25,19 @@ from __future__ import annotations
 import streamlit as st
 
 
-# CSS completo en un único string. Lo mantenemos así (en vez de
-# múltiples llamadas) para inyectar un solo <style> y minimizar el
-# tiempo de re-render en Streamlit.
 _CSS = """
 <style>
-/* ---------- 0. Variables del sistema de diseño (ORIENTAI) ---------- */
+/* ---------- 0. Paleta ORIENTAI (única fuente de verdad) ---------- */
 :root {
-    --bg-main: #f8f9fa;
-    --text-main: #111827;
-    --border-dark: #111827;
-    --accent-base: #ffffff;
-    --accent-hover: #e0e7ff;
-    --accent-selected: #c4b5fd;
-    --shadow-offset: 4px;
+    --ink: #111111;
+    --paper: #f6f1e7;
+    --card: #fffdf8;
+    --violet: #c4b5fd;
+    --lime: #c6ff4d;
+    --shadow-sm: 4px 4px 0px var(--ink);
 }
 
 /* ---------- 1. Tipografía ---------- */
-/* Inter para UI + JetBrains Mono para datos y teclas físicas. */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
 
 html, body, [class*="css"] {
@@ -49,117 +47,132 @@ html, body, [class*="css"] {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ---------- 2. Fondo "sistema de datos" ---------- */
-/* Color base + patrón sutil de puntos (radial-gradient) para dar
-   sensación de superficie técnica. Lo aplicamos al contenedor de la
-   app de Streamlit (que tapa al <body>) además del propio body. */
+/* ---------- 2. Fondo "papel técnico" con patrón de puntos ---------- */
 body,
 [data-testid="stAppViewContainer"] {
-    background-color: var(--bg-main) !important;
-    color: var(--text-main) !important;
-    background-image: radial-gradient(rgba(17, 24, 39, 0.07) 1px,
+    background-color: var(--paper) !important;
+    color: var(--ink) !important;
+    background-image: radial-gradient(rgba(17, 17, 17, 0.07) 1px,
                                        transparent 1px) !important;
     background-size: 22px 22px !important;
 }
 
-/* ---------- 3. Ocultar marca y cromos de Streamlit ---------- */
+/* Bloque central de contenido: tono cálido, no blanco puro. */
+[data-testid="stAppViewBlockContainer"] {
+    background-color: transparent !important;
+}
+
+/* ---------- 3. Ocultar marca Streamlit ---------- */
 #MainMenu      { visibility: hidden; }
 footer         { visibility: hidden; }
 header         { visibility: hidden; }
-[data-testid="stToolbar"]   { visibility: hidden; }
-[data-testid="stDecoration"]{ visibility: hidden; }
+[data-testid="stToolbar"]      { visibility: hidden; }
+[data-testid="stDecoration"]   { visibility: hidden; }
 [data-testid="stStatusWidget"] { visibility: hidden; }
 
-/* ---------- 4. Jerarquía tipográfica ---------- */
+/* ---------- 4. Header / Navbar ORIENTAI ---------- */
+.orientai-header {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0 1.75rem 0;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 1.5rem;
+}
+.orientai-logo svg {
+    height: 48px;
+    width: auto;
+    max-width: 220px;
+}
+
+/* ---------- 5. Jerarquía tipográfica ---------- */
 h1 {
     font-weight: 800 !important;
     letter-spacing: -0.03em;
     font-size: 2.6rem !important;
-    color: var(--text-main);
+    color: var(--ink);
     margin-bottom: 0.3rem !important;
 }
 h2 {
     font-weight: 700 !important;
     letter-spacing: -0.02em;
-    color: var(--text-main);
+    color: var(--ink);
     margin-top: 2rem !important;
 }
 h3 {
     font-weight: 600 !important;
-    color: var(--text-main);
+    color: var(--ink);
 }
 
-/* ---------- 5. Botones de navegación (Neo-Brutalistas) ---------- */
-/* Aplicamos el mismo lenguaje táctil que a las opciones para que el
-   sistema sea coherente: borde grueso, sombra sólida y "presión". */
+/* ---------- 6. Botones de navegación (Neo-Brutalistas) ---------- */
 .stButton > button {
-    background-color: var(--text-main);
-    color: var(--accent-base);
-    border: 2px solid var(--border-dark);
+    background-color: var(--ink);
+    color: var(--card);
+    border: 2px solid var(--ink);
     border-radius: 12px;
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-dark);
+    box-shadow: var(--shadow-sm);
     font-weight: 700;
     padding: 0.55rem 1.4rem;
     transition: all 0.15s ease-out;
 }
 .stButton > button:hover {
-    /* Movimiento sutil hacia la sombra (medio camino a la presión). */
     transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px var(--border-dark);
+    box-shadow: 2px 2px 0px var(--ink);
 }
 .stButton > button:active,
 .stButton > button:focus-visible {
-    /* Presión completa: el botón ocupa el lugar de su sombra. */
-    transform: translate(var(--shadow-offset), var(--shadow-offset));
-    box-shadow: 0px 0px 0px var(--border-dark) !important;
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px var(--ink) !important;
     outline: none !important;
 }
 .stButton > button:disabled {
     opacity: 0.4;
     transform: none;
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-dark);
+    box-shadow: var(--shadow-sm);
     cursor: not-allowed;
 }
-
-/* Botón secundario (kind="secondary"): claro con texto oscuro. */
 .stButton > button[kind="secondary"] {
-    background-color: var(--accent-base);
-    color: var(--text-main);
+    background-color: var(--card);
+    color: var(--ink);
 }
 .stButton > button[kind="secondary"]:hover {
-    background-color: var(--accent-hover);
+    background-color: var(--lime);
 }
 
-/* ---------- 6. Inputs ---------- */
+/* ---------- 7. Inputs ---------- */
 .stSelectbox > div > div,
 .stMultiSelect > div > div,
 .stTextInput > div > div > input,
 .stTextArea  > div > div > textarea {
     border-radius: 12px;
-    border: 2px solid var(--border-dark);
+    border: 2px solid var(--ink);
     box-shadow: none !important;
+    background-color: var(--card);
 }
-
-/* Slider track. */
 .stSlider [data-baseweb="slider"] > div {
-    background-color: #E5E5E5;
+    background-color: #d5cfc2;
 }
 .stSlider [data-baseweb="slider"] > div > div {
-    background-color: var(--text-main) !important;
+    background-color: var(--ink) !important;
 }
 
 /* ============================================================== */
-/* 7. OPCIONES DE RESPUESTA (.option-btn) — escala Likert         */
-/* Las "opciones" del test son los <label> del st.radio. Les damos */
-/* el tratamiento Neo-Brutalista completo y los convertimos en     */
-/* botones-tecla.                                                  */
+/* 8. OPCIONES DE RESPUESTA — escala Likert                       */
+/*                                                                */
+/* BUG FIX: se usa DOBLE selector para capturar el estado         */
+/* seleccionado en todos los casos:                               */
+/*  A) [data-checked="true"] → atributo que Streamlit inyecta    */
+/*     DESPUÉS del primer click del usuario.                      */
+/*  B) :has(input:checked) → estado nativo del DOM; es el         */
+/*     único que se establece desde el PRIMER render (valor por   */
+/*     defecto). Sin él, la opción pre-seleccionada no muestra    */
+/*     feedback visual hasta que el usuario interactúa.           */
 /* ============================================================== */
 div[role="radiogroup"] {
     gap: 0.8rem;
 }
 
-/* Ocultamos el círculo nativo del radio: la "tecla física" (::before)
-   pasa a ser el único indicador visual de cada opción. */
+/* Ocultamos el círculo nativo: la "tecla física" (::before) es el
+   único indicador visual de posición de cada opción. */
 div[role="radiogroup"] > label > div:first-child {
     display: none !important;
 }
@@ -168,10 +181,10 @@ div[role="radiogroup"] > label {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    background-color: var(--accent-base);
-    border: 2px solid var(--border-dark);
+    background-color: var(--card);
+    border: 2px solid var(--ink);
     border-radius: 12px;
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-dark);
+    box-shadow: var(--shadow-sm);
     padding: 0.55rem 1.0rem;
     cursor: pointer;
     font-weight: 600;
@@ -179,40 +192,40 @@ div[role="radiogroup"] > label {
 }
 div[role="radiogroup"] > label:hover {
     transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px var(--border-dark);
-    background-color: var(--accent-hover);
-}
-/* Estado seleccionado / activo / foco-teclado: presión completa. */
-div[role="radiogroup"] > label[data-checked="true"],
-div[role="radiogroup"] > label:active,
-div[role="radiogroup"] > label:focus-visible {
-    transform: translate(var(--shadow-offset), var(--shadow-offset));
-    box-shadow: 0px 0px 0px var(--border-dark);
-    background-color: var(--accent-selected);
+    box-shadow: 2px 2px 0px var(--ink);
+    background-color: var(--lime);
 }
 
-/* ---------- 7b. Atajos de teclado (.keyboard-hint) ---------- */
-/* Badge de "tecla física" antes del texto de cada opción. El número
-   se deriva de la posición (nth-of-type), por eso el texto de la
-   opción en app.py ya NO incluye el prefijo numérico. */
+/* Estado seleccionado (doble selector: Streamlit data-attr + CSS nativo) */
+div[role="radiogroup"] > label[data-checked="true"],
+div[role="radiogroup"] > label:has(input:checked) {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px var(--ink);
+    background-color: var(--violet);
+}
+
+/* ---------- 8b. Atajos de teclado ("teclas físicas") ---------- */
 div[role="radiogroup"] > label::before {
     font-family: 'JetBrains Mono', 'Courier New', monospace;
     font-weight: 700;
     font-size: 0.85rem;
     line-height: 1;
-    color: var(--accent-base);
-    background-color: var(--text-main);
-    border: 2px solid var(--border-dark);
+    color: var(--card);
+    background-color: var(--ink);
+    border: 2px solid var(--ink);
     border-radius: 6px;
     padding: 0.25rem 0.45rem;
     min-width: 1.4rem;
     text-align: center;
-    box-shadow: 1px 1px 0px var(--border-dark);
+    box-shadow: 1px 1px 0px var(--ink);
+    flex-shrink: 0;
 }
-/* Invertimos los colores de la tecla cuando la opción está seleccionada. */
-div[role="radiogroup"] > label[data-checked="true"]::before {
-    color: var(--text-main);
-    background-color: var(--accent-base);
+/* Colores invertidos de la tecla al seleccionar */
+div[role="radiogroup"] > label[data-checked="true"]::before,
+div[role="radiogroup"] > label:has(input:checked)::before {
+    color: var(--ink);
+    background-color: var(--card);
+    box-shadow: none;
 }
 div[role="radiogroup"] > label:nth-of-type(1)::before { content: "1"; }
 div[role="radiogroup"] > label:nth-of-type(2)::before { content: "2"; }
@@ -220,12 +233,12 @@ div[role="radiogroup"] > label:nth-of-type(3)::before { content: "3"; }
 div[role="radiogroup"] > label:nth-of-type(4)::before { content: "4"; }
 div[role="radiogroup"] > label:nth-of-type(5)::before { content: "5"; }
 
-/* ---------- 8. Expanders (tarjetas de carrera) ---------- */
+/* ---------- 9. Expanders (tarjetas de carrera) ---------- */
 [data-testid="stExpander"] {
-    border: 2px solid var(--border-dark);
+    border: 2px solid var(--ink);
     border-radius: 12px;
-    background-color: var(--accent-base);
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-dark);
+    background-color: var(--card);
+    box-shadow: var(--shadow-sm);
     margin-bottom: 0.8rem;
 }
 [data-testid="stExpander"] summary {
@@ -233,14 +246,15 @@ div[role="radiogroup"] > label:nth-of-type(5)::before { content: "5"; }
     padding: 0.6rem 0.8rem;
 }
 [data-testid="stExpander"] summary:hover {
-    background-color: var(--accent-hover);
+    background-color: var(--lime);
+    border-radius: 10px;
 }
 
-/* ---------- 9. Métricas (st.metric) ---------- */
+/* ---------- 10. Métricas (st.metric) ---------- */
 [data-testid="stMetricValue"] {
     font-family: 'JetBrains Mono', 'Courier New', monospace !important;
     font-weight: 700;
-    color: var(--text-main);
+    color: var(--ink);
 }
 [data-testid="stMetricLabel"] {
     text-transform: uppercase;
@@ -249,35 +263,34 @@ div[role="radiogroup"] > label:nth-of-type(5)::before { content: "5"; }
     color: #6b7280;
 }
 
-/* ---------- 10. Progress bar Neo-Brutalista ---------- */
+/* ---------- 11. Progress bar ---------- */
 .stProgress > div > div > div {
-    border: 2px solid var(--border-dark);
+    border: 2px solid var(--ink);
     border-radius: 8px;
-    background-color: var(--accent-base);
+    background-color: var(--card);
 }
 .stProgress > div > div > div > div {
-    background-color: var(--accent-selected);
+    background-color: var(--lime);
 }
 
-/* ---------- 11. Tarjeta de recomendación (clase custom) ---------- */
-/* Usada desde visualizations.py para los Top-5. */
+/* ---------- 12. Tarjeta de recomendación ---------- */
 .recom-card {
-    border: 2px solid var(--border-dark);
+    border: 2px solid var(--ink);
     border-radius: 12px;
     padding: 1.2rem 1.4rem;
     margin-bottom: 1.1rem;
-    background-color: var(--accent-base);
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--border-dark);
+    background-color: var(--card);
+    box-shadow: var(--shadow-sm);
     transition: all 0.15s ease-out;
 }
 .recom-card:hover {
     transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px var(--border-dark);
+    box-shadow: 2px 2px 0px var(--ink);
 }
 .recom-title {
     font-size: 1.35rem;
     font-weight: 800;
-    color: var(--text-main);
+    color: var(--ink);
     margin: 0;
 }
 .recom-subtitle {
@@ -291,14 +304,14 @@ div[role="radiogroup"] > label:nth-of-type(5)::before { content: "5"; }
     font-family: 'JetBrains Mono', monospace;
     font-size: 1.6rem;
     font-weight: 700;
-    color: var(--text-main);
+    color: var(--ink);
     text-align: right;
 }
 
-/* ---------- 12. Sidebar ---------- */
+/* ---------- 13. Sidebar ---------- */
 [data-testid="stSidebar"] {
-    background-color: var(--accent-base);
-    border-right: 2px solid var(--border-dark);
+    background-color: var(--card);
+    border-right: 2px solid var(--ink);
 }
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
@@ -308,10 +321,10 @@ div[role="radiogroup"] > label:nth-of-type(5)::before { content: "5"; }
     letter-spacing: 0.05em;
 }
 
-/* ---------- 13. Divider ---------- */
+/* ---------- 14. Divider ---------- */
 hr {
-    border-top: 2px solid var(--border-dark) !important;
-    opacity: 0.15;
+    border-top: 2px solid var(--ink) !important;
+    opacity: 0.12;
     margin: 1.5rem 0 !important;
 }
 </style>
@@ -323,7 +336,6 @@ def inject_css() -> None:
 
     Debe llamarse UNA sola vez por sesión, idealmente justo después
     de `st.set_page_config(...)` y antes de renderizar cualquier
-    contenido visible. Streamlit re-ejecuta el script en cada
-    interacción, así que la inyección se repite pero es idempotente.
+    contenido visible.
     """
     st.markdown(_CSS, unsafe_allow_html=True)

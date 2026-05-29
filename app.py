@@ -41,6 +41,7 @@ from engine.inference import (
     calcular_vector_usuario,
     ranking_carreras,
 )
+from ui.header import render_header
 from ui.keyboard import inyectar_navegacion_teclado
 from ui.styles import inject_css
 from ui.visualizations import (
@@ -81,7 +82,7 @@ OPCIONES_LIKERT = {
 
 # st.set_page_config DEBE ser la primera instrucción de Streamlit.
 st.set_page_config(
-    page_title="Sistema Experto Vocacional",
+    page_title="ORIENTAI",
     page_icon="◼",
     layout="centered",
     initial_sidebar_state="collapsed",
@@ -150,6 +151,7 @@ def reiniciar() -> None:
 
 def pantalla_bienvenida() -> None:
     """Landing inicial: explicación + CTA para empezar."""
+    render_header()
     st.markdown("# Test Vocacional")
     st.caption("Sistema Experto")
     st.markdown(
@@ -167,7 +169,7 @@ def pantalla_bienvenida() -> None:
 
         1. Respondés un test de **36 preguntas** sobre lo que te gusta hacer.
         2. Definís tus **límites**: 6 preguntas para descartar trabajos que
-           no harías ni a palos (atender pacientes, programar, vender, etc.).
+           no harías bajo ninguna circunstancia (atender pacientes, programar, vender, etc.).
         3. El motor calcula tu perfil y mide matemáticamente la afinidad con
            cada carrera.
         4. Recibís un **ranking de carreras** y un análisis visual de tu perfil.
@@ -187,6 +189,7 @@ def pantalla_bienvenida() -> None:
 
 def pantalla_test() -> None:
     """Test reactivo: una pregunta RIASEC a la vez con escala Likert 1-5."""
+    render_header()
     preguntas = cargar_preguntas()
     total = len(preguntas)
     idx = st.session_state["indice_pregunta"]
@@ -252,6 +255,7 @@ def pantalla_test() -> None:
 
 def pantalla_filtros() -> None:
     """Segunda capa: preguntas de aversión que descartan carreras."""
+    render_header()
     filtros = cargar_filtros()
 
     st.markdown("# Tus límites")
@@ -294,6 +298,7 @@ def pantalla_filtros() -> None:
 
 def pantalla_resultados() -> None:
     """Dashboard final: perfil RIASEC + ranking ya filtrado."""
+    render_header()
     vector = st.session_state["vector_usuario"]
     if vector is None:
         st.warning("Aún no hay vector calculado. Volvé a hacer el test.")
