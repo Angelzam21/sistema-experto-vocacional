@@ -26,7 +26,13 @@ RAIZ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RAIZ))
 
 from engine.filters import aplicar_filtros, etiquetas_vetadas  # noqa: E402
-from engine.inference import calcular_vector_usuario, ranking_carreras  # noqa: E402
+from engine.inference import (  # noqa: E402
+    DIMENSIONES_RIASEC,
+    calcular_vector_usuario,
+    correlacion_pearson,
+    ranking_carreras,
+    similitud_coseno,
+)
 
 # ---- Carga de datos (una vez) ----
 _DATA = RAIZ / "data"
@@ -77,9 +83,10 @@ def test_datos_veta_pacientes() -> None:
     # Ninguna carrera de atención a pacientes sobrevive al veto.
     assert all("contacto_pacientes" not in c["etiquetas"] for c in rk)
     assert "medicina" not in ids and "odontologia" not in ids
-    # El #1 es una carrera cuantitativa/de datos.
-    assert rk[0]["id"] in {"actuario", "ciencia_datos", "economia", "finanzas",
-                           "contador_publico", "tecnologias_digitales"}
+    # El #1 es una carrera cuantitativa/de datos: alto Investigador Y
+    # Convencional (perfil I+C), que es exactamente lo que pidió el usuario.
+    top = rk[0]
+    assert top["riasec"]["I"] >= 4 and top["riasec"]["C"] >= 4, top["id"]
 
 
 def test_perfil_social() -> None:
@@ -96,10 +103,19 @@ def test_perfil_artistico() -> None:
 
 
 def test_perfil_realista() -> None:
-    """Perfil Realista+Investigador -> ingenierías arriba."""
+    """Perfil Realista+Investigador -> el #1 es fuertemente Realista y las
+    ingenierías aparecen arriba.
+
+    Nota: con los vectores fieles a O*NET, Odontología (Dentists: R/I muy
+    altos en O*NET) compite con las ingenierías por el #1 para un perfil
+    R puro sin vetos; es psicométricamente correcto. Por eso la aserción
+    valida 'el #1 es Realista' + 'ingenierías presentes', no un id fijo."""
     rk = _evaluar({"R": 5, "I": 4, "A": 2, "S": 2, "E": 2, "C": 2})
-    assert rk[0]["area"] == "Ingeniería y Tecnología"
+    # El #1 tiene a Realista entre sus intereses dominantes.
+    assert rk[0]["riasec"]["R"] >= 4, rk[0]["id"]
+    # Ingeniería Mecánica entra al podio y la familia de Ingeniería domina el top-5.
     assert "ingenieria_mecanica" in _ids(rk, 3)
+    assert sum(c["area"] == "Ingeniería y Tecnología" for c in rk[:5]) >= 2
 
 
 def test_vector_nulo() -> None:
@@ -122,6 +138,58 @@ def test_filtro_cambia_resultado() -> None:
 
 
 # -----------------------------------------------------------------
+# Tests del motor refactorizado (Coseno + Pearson híbrido)
+# -----------------------------------------------------------------
+def test_coseno_y_pearson_son_distintos() -> None:
+    """El híbrido combina DOS señales reales: coseno (dirección) y Pearson
+    (forma). Deben diferir (la versión previa calculaba Pearson dos veces)."""
+    u = {"R": 5, "I": 4, "A": 2, "S": 2, "E": 3, "C": 3}
+    c = {"R": 4.5, "I": 4.1, "A": 1.5, "S": 1.0, "E": 2.1, "C": 3.0}
+    cos = similitud_coseno(u, c)
+    pear = correlacion_pearson(u, c)
+    assert abs(cos - pear) > 1e-3            # son métricas distintas
+    assert -1.0 <= cos <= 1.0 and -1.0 <= pear <= 1.0
+
+
+def test_sin_colisiones_de_vectores() -> None:
+    """El catálogo NO debe tener vectores RIASEC duplicados.
+
+    El único par que colisionaba (los dos profesorados que compartían el
+    SOC O*NET 25-2031.00) se resolvió eliminando 'profesorado_educacion_fisica'
+    del catálogo. Con eso, cada una de las carreras restantes tiene un
+    vector único (ver analisis_catalogo.md)."""
+    grupos: dict[tuple, list[str]] = {}
+    for c in CATALOGO:
+        clave = tuple(c["riasec"][d] for d in DIMENSIONES_RIASEC)
+        grupos.setdefault(clave, []).append(c["id"])
+    colisiones = [ids for ids in grupos.values() if len(ids) > 1]
+    assert colisiones == [], colisiones
+    # Sanity: tantos vectores únicos como carreras (length dinámico, no fijo).
+    assert len(grupos) == len(CATALOGO)
+
+
+def test_desempate_no_depende_del_orden_del_catalogo() -> None:
+    """El ranking debe ser estable ante una permutación del catálogo
+    (el desempate es por score/pearson/id, NO por posición en la lista)."""
+    import random as _r
+    vector = calcular_vector_usuario(_respuestas({"R": 4, "I": 5, "A": 2, "S": 2, "E": 3, "C": 3}), PREGUNTAS)
+    base = _ids(ranking_carreras(vector, CATALOGO))
+    barajado = list(CATALOGO)
+    _r.Random(0).shuffle(barajado)
+    assert _ids(ranking_carreras(vector, barajado)) == base
+
+
+def test_afinidad_sin_castigo_al_cubo() -> None:
+    """Una afinidad muy alta debe reflejarse como un % alto (la versión
+    previa, con score^3, hundía 0.8 -> 51%). Un match casi perfecto > 85%."""
+    rk = _evaluar({"R": 5, "I": 4, "A": 2, "S": 2, "E": 3, "C": 3})
+    assert rk[0]["afinidad_pct"] >= 85
+    # Y el % está alineado con el orden (monótono no creciente).
+    pcts = [c["afinidad_pct"] for c in rk]
+    assert pcts == sorted(pcts, reverse=True)
+
+
+# -----------------------------------------------------------------
 # Runner standalone (sin pytest)
 # -----------------------------------------------------------------
 def _main() -> int:
@@ -132,6 +200,10 @@ def _main() -> int:
         ("Perfil realista", test_perfil_realista),
         ("Vector nulo", test_vector_nulo),
         ("Filtro cambia resultado (Medicina)", test_filtro_cambia_resultado),
+        ("Coseno != Pearson (híbrido real)", test_coseno_y_pearson_son_distintos),
+        ("Sin colisiones de vectores", test_sin_colisiones_de_vectores),
+        ("Desempate neutral (orden catálogo)", test_desempate_no_depende_del_orden_del_catalogo),
+        ("Afinidad sin castigo al cubo", test_afinidad_sin_castigo_al_cubo),
     ]
     fallidos = 0
     for nombre, fn in tests:

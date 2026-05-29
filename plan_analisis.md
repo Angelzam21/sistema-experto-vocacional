@@ -35,8 +35,12 @@ escala_15 = round(1 + (valor_07 / 7) * 4)
 ### Paso 2.2 — Vector de perfil de usuario
 Promedio (ponderado) por dimensión RIASEC → vector de 6 dimensiones. Ej.: `[R 4.2, I 2.1, A 1.5, S 4.8, E 3.0, C 2.5]`.
 
-### Paso 2.3 — Similitud de coseno
-Emparejamiento por **coseno sobre vectores centrados** (equivalente a la correlación de Pearson): mide la *orientación* del perfil y descarta el sesgo de magnitud del usuario que responde "alto en todo". La correlación positiva se eleva al cubo para aumentar el contraste y se ordena de forma descendente.
+### Paso 2.3 — Scoring híbrido (Coseno + Pearson)
+Emparejamiento por **score híbrido** `0.4·coseno + 0.6·pearson`:
+- **Coseno** (escala 1-5): alineación direccional (dirección + intensidad).
+- **Pearson** (coseno centrado en la media): similitud de forma del perfil, invariante al sesgo de magnitud.
+
+El peso fue **calibrado por Monte Carlo** (Pearson-dominante: el coseno sobre vectores 1-5 está comprimido). El score `[-1,1]` se mapea a `% = 100·max(0, score)` (sin "castigo al cubo") y se ordena DESC con desempate neutral (Pearson, luego id). Los vectores de carrera son **float de alta resolución** (O*NET 1-7 reescalado a 1-5 sin redondear), lo que elimina los empates por colisión que producían carreras imán/huérfanas.
 
 ---
 

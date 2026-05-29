@@ -237,7 +237,12 @@ CARRERAS: list[dict] = [
     # ===================== Educación =====================
     {"id": "ciencias_educacion", "nombre": "Ciencias de la Educación", "area": "Educación", "onet_soc": "25-9031.00", "onet_titulo": "Instructional Coordinators", "etiquetas": []},
     {"id": "profesorado_educacion_primaria", "nombre": "Profesorado de Educación Primaria", "area": "Educación", "onet_soc": "25-2021.00", "onet_titulo": "Elementary School Teachers", "etiquetas": []},
-    {"id": "profesorado_educacion_fisica", "nombre": "Profesorado de Educación Física", "area": "Educación", "onet_soc": "25-2031.00", "onet_titulo": "Secondary School Teachers", "etiquetas": ["trabajo_fisico"]},
+    # NOTA: 'profesorado_educacion_fisica' se eliminó del catálogo. Mapeaba
+    # al MISMO SOC O*NET que 'profesorado_ciencias_exactas' (25-2031.00,
+    # Secondary School Teachers) -> vector RIASEC idéntico -> colisión exacta
+    # (empate puro inseparable por el motor). Era el ÚNICO par duplicado del
+    # catálogo; al quitarlo, los 75 vectores restantes son todos únicos.
+    # Ver justificación estadística en analisis_catalogo.md.
     {"id": "profesorado_ciencias_exactas", "nombre": "Profesorado en Ciencias Exactas", "area": "Educación", "onet_soc": "25-2031.00", "onet_titulo": "Secondary School Teachers", "etiquetas": ["matematica_intensa"]},
 
     # ===================== Economía y Negocios =====================
@@ -261,24 +266,42 @@ CARRERAS: list[dict] = [
 
 
 # -----------------------------------------------------------------
-# Reescala de la escala O*NET (0-7) a la escala interna (1-5)
+# Reescala de la escala O*NET (1-7) a la escala interna (1-5)
 # -----------------------------------------------------------------
-def reescalar_07_a_15(valor_07: float) -> int:
-    """Convierte un puntaje O*NET (0-7) al rango entero 1-5.
+def reescalar_07_a_15(valor_17: float) -> float:
+    """Reescala un puntaje de interés O*NET al rango 1-5, SIN redondear.
 
-    Fórmula lineal: 1 + (valor/7) * 4, redondeada al entero más
-    cercano. Mantiene el orden relativo de los intereses y los lleva
-    a la misma escala Likert que responde el usuario.
+    O*NET publica los intereses ocupacionales en escala **1-7** (1 =
+    interés mínimo, 7 = máximo), no 0-7. La fórmula lineal correcta
+    mapea 1 -> 1 y 7 -> 5:
+
+        escala_15 = 1 + (valor_17 - 1) / 6 * 4
+
+    AUDITORÍA / corrección (2 problemas de la versión previa):
+
+      1. *Escala equivocada*: la fórmula anterior `1 + (valor/7)*4`
+         asumía un rango 0-7. Con O*NET real (mínimo 1.0) eso elevaba
+         el interés mínimo a ~1.6 -> redondeado a 2: el piso de la
+         escala (1) NUNCA se usaba y todo el catálogo quedaba inflado
+         hacia arriba, comprimiendo el contraste entre dimensiones.
+
+      2. *Redondeo a entero*: colapsaba carreras O*NET distintas en el
+         mismo vector 1-5 (p. ej. Ing. Mecánica = Mecatrónica = Agronomía),
+         generando empates puros -> "carreras imán/huérfanas". Conservar
+         el resultado como float (2 decimales) preserva la resolución de
+         O*NET y elimina 6 de los 7 grupos de colisión.
+
+    Nota: como el emparejamiento usa Pearson (invariante a transformaciones
+    afines) y coseno (en la misma escala 1-5 del usuario), lo que de verdad
+    importa para el ranking es (a) eliminar el redondeo y (b) compartir
+    escala con el usuario. Ambas cosas las garantiza esta fórmula.
     """
-    if valor_07 <= 0:
-        return 1
-    if valor_07 >= 7:
-        return 5
-    return int(round(1 + (valor_07 / 7) * 4))
+    escala = 1.0 + (valor_17 - 1.0) / 6.0 * 4.0
+    return round(min(5.0, max(1.0, escala)), 2)
 
 
-def vector_riasec(soc_code: str) -> dict[str, int]:
-    """Devuelve el vector RIASEC (1-5) de una ocupación O*NET."""
+def vector_riasec(soc_code: str) -> dict[str, float]:
+    """Devuelve el vector RIASEC (1-5, float) de una ocupación O*NET."""
     crudo = ONET_INTERESTS_07[soc_code]
     # Reordenamos según DIMENSIONES para garantizar consistencia.
     return {dim: reescalar_07_a_15(crudo[dim]) for dim in DIMENSIONES}
@@ -314,7 +337,7 @@ def validar(catalogo: list[dict]) -> None:
 
         assert set(c["riasec"].keys()) == set(DIMENSIONES), f"{c['id']}: RIASEC incompleto"
         for dim, val in c["riasec"].items():
-            assert isinstance(val, int) and 1 <= val <= 5, f"{c['id']}: {dim}={val!r} fuera de 1-5"
+            assert isinstance(val, (int, float)) and 1.0 <= val <= 5.0, f"{c['id']}: {dim}={val!r} fuera de 1-5"
 
         for tag in c["etiquetas"]:
             assert tag in ETIQUETAS_VALIDAS, f"{c['id']}: etiqueta desconocida {tag!r}"
@@ -337,7 +360,7 @@ def main() -> int:
     dataset = {
         "_meta": {
             "descripcion": "Catálogo de carreras con su vector RIASEC (Holland) derivado de O*NET. Generado por build_catalog.py.",
-            "fuente_riasec": "O*NET Interests v28.x (U.S. Department of Labor), reescalado 0-7 -> 1-5.",
+            "fuente_riasec": "O*NET Interests v28.x (U.S. Department of Labor), reescalado lineal 1-7 -> 1-5 (float, sin redondeo).",
             "total_carreras": len(catalogo),
         },
         "carreras": catalogo,

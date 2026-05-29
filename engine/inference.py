@@ -1,26 +1,36 @@
 """
 =================================================================
-FASE 2 - MOTOR DE INFERENCIA
+FASE 2 - MOTOR DE INFERENCIA  (scoring híbrido Coseno + Pearson)
 =================================================================
-Implementa los pasos 2.1 y 2.2 del plan técnico:
+Empareja el vector RIASEC del usuario con cada carrera del catálogo.
 
-  - calcular_vector_usuario(): a partir de las respuestas a las
-    preguntas RIASEC, calcula el vector promedio normalizado del
-    usuario en el espacio de 6 dimensiones.
+  - calcular_vector_usuario(): promedio ponderado por dimensión RIASEC
+    -> vector de 6 dimensiones del usuario (escala 1-5, float).
 
-  - similitud_coseno(): núcleo matemático del emparejamiento.
+  - similitud_coseno():   alineación DIRECCIONAL (magnitud + dirección).
+  - correlacion_pearson(): similitud de FORMA del perfil (picos/valles),
+    invariante al sesgo de indulgencia/severidad del usuario.
+  - score_hibrido():       combinación ponderada de ambas.
+  - ranking_carreras():    aplica el score sobre el catálogo y ordena.
 
-  - ranking_carreras(): aplica la similitud sobre el catálogo completo
-    y devuelve las carreras ordenadas en forma descendente.
+¿POR QUÉ DOS MÉTRICAS Y NO UNA?  (resultado de la auditoría)
+  La versión previa decía "coseno" pero, al centrar la media de AMBOS
+  vectores, calculaba en realidad SOLO la correlación de Pearson (coseno
+  centrado == Pearson). Es decir, no había hibridación: una métrica
+  disfrazada de otra. Además:
+    * ordenaba por la correlación cruda pero MOSTRABA (correlación)^3,
+      un "castigo al cubo" arbitrario que hundía los porcentajes y
+      desalineaba el orden mostrado del % mostrado;
+    * los empates se resolvían por el ORDEN del catálogo -> sesgo
+      sistemático hacia la primera carrera listada ("carrera imán").
 
-¿Por qué similitud de coseno y NO distancia euclidiana?
-  El plan lo justifica: la distancia euclidiana penaliza diferencias
-  de magnitud absoluta entre vectores, sesgando hacia usuarios que
-  responden con valores más altos. El coseno mide la *orientación*
-  (perfil de intereses) y es invariante a la escala, por lo que dos
-  usuarios con la misma proporción RIASEC pero distinta intensidad
-  reciben la misma recomendación. Esto es exactamente lo que pide
-  el modelo de Holland.
+  Aquí se separan las dos señales (son complementarias):
+    - Coseno mide si usuario y carrera "apuntan" al mismo lado en el
+      espacio 1-5 (intensidad y dirección del interés).
+    - Pearson mide si el PERFIL tiene la misma forma relativa, sin
+      importar cuán alto/bajo responde la persona (calibra el sesgo
+      de escala personal).
+  El híbrido (w·coseno + (1-w)·pearson) combina "dirección" y "forma".
 =================================================================
 """
 
@@ -30,8 +40,21 @@ import numpy as np
 
 # Orden CANÓNICO de las dimensiones. Es CRÍTICO mantenerlo igual en
 # todo el proyecto (vectores, gráficos, JSON) para evitar bugs
-# silenciosos en la similitud de coseno.
+# silenciosos en el emparejamiento.
 DIMENSIONES_RIASEC: tuple[str, ...] = ("R", "I", "A", "S", "E", "C")
+
+# Peso del coseno en el score híbrido (Pearson lleva el complemento).
+# Valor calibrado con la simulación Monte Carlo (scripts/montecarlo.py):
+# Pearson aporta casi toda la capacidad discriminativa (separa familias
+# y reparte el Top-1), mientras que el coseno sobre vectores 1-5 -todos
+# en el ortante positivo- está comprimido (~0.9) y sólo aporta un matiz
+# de "intensidad". El óptimo de discriminación es Pearson-dominante.
+PESO_COSENO: float = 0.4
+
+# Umbral de varianza por debajo del cual consideramos que el usuario
+# "respondió todo igual": un perfil plano no contiene preferencia y no
+# es emparejable. Vale tanto para todo-3, todo-5 o todo-1.
+_EPS_VARIANZA = 1e-9
 
 
 # -----------------------------------------------------------------
@@ -50,7 +73,7 @@ def calcular_vector_usuario(
     Returns:
         Vector {R: x, I: x, A: x, S: x, E: x, C: x} con cada x en
         [1.0, 5.0]. Si una dimensión no fue contestada (caso borde),
-        devuelve 3.0 (neutro) en lugar de NaN para no romper el coseno.
+        devuelve 3.0 (neutro) en lugar de NaN para no romper el score.
 
     Ejemplo de salida:
         {'R': 4.2, 'I': 2.1, 'A': 1.5, 'S': 4.8, 'E': 3.0, 'C': 2.5}
@@ -64,7 +87,6 @@ def calcular_vector_usuario(
         qid = q["id"]
         if qid not in respuestas:
             # El usuario no contestó esta pregunta -> la salteamos.
-            # Se podría exigir respuesta obligatoria desde la UI.
             continue
         valor = float(respuestas[qid])
         peso = float(q.get("ponderacion", 1.0))
@@ -83,47 +105,69 @@ def calcular_vector_usuario(
 
 
 # -----------------------------------------------------------------
-# Paso 2.2 - Similitud de coseno
+# Paso 2.2 - Métricas de similitud
 # -----------------------------------------------------------------
-
 def _a_array(vec: dict[str, float] | dict[str, int]) -> np.ndarray:
-    """Convierte un dict RIASEC al ndarray ordenado canónicamente y centra la media.
+    """Convierte un dict RIASEC al ndarray ordenado canónicamente (sin centrar)."""
+    return np.array([float(vec[d]) for d in DIMENSIONES_RIASEC], dtype=np.float64)
 
-    Al restar la media del propio vector, transformamos la similitud
-    de coseno en el Coeficiente de Correlación de Pearson, calibrando
-    la escala personal del usuario (sesgo de indulgencia).
-    """
-    arr = np.array([float(vec[d]) for d in DIMENSIONES_RIASEC], dtype=np.float64)
-    # Restamos la media exacta (con decimales) a todo el arreglo
-    return arr - np.mean(arr)
+
+def _coseno(a: np.ndarray, b: np.ndarray) -> float:
+    """Coseno entre dos arrays. 0.0 si alguna norma es 0 (evita NaN)."""
+    na, nb = np.linalg.norm(a), np.linalg.norm(b)
+    if na == 0.0 or nb == 0.0:
+        return 0.0
+    return float(np.dot(a, b) / (na * nb))
 
 
 def similitud_coseno(
     vector_usuario: dict[str, float],
-    vector_carrera: dict[str, int],
+    vector_carrera: dict[str, float],
 ) -> float:
-    """Calcula cos(θ) entre el vector usuario y el de la carrera.
+    """Similitud de coseno (alineación DIRECCIONAL) en el espacio 1-5.
 
-    Fórmula:                  A · B
-                cos(θ) = ─────────────
-                          ‖A‖ · ‖B‖
+                       A · B
+        cos(θ) = ─────────────
+                  ‖A‖ · ‖B‖
 
-    Devuelve un valor en [-1.0, 1.0], donde 1.0 es una correlación perfecta (perfiles idénticos),
-    0.0 es falta de correlación, 
-    y -1.0 son perfiles completamente opuestos.
+    Mide si el usuario y la carrera "apuntan" hacia el mismo lado, con
+    sensibilidad a la magnitud del interés. Rango [-1, 1] (en la práctica
+    >0 porque ambos vectores viven en el ortante positivo 1-5).
+    """
+    return _coseno(_a_array(vector_usuario), _a_array(vector_carrera))
+
+
+def correlacion_pearson(
+    vector_usuario: dict[str, float],
+    vector_carrera: dict[str, float],
+) -> float:
+    """Correlación de Pearson (similitud de FORMA del perfil).
+
+    Equivale al coseno sobre los vectores centrados en su propia media:
+    elimina el nivel general de respuesta (sesgo de indulgencia/severidad)
+    y compara sólo la distribución relativa de picos y valles RIASEC.
+    Rango [-1, 1]: 1 = misma forma, 0 = sin relación, -1 = forma opuesta.
     """
     a = _a_array(vector_usuario)
     b = _a_array(vector_carrera)
+    return _coseno(a - a.mean(), b - b.mean())
 
-    norma_a = np.linalg.norm(a)
-    norma_b = np.linalg.norm(b)
 
-    # Edge case: si alguna norma fuera 0 (no debería pasar pero por
-    # robustez), devolvemos 0.0 en lugar de propagar NaN.
-    if norma_a == 0.0 or norma_b == 0.0:
-        return 0.0
+def score_hibrido(
+    vector_usuario: dict[str, float],
+    vector_carrera: dict[str, float],
+    w_coseno: float = PESO_COSENO,
+) -> tuple[float, float, float]:
+    """Score híbrido = w·coseno + (1-w)·pearson.
 
-    return float(np.dot(a, b) / (norma_a * norma_b))
+    Devuelve la terna (score, coseno, pearson) para trazabilidad. El
+    score vive en [-1, 1]; >0 indica afinidad, <=0 indica perfiles
+    no relacionados u opuestos.
+    """
+    cos = similitud_coseno(vector_usuario, vector_carrera)
+    pear = correlacion_pearson(vector_usuario, vector_carrera)
+    score = w_coseno * cos + (1.0 - w_coseno) * pear
+    return score, cos, pear
 
 
 # -----------------------------------------------------------------
@@ -132,30 +176,40 @@ def similitud_coseno(
 def ranking_carreras(
     vector_usuario: dict[str, float],
     carreras: list[dict],
+    w_coseno: float = PESO_COSENO,
 ) -> list[dict]:
-    """Devuelve la lista de carreras ordenada por similitud DESC.
+    """Devuelve las carreras ordenadas por afinidad (score híbrido) DESC.
 
-    Aplica un castigo exponencial (al cubo) sobre la correlación
-    positiva para aumentar la varianza y mejorar la experiencia de
-    usuario, hundiendo los porcentajes de carreras mediocres.
+    - Convierte el score [-1,1] a un porcentaje honesto de afinidad:
+      `afinidad_pct = round(100 * max(0, score))`. Se eliminó el "castigo
+      al cubo" de la versión previa (distorsionaba el % y desalineaba el
+      orden mostrado).
+    - Desempata de forma determinista y NEUTRAL: a igual score, primero
+      mayor Pearson (forma), luego id alfabético. Ya NO gana "la primera
+      del catálogo", lo que eliminaba la causa de carreras imán/huérfanas
+      por orden de lista.
+    - Usuario con varianza ~0 (responde todo igual): perfil no informativo
+      -> afinidad 0 para todas (la app lo detecta y avisa).
     """
+    u = _a_array(vector_usuario)
+    usuario_plano = float(np.std(u)) < _EPS_VARIANZA
+
     ranking = []
     for c in carreras:
-        sim = similitud_coseno(vector_usuario, c["riasec"])
-        
-        # 1. Ignoramos correlaciones negativas (intereses opuestos = 0%)
-        sim_positiva = max(0.0, sim)
-        
-        # 2. Elevamos al CUBO para castigar perfiles que no encajan 
-        # perfectamente y pasamos a porcentaje.
-        afinidad_pct = int(round((sim_positiva ** 3) * 100))
-        
+        if usuario_plano:
+            score = cos = pear = 0.0
+        else:
+            score, cos, pear = score_hibrido(vector_usuario, c["riasec"], w_coseno)
+        afinidad_pct = int(round(max(0.0, score) * 100))
         ranking.append({
             **c,
-            "similitud": sim,
+            "score": score,
+            "similitud": cos,        # coseno (compatibilidad de nombre)
+            "coseno": cos,
+            "pearson": pear,
             "afinidad_pct": afinidad_pct,
         })
 
-    # Orden descendente: del más afín al menos afín, usando el valor crudo
-    ranking.sort(key=lambda x: x["similitud"], reverse=True)
+    # Orden: score DESC; desempate por pearson DESC y luego id (neutral).
+    ranking.sort(key=lambda x: (-x["score"], -x["pearson"], x["id"]))
     return ranking

@@ -4,7 +4,7 @@ Sistema experto que recomienda **carreras de grado** a partir de los intereses d
 
 El sistema trabaja en **dos capas**:
 
-1. **Afinidad de intereses (RIASEC):** un test de 36 preguntas construye el perfil del usuario en 6 dimensiones y lo compara, por similitud de coseno, con el vector de cada carrera.
+1. **Afinidad de intereses (RIASEC):** un test de 36 preguntas construye el perfil del usuario en 6 dimensiones y lo compara, mediante un scoring híbrido (similitud de coseno + correlación de Pearson), con el vector de cada carrera.
 2. **Filtros de aversión (knockout):** 6 preguntas adicionales descartan carreras cuyo trabajo diario el usuario rechaza de plano (atender pacientes, programar, vender, etc.), aunque su perfil de intereses se les parezca.
 
 > Ejemplo: alguien a quien "le encantan los datos" pero que **no quiere atender pacientes** nunca recibirá Medicina ni Odontología, aun cuando su perfil tenga afinidad con ellas.
@@ -99,9 +99,14 @@ pytest tests/test_perfiles.py      # como suite de pytest (opcional)
 
 ## Cómo funciona el motor
 
-### 1ra capa — Afinidad RIASEC (coseno)
+### 1ra capa — Afinidad RIASEC (scoring híbrido Coseno + Pearson)
 
-El test calcula el promedio del usuario por dimensión y lo compara con el vector de cada carrera. Se usa **similitud de coseno sobre vectores centrados** (equivalente a la correlación de Pearson): mide la *orientación* del perfil, no su magnitud, así que dos personas con el mismo patrón de intereses pero distinta intensidad reciben la misma recomendación. La correlación positiva se eleva al cubo para aumentar el contraste entre carreras muy y poco afines.
+El test calcula el promedio del usuario por dimensión y lo compara con el vector de cada carrera mediante un **score híbrido**:
+
+- **Similitud de coseno** (en la escala 1-5): alineación *direccional* — mide si usuario y carrera apuntan al mismo lado, con sensibilidad a la intensidad del interés.
+- **Correlación de Pearson** (coseno sobre vectores centrados en su media): similitud de *forma* del perfil (picos y valles), invariante al sesgo de quien responde "alto/bajo en todo".
+
+`score = 0.4·coseno + 0.6·pearson` (peso calibrado por simulación Monte Carlo: el coseno sobre vectores 1-5 está comprimido y aporta poca discriminación, así que el óptimo es Pearson-dominante). El score `[-1,1]` se convierte a un **% de afinidad honesto** (`100·max(0, score)`, sin "castigo al cubo"). Los empates se resuelven de forma **neutral** (por Pearson y luego id), no por el orden del catálogo.
 
 ### 2da capa — Filtros de aversión (knockout)
 
@@ -126,7 +131,7 @@ Cada carrera lleva 0..N **etiquetas** (`contacto_pacientes`, `programacion`, `ma
 
 | Decisión | Justificación |
 |---|---|
-| **Coseno centrado (Pearson), no euclidiana** | Mide orientación del perfil, no magnitud; elimina el sesgo del que responde "alto en todo". |
+| **Híbrido Coseno + Pearson, no euclidiana** | Coseno mide dirección/intensidad; Pearson mide la forma del perfil sin el sesgo de magnitud. El peso (Pearson-dominante) se calibró con Monte Carlo. |
 | **Segunda capa de filtros como knockout** | La afinidad de intereses no captura los "deal-breakers"; un veto explícito evita recomendar carreras que el usuario jamás aceptaría. |
 | **Escala 1-5 (no 0-7 cruda de O\*NET)** | Coherencia con la escala Likert que ve el usuario; la re-escala lineal preserva el orden. |
 | **Catálogo generado por script** | Trazabilidad (cada vector RIASEC sale de un código SOC de O\*NET) y reproducibilidad. |

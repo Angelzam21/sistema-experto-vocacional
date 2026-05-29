@@ -3,8 +3,7 @@
 SISTEMA EXPERTO VOCACIONAL - APP PRINCIPAL (Streamlit)
 =================================================================
 Streamlit actúa simultáneamente como motor algorítmico y capa de
-presentación: sin backend externo, sin base de datos, sin estado
-persistente.
+presentación: sin backend externo.
 
 Flujo de la aplicación (state machine sobre st.session_state):
 
@@ -42,6 +41,7 @@ from engine.inference import (
     calcular_vector_usuario,
     ranking_carreras,
 )
+from ui.keyboard import inyectar_navegacion_teclado
 from ui.styles import inject_css
 from ui.visualizations import (
     ETIQUETAS_RIASEC,
@@ -211,6 +211,9 @@ def pantalla_test() -> None:
     )
     st.session_state["respuestas"][pregunta["id"]] = int(seleccion)
 
+    # Pista de descubribilidad de los atajos de teclado.
+    st.caption("Atajos: teclas **1–5** para responder · **Enter** para avanzar.")
+
     st.markdown("---")
     col_a, col_b, col_c = st.columns([1, 1, 1])
     with col_a:
@@ -233,6 +236,14 @@ def pantalla_test() -> None:
             else:
                 st.session_state["indice_pregunta"] = idx + 1
                 st.rerun()
+
+    # Atajos de teclado (1..5 = responder, Enter = avanzar). Se inyecta al
+    # final, ya construido el DOM de la pregunta: el puente JS hace click
+    # sobre el radio / botón primario de ARRIBA. Sólo en la pantalla de test,
+    # donde hay un único radiogroup (en FILTROS habría 6 y sería ambiguo).
+    # El componente se re-inyecta en cada rerun pero mantiene UN solo
+    # listener vivo (ver cleanup en ui/keyboard.py).
+    inyectar_navegacion_teclado(num_opciones=len(opciones))
 
 
 def pantalla_filtros() -> None:
