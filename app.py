@@ -65,8 +65,11 @@ ETAPA_FILTROS = "filtros"
 ETAPA_RESULTADOS = "resultados"
 
 # Claves propias en session_state (todo lo que reseteamos al reiniciar).
+# Incluye las flags de validación del test para que no sobrevivan a un
+# reinicio y disparen un error fantasma en una pregunta recién cargada.
 CLAVES_SESION = (
     "etapa", "respuestas", "respuestas_filtro", "vector_usuario", "indice_pregunta",
+    "_error_seleccion", "_error_q_idx",
 )
 
 # Escala Likert compartida por el test y los filtros. El número de atajo
@@ -179,9 +182,11 @@ def pantalla_bienvenida() -> None:
 
     st.markdown("&nbsp;")
     if st.button("Comenzar →", type="primary", use_container_width=True):
-        # Arrancamos el test desde cero.
+        # Arrancamos el test desde cero (incluida cualquier flag de validación).
         st.session_state["respuestas"] = {}
         st.session_state["indice_pregunta"] = 0
+        st.session_state.pop("_error_seleccion", None)
+        st.session_state.pop("_error_q_idx", None)
         avanzar_a(ETAPA_TEST)
 
 

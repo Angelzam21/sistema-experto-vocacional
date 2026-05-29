@@ -60,6 +60,15 @@ def inyectar_navegacion_teclado(num_opciones: int) -> None:
       }}
 
       const handler = function(e) {{
+        // GUARD: el listener vive en el documento padre y NO se remueve al
+        // salir del test (el cleanup sólo corre al re-inyectar el componente,
+        // cosa que únicamente ocurre en la pantalla de test). Sin este guard,
+        // un Enter en FILTROS o RESULTADOS clickearía el botón primario de esa
+        // vista (p. ej. "Hacer otro test" -> reinicio que borra los resultados).
+        // La pista de teclado (.keyboard-hint) sólo existe en la pantalla de
+        // test: si no está en el DOM, el handler queda inerte.
+        if (!doc.querySelector('.keyboard-hint')) return;
+
         // No secuestrar el teclado cuando se escribe en un campo de texto.
         const t = e.target;
         const tag = (t && t.tagName) ? t.tagName.toLowerCase() : '';
