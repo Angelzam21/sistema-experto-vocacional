@@ -74,14 +74,45 @@ header         { visibility: hidden; }
 .orientai-header {
     display: flex;
     align-items: center;
-    padding: 0.25rem 0 1.75rem 0;
+    gap: 1rem;
+    padding: 20px;
     border-bottom: 2px solid var(--ink);
+    background: var(--paper);
     margin-bottom: 1.5rem;
 }
-.orientai-logo svg {
+.orientai-logo-link {
+    flex-shrink: 0;
+    line-height: 0;
+    text-decoration: none;
+}
+.orientai-logo-link svg {
     height: 48px;
     width: auto;
-    max-width: 220px;
+    max-width: 200px;
+}
+.orientai-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+.orientai-title {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+.orientai-subtitle {
+    font-weight: 300;
+    font-size: 0.82rem;
+    color: var(--violet);
+    line-height: 1.3;
+}
+@media (max-width: 640px) {
+    .orientai-header {
+        flex-wrap: wrap;
+        padding: 14px;
+    }
 }
 
 /* ---------- 5. Jerarquía tipográfica ---------- */

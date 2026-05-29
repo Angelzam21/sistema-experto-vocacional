@@ -22,12 +22,14 @@ def _logo_svg() -> str:
 
 
 def render_header() -> None:
-    """Renderiza el header con el logo ORIENTAI.
-
-    Debe llamarse al inicio de cada función pantalla_*(), antes de
-    cualquier otro contenido visible.
-    """
+    """Renderiza el header con logo (link), título y subtítulo ORIENTAI."""
     st.markdown(
-        f'<div class="orientai-header"><div class="orientai-logo">{_logo_svg()}</div></div>',
+        f"""<div class="orientai-header">
+            <a href="/" class="orientai-logo-link">{_logo_svg()}</a>
+            <div class="orientai-brand">
+                <span class="orientai-title">ORIENTAI</span>
+                <span class="orientai-subtitle">Sistema experto para el proceso de orientación vocacional</span>
+            </div>
+        </div>""",
         unsafe_allow_html=True,
     )
