@@ -137,6 +137,23 @@ def test_filtro_cambia_resultado() -> None:
     assert "psicologia" in con_veto[:3]    # queda una alternativa social sin contacto clínico
 
 
+def test_veta_politica() -> None:
+    """Perfil fuertemente Social+Investigador+Emprendedor (S/I/E alto): el
+    motor RIASEC lo empareja con Ciencia Política (#1 sin veto). Con el filtro
+    de aversión 'dominio_politico' la carrera debe DESAPARECER del ranking.
+
+    Nota: el id real en el catálogo es 'ciencia_politica' (singular)."""
+    perfil = {"R": 2, "I": 5, "A": 2, "S": 5, "E": 5, "C": 2}
+
+    sin_veto = _ids(_evaluar(perfil))
+    con_veto = _ids(_evaluar(perfil, {"dominio_politico": 1}))
+
+    # Premisa del test: sin veto, Ciencia Política es candidata fuerte (Top 3).
+    assert "ciencia_politica" in sin_veto[:3]
+    # Con el veto político, desaparece por completo del ranking.
+    assert "ciencia_politica" not in con_veto
+
+
 # -----------------------------------------------------------------
 # Tests del motor refactorizado (Coseno + Pearson híbrido)
 # -----------------------------------------------------------------
@@ -200,6 +217,7 @@ def _main() -> int:
         ("Perfil realista", test_perfil_realista),
         ("Vector nulo", test_vector_nulo),
         ("Filtro cambia resultado (Medicina)", test_filtro_cambia_resultado),
+        ("Veta dominio político", test_veta_politica),
         ("Coseno != Pearson (híbrido real)", test_coseno_y_pearson_son_distintos),
         ("Sin colisiones de vectores", test_sin_colisiones_de_vectores),
         ("Desempate neutral (orden catálogo)", test_desempate_no_depende_del_orden_del_catalogo),

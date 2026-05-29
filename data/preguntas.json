@@ -94,6 +94,12 @@
       "etiqueta": "expresion_artistica",
       "pregunta": "Crear obras artísticas y trabajar apoyándote en tu creatividad y sensibilidad estética",
       "descarta": "Carreras artísticas y de diseño (Artes, Música, Diseño, Fotografía, etc.)."
+    },
+    {
+      "id": "F7",
+      "etiqueta": "dominio_politico",
+      "pregunta": "Trabajar en el ámbito de la política gubernamental o partidaria: gestión pública, campañas, partidos u organismos del Estado",
+      "descarta": "Carreras del ámbito político (Ciencia Política, etc.)."
     }
   ]
 }
