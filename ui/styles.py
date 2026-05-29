@@ -301,7 +301,7 @@ div[role="radiogroup"] > label:nth-of-type(5)::before { content: "5"; }
     background-color: var(--card);
 }
 .stProgress > div > div > div > div {
-    background-color: var(--lime);
+    background-color: var(--violet);
 }
 
 /* ---------- 12. Tarjeta de recomendación ---------- */

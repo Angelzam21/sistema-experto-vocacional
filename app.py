@@ -192,7 +192,6 @@ def pantalla_test() -> None:
     total = len(preguntas)
     idx = st.session_state["indice_pregunta"]
 
-    st.markdown("# Test de intereses")
     st.progress(idx / total, text=f"Pregunta {idx + 1} de {total}")
     st.markdown("---")
 
