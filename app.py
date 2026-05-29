@@ -68,6 +68,17 @@ CLAVES_SESION = (
     "etapa", "respuestas", "respuestas_filtro", "vector_usuario", "indice_pregunta",
 )
 
+# Escala Likert compartida por el test y los filtros. El número de atajo
+# (1..5) ya NO va en el texto: la UI lo renderiza como "tecla física"
+# (badge ::before) sobre cada opción del radio (ver ui/styles.py).
+OPCIONES_LIKERT = {
+    1: "Lo detestaría",
+    2: "No me gustaría",
+    3: "Me da igual",
+    4: "Me gustaría",
+    5: "Me encantaría",
+}
+
 # st.set_page_config DEBE ser la primera instrucción de Streamlit.
 st.set_page_config(
     page_title="Sistema Experto Vocacional",
@@ -193,18 +204,11 @@ def pantalla_test() -> None:
     # Recuperamos la respuesta previa (si el usuario volvió) o 3 (neutro).
     respuesta_previa = st.session_state["respuestas"].get(pregunta["id"], 3)
 
-    opciones = {
-        1: "1 · Lo detestaría",
-        2: "2 · No me gustaría",
-        3: "3 · Me da igual",
-        4: "4 · Me gustaría",
-        5: "5 · Me encantaría",
-    }
     seleccion = st.radio(
         label="Tu respuesta",
-        options=list(opciones.keys()),
-        format_func=lambda v: opciones[v],
-        index=list(opciones.keys()).index(respuesta_previa),
+        options=list(OPCIONES_LIKERT.keys()),
+        format_func=lambda v: OPCIONES_LIKERT[v],
+        index=list(OPCIONES_LIKERT.keys()).index(respuesta_previa),
         horizontal=True,
         label_visibility="collapsed",
         key=f"radio_{pregunta['id']}",
@@ -243,7 +247,7 @@ def pantalla_test() -> None:
     # donde hay un único radiogroup (en FILTROS habría 6 y sería ambiguo).
     # El componente se re-inyecta en cada rerun pero mantiene UN solo
     # listener vivo (ver cleanup en ui/keyboard.py).
-    inyectar_navegacion_teclado(num_opciones=len(opciones))
+    inyectar_navegacion_teclado(num_opciones=len(OPCIONES_LIKERT))
 
 
 def pantalla_filtros() -> None:
@@ -260,22 +264,14 @@ def pantalla_filtros() -> None:
     )
     st.markdown("---")
 
-    opciones = {
-        1: "1 · Lo detestaría",
-        2: "2 · No me gustaría",
-        3: "3 · Me da igual",
-        4: "4 · Me gustaría",
-        5: "5 · Me encantaría",
-    }
-
     for f in filtros:
         st.markdown(f"### {f['pregunta']}")
         previa = st.session_state["respuestas_filtro"].get(f["id"], 3)
         seleccion = st.radio(
             label=f["pregunta"],
-            options=list(opciones.keys()),
-            format_func=lambda v: opciones[v],
-            index=list(opciones.keys()).index(previa),
+            options=list(OPCIONES_LIKERT.keys()),
+            format_func=lambda v: OPCIONES_LIKERT[v],
+            index=list(OPCIONES_LIKERT.keys()).index(previa),
             horizontal=True,
             label_visibility="collapsed",
             key=f"filtro_{f['id']}",
