@@ -1,30 +1,16 @@
 # =========================================================
 # DEPENDENCIAS DEL PROYECTO - SISTEMA EXPERTO VOCACIONAL
 # =========================================================
-# Este archivo lista todos los paquetes Python necesarios para
-# ejecutar tanto la fase ETL (offline) como la app Streamlit.
+# El sistema es offline y stateless: solo necesita la app web, el
+# cálculo vectorial y la visualización. No hay scraping ni red.
 # Instalación: pip install -r requirements.txt
 # =========================================================
 
-# --- Framework principal de la app web ---
+# --- Framework de la app web + motor algorítmico ---
 streamlit>=1.31.0
 
-# --- Cálculo numérico y matricial ---
-# NumPy es la base; se usa para vectores RIASEC y similitud de coseno.
+# --- Cálculo vectorial (vector RIASEC y similitud de coseno) ---
 numpy>=1.26.0
 
-# --- Visualización del Radar Chart (Fase 4.3) ---
+# --- Visualización del Radar Chart ---
 plotly>=5.18.0
-
-# --- ETL: Web Scraping (Fase 1.1) ---
-# requests + BeautifulSoup cubren páginas HTML estáticas.
-requests>=2.31.0
-beautifulsoup4>=4.12.0
-lxml>=5.0.0
-
-# --- ETL: Normalización (Fase 1.2) ---
-# rapidfuzz reemplaza a fuzzywuzzy: misma API, mucho más rápido y sin licencia GPL.
-rapidfuzz>=3.6.0
-
-# --- Manejo de datos tabulares (opcional pero útil para ETL) ---
-pandas>=2.1.0

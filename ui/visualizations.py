@@ -133,20 +133,26 @@ def radar_chart_riasec(
     return fig
 
 
+def codigo_holland(riasec: dict[str, int]) -> str:
+    """Devuelve el código de Holland de una carrera (sus 3 dimensiones
+    dominantes), ej. {R:5,I:4,...} -> "RIC".
+
+    Es la forma estándar de resumir un perfil RIASEC: las 3 letras de
+    mayor puntaje, en orden descendente.
+    """
+    top3 = sorted(DIMENSIONES_RIASEC, key=lambda d: riasec[d], reverse=True)[:3]
+    return "".join(top3)
+
+
 def tarjeta_recomendacion(carrera: dict, posicion: int) -> None:
     """Renderiza una tarjeta de resultado individual (Top-N).
 
-    Se usa HTML+CSS personalizado (clases definidas en ui/styles.py)
-    para tener control total sobre el layout: número de ranking
-    grande a la izquierda, título y meta en el centro, porcentaje
-    de afinidad en monoespaciada a la derecha.
-
-    Luego, dentro de un expander, se muestran los detalles
-    (universidades, modalidad, descripción).
+    Layout (HTML+CSS de ui/styles.py): número de ranking a la izquierda,
+    nombre + área + código Holland en el centro, % de afinidad en
+    monoespaciada a la derecha. El detalle expandible muestra la
+    ocupación O*NET equivalente y un radar usuario vs. carrera.
     """
-    # Encabezado de la tarjeta: HTML directo para que el % quede
-    # alineado a la derecha en mono-font, según pide el plan.
-    universidades_count = len(carrera.get("universidades", []))
+    cod = codigo_holland(carrera["riasec"])
     st.markdown(
         f"""
         <div class="recom-card">
@@ -159,9 +165,8 @@ def tarjeta_recomendacion(carrera: dict, posicion: int) -> None:
                     <div>
                         <p class="recom-title">{carrera['nombre']}</p>
                         <p class="recom-subtitle">
-                            {carrera.get('area_conocimiento', '')}
-                            &nbsp;·&nbsp; {universidades_count} universidades
-                            &nbsp;·&nbsp; {carrera.get('duracion_anios', '?')} años
+                            {carrera.get('area', '')}
+                            &nbsp;·&nbsp; Código Holland: {cod}
                         </p>
                     </div>
                 </div>
@@ -172,27 +177,19 @@ def tarjeta_recomendacion(carrera: dict, posicion: int) -> None:
         unsafe_allow_html=True,
     )
 
-    # Detalle expandible. Usamos el expander nativo porque el CSS
-    # ya está sobrescrito para que se vea limpio.
+    # Detalle expandible. El CSS nativo del expander ya está sobrescrito
+    # para que se vea como un panel limpio.
     with st.expander("Ver detalle"):
-        st.markdown(f"**Descripción.** {carrera.get('descripcion', '—')}")
+        st.markdown(
+            f"**Equivalente ocupacional O\\*NET:** {carrera.get('onet_titulo', '—')} "
+            f"(`{carrera.get('onet_soc', '—')}`)"
+        )
+        st.markdown(
+            "El vector RIASEC de esta carrera se deriva de esa ocupación del "
+            "estándar O\\*NET. Abajo se compara con tu perfil:"
+        )
 
-        col_a, col_b = st.columns(2)
-        with col_a:
-            st.markdown("**Modalidades disponibles:**")
-            for m in carrera.get("modalidad", []):
-                st.markdown(f"- {m}")
-            st.markdown("**Zonas geográficas:**")
-            st.markdown(", ".join(carrera.get("zona_geografica", [])) or "—")
-
-        with col_b:
-            st.markdown("**Universidades que la dictan:**")
-            for u in carrera.get("universidades", []):
-                st.markdown(f"- **{u['sigla']}** — {u['nombre']} ({u['ciudad']})")
-
-        # Mini-radar comparativo embebido en el detalle.
-        # Solo cuando hay vector de usuario en session_state (siempre
-        # que esta tarjeta se invoca desde la pantalla de resultados).
+        # Mini-radar comparativo usuario vs. carrera.
         if "vector_usuario" in st.session_state:
             fig = radar_chart_riasec(
                 st.session_state["vector_usuario"],

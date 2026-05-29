@@ -1,8 +1,13 @@
-# Sistema Experto Vocacional Basado en Datos
+# Sistema Experto Vocacional
 
-Sistema experto que recomienda carreras universitarias a estudiantes argentinos cruzando el modelo psicométrico **RIASEC (Holland)** —en su variante O\*NET— con la **oferta académica real** de las universidades públicas nacionales.
+Sistema experto que recomienda **carreras de grado** a partir de los intereses del usuario, cruzando el modelo psicométrico **RIASEC (Holland)** —en su variante **O\*NET**— con un catálogo de carreras.
 
-Implementación del plan técnico definido en [`plan_analisis.md`](plan_analisis.md).
+El sistema trabaja en **dos capas**:
+
+1. **Afinidad de intereses (RIASEC):** un test de 36 preguntas construye el perfil del usuario en 6 dimensiones y lo compara, por similitud de coseno, con el vector de cada carrera.
+2. **Filtros de aversión (knockout):** 6 preguntas adicionales descartan carreras cuyo trabajo diario el usuario rechaza de plano (atender pacientes, programar, vender, etc.), aunque su perfil de intereses se les parezca.
+
+> Ejemplo: alguien a quien "le encantan los datos" pero que **no quiere atender pacientes** nunca recibirá Medicina ni Odontología, aun cuando su perfil tenga afinidad con ellas.
 
 ---
 
@@ -12,8 +17,8 @@ Implementación del plan técnico definido en [`plan_analisis.md`](plan_analisis
 - **Streamlit** — UI + motor algorítmico unificado, stateless en memoria.
 - **NumPy** — cálculo vectorial (similitud de coseno).
 - **Plotly** — Radar Chart monocromático.
-- **BeautifulSoup + Requests** — scraping de oferta académica (Fase 1).
-- **RapidFuzz** — normalización por fuzzy matching.
+
+No hay scraping, base de datos ni llamadas de red: todo corre offline y en memoria.
 
 ---
 
@@ -21,30 +26,28 @@ Implementación del plan técnico definido en [`plan_analisis.md`](plan_analisis
 
 ```
 .
-├── app.py                          # App Streamlit (Fase 3)
-├── build_dataset.py                # Orquestador ETL (Fase 1)
+├── app.py                      # App Streamlit (flujo bienvenida → test → filtros → resultados)
+├── build_catalog.py            # Genera data/carreras.json desde la tabla O*NET (offline, determinista)
 ├── requirements.txt
-├── plan_analisis.md                # Plan técnico fuente
+├── plan_analisis.md            # Plan técnico
 │
 ├── .streamlit/
-│   └── config.toml                 # Tema monocromático (Fase 4.1)
+│   └── config.toml             # Tema monocromático
 │
 ├── data/
-│   ├── carreras_argentina.json     # Dataset maestro (salida Fase 1)
-│   └── preguntas_riasec_ar.json    # Banco de preguntas (Fase 2.0)
-│
-├── etl/
-│   ├── scraper.py                  # Fase 1.1 - scraping universidades
-│   ├── normalizer.py               # Fase 1.2 - fuzzy matching
-│   └── onet_mapper.py              # Fase 1.3 - enriquecimiento RIASEC
+│   ├── carreras.json           # Catálogo: id, nombre, área, O*NET, riasec, etiquetas
+│   └── preguntas.json          # 36 preguntas RIASEC + 6 preguntas filtro
 │
 ├── engine/
-│   ├── inference.py                # Fase 2.1 + 2.2 - vector + coseno
-│   └── filters.py                  # Fase 3.2 - filtros duros
+│   ├── inference.py            # Vector de usuario + similitud de coseno + ranking
+│   └── filters.py              # 2da capa: filtros de aversión (knockout por etiqueta)
 │
-└── ui/
-    ├── styles.py                   # Fase 4.2 - CSS clean UI
-    └── visualizations.py           # Fase 4.3 - radar + tarjetas
+├── ui/
+│   ├── styles.py               # CSS clean UI monocromática
+│   └── visualizations.py       # Radar Chart + tarjetas de recomendación
+│
+└── tests/
+    └── test_perfiles.py        # Tests del pipeline con perfiles sintéticos
 ```
 
 ---
@@ -52,12 +55,8 @@ Implementación del plan técnico definido en [`plan_analisis.md`](plan_analisis
 ## Instalación
 
 ```bash
-# 1. Crear entorno virtual (recomendado)
 python -m venv .venv
-.venv\Scripts\activate         # Windows
-# source .venv/bin/activate    # Linux/Mac
-
-# 2. Instalar dependencias
+source .venv/bin/activate        # Linux/Mac  (.venv\Scripts\activate en Windows)
 pip install -r requirements.txt
 ```
 
@@ -69,45 +68,48 @@ pip install -r requirements.txt
 
 ```bash
 streamlit run app.py
+# o, si el CLI no está en PATH:
+python -m streamlit run app.py
 ```
 
 Abre `http://localhost:8501`. El flujo es:
 
 1. **Bienvenida** → presentación y CTA.
-2. **Filtros duros** → zona geográfica + modalidad.
-3. **Test** → 36 preguntas Likert (1-5), una por pantalla.
-4. **Resultados** → métricas RIASEC, Radar Chart y Top-5 con detalle por carrera.
+2. **Test** → 36 preguntas Likert (1-5), una por pantalla → construye el vector RIASEC.
+3. **Filtros** → 6 preguntas de aversión → descartan carreras vetadas.
+4. **Resultados** → métricas RIASEC, Radar Chart y ranking de carreras (Top-5 + ranking completo).
 
-### Re-generar el dataset maestro (opcional)
+### Regenerar el catálogo
 
-El JSON `data/carreras_argentina.json` ya viene incluido. Si querés reconstruirlo desde cero (por ejemplo si actualizás `etl/onet_mapper.py` o las fuentes de scraping):
+`data/carreras.json` ya viene incluido. Para reconstruirlo desde la tabla O\*NET (por ejemplo, si corregís un valor de interés o agregás carreras en `build_catalog.py`):
 
 ```bash
-python build_dataset.py            # pipeline completo
-python build_dataset.py --dry-run  # corre sin escribir disco
-python build_dataset.py --verify   # solo valida el JSON existente
+python build_catalog.py            # genera data/carreras.json
+python build_catalog.py --dry-run  # construye y valida sin escribir
 ```
 
-Antes de sobrescribir, `build_dataset.py` crea un backup `.bak` por seguridad.
+### Correr los tests
+
+```bash
+python tests/test_perfiles.py      # reporte legible
+pytest tests/test_perfiles.py      # como suite de pytest (opcional)
+```
 
 ---
 
-## Decisiones de diseño relevantes
+## Cómo funciona el motor
 
-| Decisión | Justificación |
-|---|---|
-| **Similitud de coseno (no euclidiana)** | El coseno mide *orientación* del perfil, no magnitud. Dos usuarios con perfiles proporcionales reciben la misma recomendación, eliminando el sesgo del que responde "alto en todo". |
-| **Escala 1-5 (no 0-7 cruda de O\*NET)** | Coherencia con la escala Likert que ve el usuario y simplificación visual. La re-escala lineal preserva el orden. |
-| **Stateless / `st.session_state`** | Privacidad por diseño. El vector RIASEC nunca toca el disco ni se loguea. |
-| **`@st.cache_data` en cargadores JSON** | Lectura única del disco por proceso; las re-ejecuciones del script (cada click) reusan la memoria. |
-| **Filtros duros antes del coseno** | No tiene sentido calcular afinidad con carreras a las que el usuario no puede acceder; además ahorra cómputo. |
-| **CSS personalizado + `plotly_white`** | Anular la estética genérica de Streamlit para proyectar una imagen analítica, premium y consistente. |
+### 1ra capa — Afinidad RIASEC (coseno)
+
+El test calcula el promedio del usuario por dimensión y lo compara con el vector de cada carrera. Se usa **similitud de coseno sobre vectores centrados** (equivalente a la correlación de Pearson): mide la *orientación* del perfil, no su magnitud, así que dos personas con el mismo patrón de intereses pero distinta intensidad reciben la misma recomendación. La correlación positiva se eleva al cubo para aumentar el contraste entre carreras muy y poco afines.
+
+### 2da capa — Filtros de aversión (knockout)
+
+Cada carrera lleva 0..N **etiquetas** (`contacto_pacientes`, `programacion`, `matematica_intensa`, `trabajo_fisico`, `exposicion_publica`, `expresion_artistica`). Cada pregunta filtro corresponde a una etiqueta. Si el usuario responde **≤ 2** ("no me gustaría" / "lo detestaría"), esa etiqueta queda **vetada** y todas las carreras que la tengan se eliminan del ranking antes de calcular afinidad.
 
 ---
 
 ## Modelo RIASEC
-
-Las 6 dimensiones de Holland:
 
 | Sigla | Nombre | Foco |
 |---|---|---|
@@ -117,6 +119,18 @@ Las 6 dimensiones de Holland:
 | **S** | Social | Ayudar, enseñar, vincularse |
 | **E** | Emprendedor | Liderar, persuadir, vender |
 | **C** | Convencional | Orden, datos, normas |
+
+---
+
+## Decisiones de diseño
+
+| Decisión | Justificación |
+|---|---|
+| **Coseno centrado (Pearson), no euclidiana** | Mide orientación del perfil, no magnitud; elimina el sesgo del que responde "alto en todo". |
+| **Segunda capa de filtros como knockout** | La afinidad de intereses no captura los "deal-breakers"; un veto explícito evita recomendar carreras que el usuario jamás aceptaría. |
+| **Escala 1-5 (no 0-7 cruda de O\*NET)** | Coherencia con la escala Likert que ve el usuario; la re-escala lineal preserva el orden. |
+| **Catálogo generado por script** | Trazabilidad (cada vector RIASEC sale de un código SOC de O\*NET) y reproducibilidad. |
+| **Stateless / `st.session_state`** | Privacidad por diseño: las respuestas nunca tocan el disco. |
 
 ---
 

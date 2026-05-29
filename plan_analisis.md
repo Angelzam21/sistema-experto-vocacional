@@ -1,95 +1,74 @@
-# PLAN TÉCNICO DE IMPLEMENTACIÓN: SISTEMA EXPERTO VOCACIONAL BASADO EN DATOS
+# PLAN TÉCNICO: SISTEMA EXPERTO VOCACIONAL
 
-Este plan define la arquitectura técnica detallada y el mapa de ruta paso a paso para la construcción del Sistema Experto Vocacional Basado en Datos. El propósito fundamental de esta plataforma es fusionar la oferta académica real de las universidades públicas con el estándar de evaluación psicométrica internacional O*NET, estructurando un motor de inferencia algorítmico capaz de proveer recomendaciones precisas, contextualizadas y libres de sesgos artificiales.
+Sistema experto que recomienda **carreras de grado** a partir de los intereses del usuario, cruzando el modelo psicométrico **RIASEC (Holland)** con el estándar ocupacional **O\*NET**.
 
-**Objetivo de Arquitectura:** Despliegue de un MVP ágil, stateless (sin estado), ejecutado íntegramente en memoria mediante Streamlit, priorizando velocidad, bajo costo de infraestructura y privacidad de datos por diseño.
+**Objetivo de arquitectura:** MVP ágil, *stateless*, ejecutado íntegramente en memoria con Streamlit. Sin scraping, sin backend, sin base de datos, sin red. Prioriza velocidad, simplicidad y privacidad por diseño.
 
----
-
-## Fase 1: Proceso ETL (Ejecución Única / Offline)
-
-Esta fase de ingeniería de datos establece el dataset maestro del proyecto. Se ejecuta localmente **una sola vez** mediante un script independiente. El resultado es un archivo JSON estático que actuará como la base de conocimiento y API local del sistema.
-
-### Paso 1.1: Web Scraping de la Oferta Académica Argentina
-Extracción de información de las 30 carreras universitarias de mayor demanda en el país, cruzándose con las mallas de las principales universidades públicas nacionales (ej: UBA, UTN, UNLP, UNC, UNR, UNT, UNS, UNSAM).
-*   **Fuentes de Datos:** Buscador de Carreras del Ministerio de Capital Humano, guías SIU y portales oficiales de admisión.
-*   **Herramientas:** Script automatizado en Python utilizando `BeautifulSoup` (HTML estático) y/o `Selenium`/`Playwright` (renderizado dinámico).
-*   **Captura de Filtros Duros:** Durante el scraping, se extraerán obligatoriamente metadatos clave para el filtrado posterior:
-    *   `zona_geografica` (ej. "CABA", "Buenos Aires", "Córdoba").
-    *   `modalidad` (ej. "Presencial", "Híbrida", "A Distancia").
-
-### Paso 1.2: Estructuración y Normalización
-Saneamiento de cadenas de texto para evitar inconsistencias de nomenclatura en bases de datos abiertas.
-*   **Normalización:** Aplicación de Regex y Fuzzy Matching para unificar sinónimos (ej: 'Ing. en Sistemas' e 'Ingeniería de Sistemas' bajo un ID maestro).
-*   **Salida (API Local):** Creación del archivo maestro `carreras_argentina.json`. En esta etapa contendrá la identidad básica y los filtros, dejando los campos del Modelo Holland (RIASEC) nulos provisionalmente.
-
-### Paso 1.3: Enriquecimiento de Datos mediante O*NET (Mapeo RIASEC)
-Inyección del modelo teórico RIASEC (Realista, Investigador, Artístico, Social, Emprendedor, Convencional) vinculando las carreras locales con los códigos SOC de O*NET.
-*   **Mapeo:** Correspondencia heurística (Ej: 'Contador Público' -> 'Accountants and Auditors', Código O*NET: 13-2011.00).
-*   **Ingesta y Normalización Algorítmica:** Extracción de las puntuaciones crudas de intereses ("Interests") desde O*NET. Conversión de las escalas variables de O*NET a una escala discreta del 1 al 5.
-*   **Consolidación Final:** Los puntajes estandarizados (1-5) sobrescriben los campos nulos en `carreras_argentina.json`, conformando el **vector de afinidad estático** de cada carrera. Este archivo se guarda en el repositorio y finaliza la Fase 1.
+> **Nota de alcance:** una versión anterior cruzaba los intereses con la oferta académica de universidades públicas (scraping + filtros de zona/modalidad). Ese módulo fue **eliminado**. El sistema ahora se concentra en lo esencial: la lista de carreras y su perfil de Holland. La recomendación de *dónde* cursar queda fuera de alcance.
 
 ---
 
-## Fase 2: Banco de Preguntas y Motor de Inferencia
+## Fase 1: Base de conocimiento (catálogo O\*NET)
 
-Esta fase define los inputs psicométricos del usuario y la matemática pura del backend para procesar el emparejamiento.
+La base de conocimiento es un archivo estático `data/carreras.json` generado **offline y de forma determinista** por `build_catalog.py` (no hay scraping ni internet).
 
-### Paso 2.0: Construcción y Localización del Banco de Preguntas
-Generación de las preguntas reactivas para la interfaz web, basadas en el instrumento oficial de dominio público *O*NET Interest Profiler*, pero con localización cultural y lingüística para estudiantes en Argentina.
-*   **Almacenamiento estático:** Creación de un archivo secundario llamado `preguntas_riasec_ar.json` estructurado como: `[ID, Dimensión_RIASEC, Pregunta, Ponderación]`.
-*   **Ejemplos de Localización ("Argentinización"):**
-    *   *Realista (R):* "Arreglar motores de autos o motos" (O*NET: Repair cars).
-    *   *Investigador (I):* "Hacer experimentos en un laboratorio" (O*NET: Work in a biology lab).
-    *   *Emprendedor (E):* "Administrar un local comercial o una Pyme" (O*NET: Manage a retail store).
-*   **Escala Likert de Entrada:** 1 (Lo detestaría) | 2 (No me gustaría) | 3 (Me da igual) | 4 (Me gustaría) | 5 (Me encantaría).
+### Paso 1.1 — Lista maestra de carreras
+Catálogo curado de ~76 carreras de grado/pregrado, balanceado a través de las 6 dimensiones RIASEC. Cada carrera define: `id`, `nombre`, `area` (agrupador), `onet_soc`, `onet_titulo` y `etiquetas` (ver Fase 3).
 
-### Paso 2.1: Captura del Vector de Perfil de Usuario
-*   El sistema administra el banco de preguntas. Al finalizar, calcula el puntaje promedio por cada dimensión RIASEC.
-*   **Output:** Un vector numérico normalizado en un espacio de 6 dimensiones. Ej: Usuario A = `[R: 4.2, I: 2.1, A: 1.5, S: 4.8, E: 3.0, C: 2.5]`.
+### Paso 1.2 — Cruce con O\*NET (vector RIASEC)
+Cada carrera se vincula a la ocupación O\*NET de mayor afinidad mediante su **código SOC** (ej. `Contador Público → 13-2011.00 Accountants and Auditors`). De esa ocupación se toma el perfil de intereses O\*NET (escala 0-7) y se reescala linealmente a la escala interna 1-5:
 
-### Paso 2.2: Algoritmo de Similitud de Coseno
-El núcleo matemático del emparejamiento. Se descarta la Distancia Euclidiana para evitar sesgos de magnitud.
-*   **Fórmula:** Implementación en NumPy o SciPy del cálculo vectorial:
-$$ \text{Similitud} = \cos(\theta) = \frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\| \|\mathbf{B}\|} $$
-*(Donde **A** es el vector RIASEC del usuario y **B** es el vector RIASEC de la carrera iterada).*
-*   **Ponderación:** Ordenamiento descendente (de 1.0 a -1.0) de las 30 carreras basado en este índice.
+```
+escala_15 = round(1 + (valor_07 / 7) * 4)
+```
+
+`build_catalog.py` valida el contrato de datos (sin IDs duplicados, RIASEC completo en rango 1-5, etiquetas conocidas) antes de escribir el JSON.
 
 ---
 
-## Fase 3: Arquitectura Unificada y Lógica de UI (Streamlit)
+## Fase 2: Banco de preguntas y motor de inferencia
 
-Se prescinde de infraestructuras backend complejas, bases de datos o APIs externas. Streamlit actuará simultáneamente como motor algorítmico y estructura de presentación.
+### Paso 2.1 — Banco de preguntas (`data/preguntas.json`)
+- **36 preguntas RIASEC** (6 por dimensión), adaptadas del *O\*NET Interest Profiler* (dominio público) con localización para Argentina. Escala Likert 1 (Lo detestaría) … 5 (Me encantaría).
+- **6 preguntas filtro** (segunda capa, ver Fase 3).
 
-### Paso 3.1: Catálogo Estático en Memoria (In-Memory Data)
-*   **Carga Única:** Utilizando el decorador `@st.cache_data`, la aplicación leerá los archivos estáticos de forma local una única vez al iniciar el servidor. 
-*   **Anonimato por Diseño:** Los vectores de usuario se alojan exclusivamente en el `st.session_state` de su sesión efímera.
+### Paso 2.2 — Vector de perfil de usuario
+Promedio (ponderado) por dimensión RIASEC → vector de 6 dimensiones. Ej.: `[R 4.2, I 2.1, A 1.5, S 4.8, E 3.0, C 2.5]`.
 
-### Paso 3.2: Flujo de Evaluación Interactivo
-*   **Test Dinámico:** Las preguntas se presentan manejando el progreso mediante `st.session_state`.
-*   **Filtros Previos:** Sección para determinar restricciones ("Filtros Duros") de ubicación y modalidad, las cuales excluirán carreras antes del cálculo de Coseno.
+### Paso 2.3 — Similitud de coseno
+Emparejamiento por **coseno sobre vectores centrados** (equivalente a la correlación de Pearson): mide la *orientación* del perfil y descarta el sesgo de magnitud del usuario que responde "alto en todo". La correlación positiva se eleva al cubo para aumentar el contraste y se ordena de forma descendente.
 
 ---
 
-## Fase 4: Diseño de Interfaz de Usuario (UI/UX) y Estilización Avanzada
+## Fase 3: Segunda capa — Filtros de aversión (knockout)
 
-Para evitar el aspecto genérico por defecto de Streamlit y garantizar un estándar visual moderno, analítico y premium, se aplicarán estrictamente los siguientes filtros y configuraciones estéticas centradas en el minimalismo y el alto contraste (monocromático blanco/negro).
+La afinidad de intereses no captura los *deal-breakers*. Esta capa los modela como reglas de exclusión:
 
-### Paso 4.1: Configuración Global del Tema (Archivo `.streamlit/config.toml`)
-El sistema no utilizará el tema por defecto. Claude Code deberá crear y configurar el archivo `config.toml` para establecer una paleta dura:
-*   `primaryColor = "#000000"` (Negro puro para acciones principales).
-*   `backgroundColor = "#FFFFFF"` (Blanco puro de fondo principal).
-*   `secondaryBackgroundColor = "#F5F5F5"` (Gris ultra claro para contenedores o secciones de contraste mínimo).
-*   `textColor = "#111111"` (Gris casi negro para máxima legibilidad sin fatiga).
-*   `font = "sans serif"` (Tipografía limpia por defecto).
+- Cada carrera lleva 0..N **etiquetas**: `contacto_pacientes`, `programacion`, `matematica_intensa`, `trabajo_fisico`, `exposicion_publica`, `expresion_artistica`.
+- Cada **pregunta filtro** corresponde a una etiqueta.
+- Si el usuario responde **≤ 2** ("no me gustaría" / "lo detestaría"), la etiqueta queda **vetada** y todas las carreras que la tengan se eliminan del ranking **antes** del cálculo de afinidad.
 
-### Paso 4.2: Inyección de CSS Personalizado (Clean UI)
-Uso de `st.markdown("<style>...</style>", unsafe_allow_html=True)` en la inicialización de la app para anular los elementos genéricos que delatan el framework:
-*   **Ocultar Marca Streamlit:** Desactivar por completo el menú de hamburguesa (`#MainMenu {visibility: hidden;}`), el pie de página (`footer {visibility: hidden;}`) y la barra de decoración superior (`header {visibility: hidden;}`).
-*   **Tipografía y Botones Modernos:** Forzar el uso de fuentes geométricas modernas (ej. emulando San Francisco o Inter). Modificar las clases de los botones (`stButton`) para eliminar los radios de borde curvos (`border-radius: 4px;` máximo), eliminar las sombras, e implementar transiciones `hover` sutiles. Los botones deben verse planos y afilados.
-*   **Contenedores Invisibles:** Eliminar los bordes evidentes de las cajas de Streamlit; la separación estructural debe lograrse mediante el uso adecuado de espacios en blanco (paddings/margins) y jerarquía tipográfica.
+Ejemplo: perfil con datos altos (I/C) que veta `contacto_pacientes` → Medicina y Odontología se descartan aunque su perfil de intereses se les parezca.
 
-### Paso 4.3: Estilización del Dashboard Analítico y Resultados
-Las visualizaciones de datos deben adherirse a la estética corporativa y moderna, evitando las paletas de colores festivas o genéricas.
-*   **Radar Chart Monocromático (Plotly):** Configurar `st.plotly_chart` con `template="plotly_white"`. El polígono resultante (los 6 puntos RIASEC) no debe usar los colores vivos de Plotly. Las líneas deben ser negras o de un gris oscuro (`color='#000000'`), con un relleno sutil translúcido (`fillcolor='rgba(0,0,0,0.1)'`). Las etiquetas de los vértices deben ser sobrias y legibles.
-*   **Tarjetas de Recomendación (Top 5):** Estructurar los resultados mediante `st.container` y `st.columns`. Al usar `st.expander` para revelar los detalles de la carrera (Universidades, Modalidad), modificar su CSS nativo para que luzcan como paneles limpios, con el título de la carrera en fuente **bold de gran tamaño** y el porcentaje de afinidad alineado a la derecha en tipografía monoespaciada o de alto contraste.
+Salvaguarda: si los vetos descartan el catálogo completo, la app muestra igualmente el ranking completo con una advertencia.
+
+---
+
+## Fase 4: Arquitectura unificada y UI (Streamlit)
+
+Streamlit actúa como motor algorítmico y capa de presentación.
+
+- **Catálogo en memoria:** `@st.cache_data` lee los JSON una sola vez por proceso.
+- **State machine:** `BIENVENIDA → TEST (36) → FILTROS (6) → RESULTADOS`, manejada con `st.session_state`.
+- **Privacidad:** respuestas y vector viven sólo en la sesión efímera; nada se persiste.
+- **UI monocromática:** tema `config.toml` + CSS personalizado (`ui/styles.py`); Radar Chart Plotly en blanco/negro; tarjetas de recomendación con nombre, área, código Holland y % de afinidad, más un radar comparativo usuario vs. carrera.
+
+---
+
+## Fase 5: Validación
+
+`tests/test_perfiles.py` corre el pipeline completo con perfiles sintéticos y verifica que:
+- un perfil de datos que veta pacientes no reciba carreras clínicas;
+- perfiles social / artístico / realista devuelvan el área esperada arriba;
+- el vector nulo (responder todo igual) dé afinidad 0;
+- el veto cambie efectivamente el resultado (Medicina aparece sin veto y desaparece con él).

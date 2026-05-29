@@ -1,0 +1,1348 @@
+{
+  "_meta": {
+    "descripcion": "Catálogo de carreras con su vector RIASEC (Holland) derivado de O*NET. Generado por build_catalog.py.",
+    "fuente_riasec": "O*NET Interests v28.x (U.S. Department of Labor), reescalado 0-7 -> 1-5.",
+    "total_carreras": 76
+  },
+  "carreras": [
+    {
+      "id": "ingenieria_mecanica",
+      "nombre": "Ingeniería Mecánica",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "17-2141.00",
+      "onet_titulo": "Mechanical Engineers",
+      "riasec": {
+        "R": 5,
+        "I": 4,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "ingenieria_civil",
+      "nombre": "Ingeniería Civil",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "17-2051.00",
+      "onet_titulo": "Civil Engineers",
+      "riasec": {
+        "R": 4,
+        "I": 4,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "matematica_intensa",
+        "trabajo_fisico"
+      ]
+    },
+    {
+      "id": "ingenieria_electronica",
+      "nombre": "Ingeniería Electrónica",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "17-2072.00",
+      "onet_titulo": "Electronics Engineers",
+      "riasec": {
+        "R": 4,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 3
+      },
+      "etiquetas": [
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "ingenieria_industrial",
+      "nombre": "Ingeniería Industrial",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "17-2112.00",
+      "onet_titulo": "Industrial Engineers",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 2,
+        "S": 2,
+        "E": 4,
+        "C": 4
+      },
+      "etiquetas": [
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "ingenieria_quimica",
+      "nombre": "Ingeniería Química",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "17-2041.00",
+      "onet_titulo": "Chemical Engineers",
+      "riasec": {
+        "R": 4,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "ingenieria_mecatronica",
+      "nombre": "Ingeniería Mecatrónica",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "17-2141.02",
+      "onet_titulo": "Mechatronics Engineers",
+      "riasec": {
+        "R": 5,
+        "I": 4,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "matematica_intensa",
+        "programacion"
+      ]
+    },
+    {
+      "id": "ingenieria_electrica",
+      "nombre": "Ingeniería Eléctrica",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "17-2071.00",
+      "onet_titulo": "Electrical Engineers",
+      "riasec": {
+        "R": 4,
+        "I": 4,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "ingenieria_sistemas",
+      "nombre": "Ingeniería en Sistemas / Informática",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "15-1252.00",
+      "onet_titulo": "Software Developers",
+      "riasec": {
+        "R": 3,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 4
+      },
+      "etiquetas": [
+        "programacion",
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "ciberseguridad",
+      "nombre": "Licenciatura en Ciberseguridad",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "15-1212.00",
+      "onet_titulo": "Information Security Analysts",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 4
+      },
+      "etiquetas": [
+        "programacion"
+      ]
+    },
+    {
+      "id": "tecnologias_digitales",
+      "nombre": "Licenciatura en Tecnologías Digitales",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "15-1299.09",
+      "onet_titulo": "IT Project Managers",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 3,
+        "S": 3,
+        "E": 3,
+        "C": 4
+      },
+      "etiquetas": [
+        "programacion"
+      ]
+    },
+    {
+      "id": "tec_programacion",
+      "nombre": "Tecnicatura en Programación",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "15-1253.00",
+      "onet_titulo": "Software QA Analysts and Testers",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 4
+      },
+      "etiquetas": [
+        "programacion"
+      ]
+    },
+    {
+      "id": "ciencia_datos",
+      "nombre": "Licenciatura en Ciencia de Datos",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "15-2051.00",
+      "onet_titulo": "Data Scientists",
+      "riasec": {
+        "R": 2,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 4
+      },
+      "etiquetas": [
+        "programacion",
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "tec_energias_renovables",
+      "nombre": "Tecnicatura en Energías Renovables",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "17-3029.08",
+      "onet_titulo": "Energy Engineering Technicians",
+      "riasec": {
+        "R": 4,
+        "I": 4,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 4
+      },
+      "etiquetas": [
+        "trabajo_fisico"
+      ]
+    },
+    {
+      "id": "tec_mantenimiento_industrial",
+      "nombre": "Tecnicatura en Mantenimiento Industrial",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "49-9041.00",
+      "onet_titulo": "Industrial Machinery Mechanics",
+      "riasec": {
+        "R": 5,
+        "I": 3,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 3
+      },
+      "etiquetas": [
+        "trabajo_fisico"
+      ]
+    },
+    {
+      "id": "tec_higiene_seguridad",
+      "nombre": "Tecnicatura en Higiene y Seguridad Laboral",
+      "area": "Ingeniería y Tecnología",
+      "onet_soc": "19-5011.00",
+      "onet_titulo": "Occupational Health & Safety Specialists",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 2,
+        "S": 3,
+        "E": 3,
+        "C": 4
+      },
+      "etiquetas": [
+        "trabajo_fisico"
+      ]
+    },
+    {
+      "id": "biologia",
+      "nombre": "Licenciatura en Biología",
+      "area": "Ciencias Naturales y Exactas",
+      "onet_soc": "19-1029.00",
+      "onet_titulo": "Biological Scientists",
+      "riasec": {
+        "R": 3,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 3
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "quimica",
+      "nombre": "Licenciatura en Química",
+      "area": "Ciencias Naturales y Exactas",
+      "onet_soc": "19-2031.00",
+      "onet_titulo": "Chemists",
+      "riasec": {
+        "R": 4,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 3
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "matematica",
+      "nombre": "Licenciatura en Matemática",
+      "area": "Ciencias Naturales y Exactas",
+      "onet_soc": "15-2021.00",
+      "onet_titulo": "Mathematicians",
+      "riasec": {
+        "R": 2,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 3
+      },
+      "etiquetas": [
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "fisica",
+      "nombre": "Licenciatura en Física",
+      "area": "Ciencias Naturales y Exactas",
+      "onet_soc": "19-2012.00",
+      "onet_titulo": "Physicists",
+      "riasec": {
+        "R": 3,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 3
+      },
+      "etiquetas": [
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "biotecnologia",
+      "nombre": "Licenciatura en Biotecnología",
+      "area": "Ciencias Naturales y Exactas",
+      "onet_soc": "19-1021.00",
+      "onet_titulo": "Biochemists and Biophysicists",
+      "riasec": {
+        "R": 3,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 3
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "agronomia",
+      "nombre": "Ingeniería Agronómica",
+      "area": "Ciencias Naturales y Exactas",
+      "onet_soc": "17-2021.00",
+      "onet_titulo": "Agricultural Engineers",
+      "riasec": {
+        "R": 5,
+        "I": 4,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "trabajo_fisico"
+      ]
+    },
+    {
+      "id": "tec_produccion_agropecuaria",
+      "nombre": "Tecnicatura en Producción Agropecuaria",
+      "area": "Ciencias Naturales y Exactas",
+      "onet_soc": "45-2011.00",
+      "onet_titulo": "Agricultural Inspectors",
+      "riasec": {
+        "R": 5,
+        "I": 3,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "trabajo_fisico"
+      ]
+    },
+    {
+      "id": "medicina",
+      "nombre": "Medicina",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "29-1221.00",
+      "onet_titulo": "Family Medicine Physicians",
+      "riasec": {
+        "R": 3,
+        "I": 5,
+        "A": 2,
+        "S": 4,
+        "E": 2,
+        "C": 3
+      },
+      "etiquetas": [
+        "contacto_pacientes"
+      ]
+    },
+    {
+      "id": "odontologia",
+      "nombre": "Odontología",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "29-1021.00",
+      "onet_titulo": "Dentists, General",
+      "riasec": {
+        "R": 4,
+        "I": 4,
+        "A": 3,
+        "S": 3,
+        "E": 3,
+        "C": 2
+      },
+      "etiquetas": [
+        "contacto_pacientes"
+      ]
+    },
+    {
+      "id": "enfermeria",
+      "nombre": "Licenciatura en Enfermería",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "29-1141.00",
+      "onet_titulo": "Registered Nurses",
+      "riasec": {
+        "R": 3,
+        "I": 3,
+        "A": 2,
+        "S": 5,
+        "E": 2,
+        "C": 3
+      },
+      "etiquetas": [
+        "contacto_pacientes"
+      ]
+    },
+    {
+      "id": "kinesiologia",
+      "nombre": "Kinesiología y Fisiatría",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "29-1123.00",
+      "onet_titulo": "Physical Therapists",
+      "riasec": {
+        "R": 4,
+        "I": 3,
+        "A": 2,
+        "S": 5,
+        "E": 3,
+        "C": 2
+      },
+      "etiquetas": [
+        "contacto_pacientes"
+      ]
+    },
+    {
+      "id": "nutricion",
+      "nombre": "Licenciatura en Nutrición",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "29-1031.00",
+      "onet_titulo": "Dietitians and Nutritionists",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 2,
+        "S": 4,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "contacto_pacientes"
+      ]
+    },
+    {
+      "id": "fonoaudiologia",
+      "nombre": "Fonoaudiología",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "29-1127.00",
+      "onet_titulo": "Speech-Language Pathologists",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 2,
+        "S": 5,
+        "E": 2,
+        "C": 3
+      },
+      "etiquetas": [
+        "contacto_pacientes"
+      ]
+    },
+    {
+      "id": "veterinaria",
+      "nombre": "Veterinaria",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "29-1131.00",
+      "onet_titulo": "Veterinarians",
+      "riasec": {
+        "R": 4,
+        "I": 5,
+        "A": 2,
+        "S": 3,
+        "E": 3,
+        "C": 2
+      },
+      "etiquetas": [
+        "contacto_pacientes",
+        "trabajo_fisico"
+      ]
+    },
+    {
+      "id": "farmacia",
+      "nombre": "Farmacia",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "29-1051.00",
+      "onet_titulo": "Pharmacists",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 2,
+        "S": 3,
+        "E": 3,
+        "C": 4
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "tec_laboratorio",
+      "nombre": "Tecnicatura en Análisis Clínicos / Laboratorio",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "29-2011.00",
+      "onet_titulo": "Medical and Clinical Laboratory Technologists",
+      "riasec": {
+        "R": 4,
+        "I": 4,
+        "A": 2,
+        "S": 3,
+        "E": 2,
+        "C": 4
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "tec_instrumentacion_quirurgica",
+      "nombre": "Instrumentación Quirúrgica",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "29-2055.00",
+      "onet_titulo": "Surgical Technologists",
+      "riasec": {
+        "R": 4,
+        "I": 3,
+        "A": 2,
+        "S": 4,
+        "E": 2,
+        "C": 4
+      },
+      "etiquetas": [
+        "contacto_pacientes"
+      ]
+    },
+    {
+      "id": "tec_anestesia",
+      "nombre": "Tecnicatura en Anestesia",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "29-2051.00",
+      "onet_titulo": "Anesthesia / Ophthalmic Medical Techs",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 2,
+        "S": 4,
+        "E": 2,
+        "C": 4
+      },
+      "etiquetas": [
+        "contacto_pacientes"
+      ]
+    },
+    {
+      "id": "acompanamiento_terapeutico",
+      "nombre": "Acompañamiento Terapéutico",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "21-1093.00",
+      "onet_titulo": "Social and Human Service Assistants",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 2,
+        "S": 5,
+        "E": 2,
+        "C": 3
+      },
+      "etiquetas": [
+        "contacto_pacientes"
+      ]
+    },
+    {
+      "id": "gastronomia",
+      "nombre": "Gastronomía",
+      "area": "Ciencias de la Salud",
+      "onet_soc": "35-1011.00",
+      "onet_titulo": "Chefs and Head Cooks",
+      "riasec": {
+        "R": 4,
+        "I": 2,
+        "A": 4,
+        "S": 3,
+        "E": 4,
+        "C": 3
+      },
+      "etiquetas": [
+        "trabajo_fisico"
+      ]
+    },
+    {
+      "id": "arquitectura",
+      "nombre": "Arquitectura",
+      "area": "Arte y Diseño",
+      "onet_soc": "17-1011.00",
+      "onet_titulo": "Architects",
+      "riasec": {
+        "R": 3,
+        "I": 3,
+        "A": 5,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "expresion_artistica"
+      ]
+    },
+    {
+      "id": "diseno_grafico",
+      "nombre": "Diseño Gráfico",
+      "area": "Arte y Diseño",
+      "onet_soc": "27-1024.00",
+      "onet_titulo": "Graphic Designers",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 5,
+        "S": 2,
+        "E": 3,
+        "C": 2
+      },
+      "etiquetas": [
+        "expresion_artistica"
+      ]
+    },
+    {
+      "id": "diseno_industrial",
+      "nombre": "Diseño Industrial",
+      "area": "Arte y Diseño",
+      "onet_soc": "27-1021.00",
+      "onet_titulo": "Commercial and Industrial Designers",
+      "riasec": {
+        "R": 4,
+        "I": 3,
+        "A": 4,
+        "S": 2,
+        "E": 3,
+        "C": 2
+      },
+      "etiquetas": [
+        "expresion_artistica"
+      ]
+    },
+    {
+      "id": "diseno_indumentaria",
+      "nombre": "Diseño de Indumentaria",
+      "area": "Arte y Diseño",
+      "onet_soc": "27-1022.00",
+      "onet_titulo": "Fashion Designers",
+      "riasec": {
+        "R": 3,
+        "I": 2,
+        "A": 5,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "expresion_artistica"
+      ]
+    },
+    {
+      "id": "diseno_multimedial",
+      "nombre": "Diseño Multimedial y Animación",
+      "area": "Arte y Diseño",
+      "onet_soc": "27-1014.00",
+      "onet_titulo": "Special Effects Artists and Animators",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 5,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "expresion_artistica"
+      ]
+    },
+    {
+      "id": "diseno_ux_ui",
+      "nombre": "Diseño de Interfaces (UX/UI)",
+      "area": "Arte y Diseño",
+      "onet_soc": "15-1255.00",
+      "onet_titulo": "Web and Digital Interface Designers",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 4,
+        "S": 3,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "expresion_artistica"
+      ]
+    },
+    {
+      "id": "artes_visuales",
+      "nombre": "Artes Visuales",
+      "area": "Arte y Diseño",
+      "onet_soc": "27-1013.00",
+      "onet_titulo": "Fine Artists",
+      "riasec": {
+        "R": 3,
+        "I": 2,
+        "A": 5,
+        "S": 2,
+        "E": 2,
+        "C": 2
+      },
+      "etiquetas": [
+        "expresion_artistica"
+      ]
+    },
+    {
+      "id": "musica",
+      "nombre": "Música",
+      "area": "Arte y Diseño",
+      "onet_soc": "27-2041.00",
+      "onet_titulo": "Music Directors and Composers",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 5,
+        "S": 3,
+        "E": 3,
+        "C": 2
+      },
+      "etiquetas": [
+        "expresion_artistica"
+      ]
+    },
+    {
+      "id": "artes_audiovisuales",
+      "nombre": "Artes Audiovisuales",
+      "area": "Arte y Diseño",
+      "onet_soc": "27-4031.00",
+      "onet_titulo": "Camera Operators (Film/TV)",
+      "riasec": {
+        "R": 4,
+        "I": 3,
+        "A": 5,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "expresion_artistica"
+      ]
+    },
+    {
+      "id": "fotografia",
+      "nombre": "Fotografía",
+      "area": "Arte y Diseño",
+      "onet_soc": "27-4021.00",
+      "onet_titulo": "Photographers",
+      "riasec": {
+        "R": 3,
+        "I": 3,
+        "A": 5,
+        "S": 3,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "expresion_artistica"
+      ]
+    },
+    {
+      "id": "actuacion",
+      "nombre": "Actuación / Artes Dramáticas",
+      "area": "Arte y Diseño",
+      "onet_soc": "27-2011.00",
+      "onet_titulo": "Actors",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 5,
+        "S": 3,
+        "E": 4,
+        "C": 2
+      },
+      "etiquetas": [
+        "expresion_artistica",
+        "exposicion_publica"
+      ]
+    },
+    {
+      "id": "creacion_videojuegos",
+      "nombre": "Desarrollo y Producción de Videojuegos",
+      "area": "Arte y Diseño",
+      "onet_soc": "15-1252.01",
+      "onet_titulo": "Video Game Designers",
+      "riasec": {
+        "R": 3,
+        "I": 4,
+        "A": 4,
+        "S": 2,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": [
+        "programacion",
+        "expresion_artistica"
+      ]
+    },
+    {
+      "id": "psicologia",
+      "nombre": "Psicología",
+      "area": "Ciencias Sociales y Humanidades",
+      "onet_soc": "19-3033.00",
+      "onet_titulo": "Clinical and Counseling Psychologists",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 3,
+        "S": 5,
+        "E": 2,
+        "C": 2
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "trabajo_social",
+      "nombre": "Licenciatura en Trabajo Social",
+      "area": "Ciencias Sociales y Humanidades",
+      "onet_soc": "21-1029.00",
+      "onet_titulo": "Social Workers",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 2,
+        "S": 5,
+        "E": 3,
+        "C": 2
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "sociologia",
+      "nombre": "Sociología",
+      "area": "Ciencias Sociales y Humanidades",
+      "onet_soc": "19-3041.00",
+      "onet_titulo": "Sociologists",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 3,
+        "S": 4,
+        "E": 2,
+        "C": 2
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "ciencia_politica",
+      "nombre": "Ciencia Política",
+      "area": "Ciencias Sociales y Humanidades",
+      "onet_soc": "19-3094.00",
+      "onet_titulo": "Political Scientists",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 3,
+        "S": 4,
+        "E": 4,
+        "C": 2
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "abogacia",
+      "nombre": "Abogacía",
+      "area": "Ciencias Sociales y Humanidades",
+      "onet_soc": "23-1011.00",
+      "onet_titulo": "Lawyers",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 3,
+        "S": 4,
+        "E": 5,
+        "C": 4
+      },
+      "etiquetas": [
+        "exposicion_publica"
+      ]
+    },
+    {
+      "id": "comunicacion_social",
+      "nombre": "Comunicación Social / Periodismo",
+      "area": "Ciencias Sociales y Humanidades",
+      "onet_soc": "27-3023.00",
+      "onet_titulo": "News Analysts, Reporters, and Journalists",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 4,
+        "S": 4,
+        "E": 3,
+        "C": 2
+      },
+      "etiquetas": [
+        "exposicion_publica"
+      ]
+    },
+    {
+      "id": "letras",
+      "nombre": "Letras",
+      "area": "Ciencias Sociales y Humanidades",
+      "onet_soc": "27-3043.00",
+      "onet_titulo": "Writers and Authors",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 5,
+        "S": 3,
+        "E": 2,
+        "C": 2
+      },
+      "etiquetas": [
+        "expresion_artistica"
+      ]
+    },
+    {
+      "id": "traductorado",
+      "nombre": "Traductorado",
+      "area": "Ciencias Sociales y Humanidades",
+      "onet_soc": "27-3091.00",
+      "onet_titulo": "Interpreters and Translators",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 4,
+        "S": 4,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "archivologia",
+      "nombre": "Bibliotecología y Archivología",
+      "area": "Ciencias Sociales y Humanidades",
+      "onet_soc": "25-4022.00",
+      "onet_titulo": "Librarians",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 2,
+        "S": 4,
+        "E": 2,
+        "C": 5
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "ciencias_educacion",
+      "nombre": "Ciencias de la Educación",
+      "area": "Educación",
+      "onet_soc": "25-9031.00",
+      "onet_titulo": "Instructional Coordinators",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 3,
+        "S": 5,
+        "E": 3,
+        "C": 2
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "profesorado_educacion_primaria",
+      "nombre": "Profesorado de Educación Primaria",
+      "area": "Educación",
+      "onet_soc": "25-2021.00",
+      "onet_titulo": "Elementary School Teachers",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 3,
+        "S": 5,
+        "E": 3,
+        "C": 3
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "profesorado_educacion_fisica",
+      "nombre": "Profesorado de Educación Física",
+      "area": "Educación",
+      "onet_soc": "25-2031.00",
+      "onet_titulo": "Secondary School Teachers",
+      "riasec": {
+        "R": 4,
+        "I": 2,
+        "A": 3,
+        "S": 5,
+        "E": 3,
+        "C": 2
+      },
+      "etiquetas": [
+        "trabajo_fisico"
+      ]
+    },
+    {
+      "id": "profesorado_ciencias_exactas",
+      "nombre": "Profesorado en Ciencias Exactas",
+      "area": "Educación",
+      "onet_soc": "25-2031.00",
+      "onet_titulo": "Secondary School Teachers",
+      "riasec": {
+        "R": 4,
+        "I": 2,
+        "A": 3,
+        "S": 5,
+        "E": 3,
+        "C": 2
+      },
+      "etiquetas": [
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "administracion_empresas",
+      "nombre": "Licenciatura en Administración de Empresas",
+      "area": "Economía y Negocios",
+      "onet_soc": "11-1021.00",
+      "onet_titulo": "General and Operations Managers",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 2,
+        "S": 3,
+        "E": 5,
+        "C": 4
+      },
+      "etiquetas": [
+        "exposicion_publica"
+      ]
+    },
+    {
+      "id": "marketing",
+      "nombre": "Licenciatura en Marketing",
+      "area": "Economía y Negocios",
+      "onet_soc": "11-2021.00",
+      "onet_titulo": "Marketing Managers",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 4,
+        "S": 3,
+        "E": 5,
+        "C": 3
+      },
+      "etiquetas": [
+        "exposicion_publica"
+      ]
+    },
+    {
+      "id": "relaciones_publicas",
+      "nombre": "Relaciones Públicas",
+      "area": "Economía y Negocios",
+      "onet_soc": "11-2032.00",
+      "onet_titulo": "Public Relations Managers",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 3,
+        "S": 4,
+        "E": 5,
+        "C": 3
+      },
+      "etiquetas": [
+        "exposicion_publica"
+      ]
+    },
+    {
+      "id": "recursos_humanos",
+      "nombre": "Relaciones del Trabajo / Recursos Humanos",
+      "area": "Economía y Negocios",
+      "onet_soc": "11-3121.00",
+      "onet_titulo": "Human Resources Managers",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 2,
+        "S": 4,
+        "E": 5,
+        "C": 4
+      },
+      "etiquetas": [
+        "exposicion_publica"
+      ]
+    },
+    {
+      "id": "comercio_internacional",
+      "nombre": "Comercio Internacional",
+      "area": "Economía y Negocios",
+      "onet_soc": "13-1022.00",
+      "onet_titulo": "Wholesale and Retail Buyers",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 2,
+        "S": 2,
+        "E": 4,
+        "C": 4
+      },
+      "etiquetas": [
+        "exposicion_publica"
+      ]
+    },
+    {
+      "id": "negocios_digitales",
+      "nombre": "Negocios Digitales",
+      "area": "Economía y Negocios",
+      "onet_soc": "11-2022.00",
+      "onet_titulo": "Sales Managers",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 3,
+        "S": 3,
+        "E": 5,
+        "C": 3
+      },
+      "etiquetas": [
+        "exposicion_publica"
+      ]
+    },
+    {
+      "id": "tec_turismo",
+      "nombre": "Tecnicatura en Turismo",
+      "area": "Economía y Negocios",
+      "onet_soc": "39-7011.00",
+      "onet_titulo": "Tour Guides and Escorts",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 3,
+        "S": 4,
+        "E": 4,
+        "C": 3
+      },
+      "etiquetas": [
+        "exposicion_publica"
+      ]
+    },
+    {
+      "id": "martillero_publico",
+      "nombre": "Martillero Público y Corredor Inmobiliario",
+      "area": "Economía y Negocios",
+      "onet_soc": "41-9022.00",
+      "onet_titulo": "Real Estate Sales Agents",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 3,
+        "S": 3,
+        "E": 5,
+        "C": 4
+      },
+      "etiquetas": [
+        "exposicion_publica"
+      ]
+    },
+    {
+      "id": "contador_publico",
+      "nombre": "Contador Público",
+      "area": "Economía y Negocios",
+      "onet_soc": "13-2011.00",
+      "onet_titulo": "Accountants and Auditors",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 5
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "economia",
+      "nombre": "Licenciatura en Economía",
+      "area": "Economía y Negocios",
+      "onet_soc": "19-3011.00",
+      "onet_titulo": "Economists",
+      "riasec": {
+        "R": 2,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 4
+      },
+      "etiquetas": [
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "finanzas",
+      "nombre": "Licenciatura en Finanzas",
+      "area": "Economía y Negocios",
+      "onet_soc": "13-2051.00",
+      "onet_titulo": "Financial Analysts",
+      "riasec": {
+        "R": 2,
+        "I": 4,
+        "A": 2,
+        "S": 2,
+        "E": 4,
+        "C": 5
+      },
+      "etiquetas": [
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "actuario",
+      "nombre": "Ciencias Actuariales (Actuario)",
+      "area": "Economía y Negocios",
+      "onet_soc": "15-2011.00",
+      "onet_titulo": "Actuaries",
+      "riasec": {
+        "R": 2,
+        "I": 5,
+        "A": 2,
+        "S": 2,
+        "E": 3,
+        "C": 5
+      },
+      "etiquetas": [
+        "matematica_intensa"
+      ]
+    },
+    {
+      "id": "administracion_publica",
+      "nombre": "Administración Pública",
+      "area": "Economía y Negocios",
+      "onet_soc": "11-3013.00",
+      "onet_titulo": "Facilities / Public Administration Managers",
+      "riasec": {
+        "R": 2,
+        "I": 3,
+        "A": 2,
+        "S": 3,
+        "E": 4,
+        "C": 5
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "logistica",
+      "nombre": "Licenciatura en Logística",
+      "area": "Economía y Negocios",
+      "onet_soc": "13-1081.00",
+      "onet_titulo": "Logisticians",
+      "riasec": {
+        "R": 3,
+        "I": 3,
+        "A": 2,
+        "S": 3,
+        "E": 4,
+        "C": 5
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "tec_administracion_contable",
+      "nombre": "Tecnicatura en Administración Contable",
+      "area": "Economía y Negocios",
+      "onet_soc": "43-3031.00",
+      "onet_titulo": "Bookkeeping / Accounting Clerks",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 2,
+        "S": 2,
+        "E": 2,
+        "C": 5
+      },
+      "etiquetas": []
+    },
+    {
+      "id": "secretariado_ejecutivo",
+      "nombre": "Secretariado Ejecutivo",
+      "area": "Economía y Negocios",
+      "onet_soc": "43-6011.00",
+      "onet_titulo": "Executive Secretaries",
+      "riasec": {
+        "R": 2,
+        "I": 2,
+        "A": 2,
+        "S": 3,
+        "E": 3,
+        "C": 5
+      },
+      "etiquetas": []
+    }
+  ]
+}

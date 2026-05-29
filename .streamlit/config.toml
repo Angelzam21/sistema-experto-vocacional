@@ -28,11 +28,7 @@ textColor = "#111111"
 # fuerza fuentes geométricas modernas (Inter / system fonts).
 font = "sans serif"
 
-[server]
-# Deshabilita la telemetría de uso por privacidad del usuario final.
-# Coherente con el principio de "Anonimato por Diseño" del Paso 3.1.
-enableStaticServing = true
-
 [browser]
-# No enviar estadísticas de uso a Streamlit Cloud.
+# Privacidad: no enviar estadísticas de uso a Streamlit Cloud.
+# Coherente con el principio de "Anonimato por Diseño".
 gatherUsageStats = false
