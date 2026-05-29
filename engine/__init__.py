@@ -1,6 +1,6 @@
 # =========================================================
-# Paquete engine - Motor de inferencia (Fase 2)
+# Paquete engine - Motor del sistema experto
 # =========================================================
-# - inference.py : cálculo del vector de usuario y similitud de coseno
-# - filters.py   : aplicación de "filtros duros" (zona / modalidad)
+# - inference.py : vector RIASEC del usuario + similitud de coseno + ranking
+# - filters.py   : segunda capa de filtros de aversión (knockout por etiqueta)
 # =========================================================

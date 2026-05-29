@@ -35,7 +35,7 @@ ENV/
 .streamlit/secrets.toml
 .streamlit/cache/
 
-# --- Backups del ETL ---
+# --- Backups de datos ---
 data/*.bak
 
 # --- IDEs / editores ---
@@ -55,3 +55,8 @@ htmlcov/
 
 # --- Jupyter ---
 .ipynb_checkpoints/
+
+# --- Node / Playwright ---
+node_modules/
+test-results/
+playwright-report/

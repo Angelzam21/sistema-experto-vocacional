@@ -1,15 +1,28 @@
 """
 =================================================================
-FASE 3.2 - FILTROS DUROS
+SEGUNDA CAPA - FILTROS DE AVERSIÓN (KNOCKOUT)
 =================================================================
-Implementa los "Filtros Duros" del flujo de evaluación: restricciones
-binarias (sí/no) que excluyen carreras del cálculo de coseno *antes*
-de ejecutarlo, ahorrando cómputo y evitando recomendaciones
-inviables (ej.: ofrecer una carrera presencial en CABA a alguien que
-solo puede estudiar a distancia en Tucumán).
+El motor de coseno (inference.py) ordena las carreras por afinidad de
+INTERESES. Pero la afinidad de intereses no captura los "deal-breakers":
+una persona puede tener un perfil que matchea con Medicina y aun así
+NO querer jamás tocar un paciente.
 
-Estos filtros NO modifican el vector RIASEC del usuario: simplemente
-recortan el universo de carreras candidatas.
+Esta segunda capa resuelve exactamente eso. Funciona como un sistema
+de reglas de exclusión (knockout):
+
+  1. El usuario responde 6 preguntas filtro (data/preguntas.json -> "filtros").
+     Cada filtro tiene una `etiqueta` (ej. "contacto_pacientes").
+  2. Si responde <= UMBRAL_VETO ("no me gustaría" / "lo detestaría"),
+     esa etiqueta queda VETADA.
+  3. Toda carrera que lleve una etiqueta vetada se elimina del catálogo
+     ANTES de calcular el ranking.
+
+Ejemplo del enunciado: alguien a quien "le encantan los datos" (perfil
+I/C alto) pero que veta `contacto_pacientes` no recibirá Medicina ni
+Odontología, aunque su perfil de intereses se les parezca.
+
+Esta capa NO modifica el vector RIASEC del usuario: solo recorta el
+universo de carreras candidatas.
 =================================================================
 """
 
@@ -17,71 +30,50 @@ from __future__ import annotations
 
 from typing import Iterable
 
+# Umbral de veto. Una respuesta filtro <= a este valor descarta las
+# carreras con la etiqueta correspondiente.
+#   1 = "Lo detestaría", 2 = "No me gustaría"  -> vetan
+#   3 = "Me da igual", 4, 5                     -> no vetan
+UMBRAL_VETO = 2
 
-def aplicar_filtros_duros(
-    carreras: Iterable[dict],
-    zonas_permitidas: list[str] | None = None,
-    modalidades_permitidas: list[str] | None = None,
-) -> list[dict]:
-    """Filtra la lista de carreras según restricciones del usuario.
+
+def etiquetas_vetadas(
+    respuestas_filtro: dict[str, int],
+    filtros: list[dict],
+) -> set[str]:
+    """Devuelve el conjunto de etiquetas que el usuario quiere evitar.
 
     Args:
-        carreras: catálogo completo (lista de dicts con keys
-                  'zona_geografica' y 'modalidad', ambos listas).
-        zonas_permitidas: zonas donde el usuario puede/quiere estudiar.
-                          None o lista vacía = sin restricción.
-        modalidades_permitidas: idem para 'Presencial' / 'Híbrida' /
-                                'A Distancia'.
+        respuestas_filtro: dict {id_filtro: puntaje_1_a_5}.
+        filtros: lista de filtros (cada uno con 'id' y 'etiqueta').
 
     Returns:
-        Sub-lista de carreras que cumplen TODOS los filtros activos.
-
-    Semántica:
-      - Una carrera pasa el filtro de zona si AL MENOS UNA de sus
-        zonas figura en `zonas_permitidas` (intersección no vacía).
-      - Idem para modalidad.
-      - Si un filtro está vacío/None, no se aplica (pasa todo).
+        Set de etiquetas con respuesta <= UMBRAL_VETO. Vacío si el
+        usuario no vetó nada (todas las carreras siguen en juego).
     """
-    zonas_set = set(zonas_permitidas) if zonas_permitidas else None
-    moda_set = set(modalidades_permitidas) if modalidades_permitidas else None
-
-    salida: list[dict] = []
-    for c in carreras:
-        # Filtro por zona geográfica (intersección de conjuntos).
-        if zonas_set is not None:
-            zonas_carrera = set(c.get("zona_geografica", []))
-            if zonas_set.isdisjoint(zonas_carrera):
-                continue
-
-        # Filtro por modalidad.
-        if moda_set is not None:
-            modas_carrera = set(c.get("modalidad", []))
-            if moda_set.isdisjoint(modas_carrera):
-                continue
-
-        salida.append(c)
-
-    return salida
+    vetadas: set[str] = set()
+    for f in filtros:
+        respuesta = respuestas_filtro.get(f["id"])
+        if respuesta is not None and respuesta <= UMBRAL_VETO:
+            vetadas.add(f["etiqueta"])
+    return vetadas
 
 
-def todas_las_zonas(carreras: list[dict]) -> list[str]:
-    """Helper para poblar el multiselect de zonas en la UI.
+def aplicar_filtros(
+    carreras: Iterable[dict],
+    etiquetas_a_vetar: set[str],
+) -> list[dict]:
+    """Elimina del catálogo las carreras con alguna etiqueta vetada.
 
-    Recorre el catálogo y devuelve la unión ordenada alfabéticamente
-    de todas las zonas presentes. Evita hardcodear la lista en la UI:
-    si mañana se suma "San Luis", aparece automáticamente.
+    Una carrera se descarta si AL MENOS UNA de sus etiquetas figura en
+    `etiquetas_a_vetar` (intersección no vacía). Si no hay etiquetas
+    vetadas, devuelve el catálogo completo intacto.
     """
-    zonas: set[str] = set()
-    for c in carreras:
-        zonas.update(c.get("zona_geografica", []))
-    return sorted(zonas)
+    carreras = list(carreras)
+    if not etiquetas_a_vetar:
+        return carreras
 
-
-def todas_las_modalidades(carreras: list[dict]) -> list[str]:
-    """Idem para modalidades. Misma lógica que todas_las_zonas."""
-    modas: set[str] = set()
-    for c in carreras:
-        modas.update(c.get("modalidad", []))
-    # Orden semántico, no alfabético: presencial primero.
-    orden = {"Presencial": 0, "Híbrida": 1, "A Distancia": 2}
-    return sorted(modas, key=lambda m: orden.get(m, 99))
+    return [
+        c for c in carreras
+        if etiquetas_a_vetar.isdisjoint(c.get("etiquetas", []))
+    ]

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 180" role="img" aria-label="ORIENTAI" width="620" height="180">
+  <style>
+    .orientai-wm{ font-family:'Archivo Black','Arial Black',Impact,sans-serif; font-size:74px; letter-spacing:-2px; }
+  </style>
+  <g transform="translate(20,34)">
+    <rect x="14" y="20" width="92" height="92" rx="22" fill="#c4b5fd"></rect>
+    <rect x="6" y="12" width="92" height="92" rx="22" fill="#fffdf8" stroke="#111" stroke-width="5"></rect>
+    <g transform="rotate(34 52 58)">
+      <path d="M52 26 L78 102 L52 84 L26 102 Z" fill="#c4b5fd" stroke="#111" stroke-width="5" stroke-linejoin="round"></path>
+    </g>
+    <circle cx="52" cy="58" r="6" fill="#111"></circle>
+    <path d="M90 16 l4 9 l9 4 l-9 4 l-4 9 l-4 -9 l-9 -4 l9 -4 Z" fill="#c6ff4d" stroke="#111" stroke-width="3" stroke-linejoin="round"></path>
+  </g>
+  <text class="orientai-wm" x="150" y="118" fill="#c4b5fd" transform="translate(4,4)">ORIENTAI</text>
+  <rect x="442" y="60" width="97" height="68" rx="9" fill="#c6ff4d" stroke="#111" stroke-width="4"></rect>
+  <text class="orientai-wm" x="150" y="118" fill="#111">ORIENT<tspan fill="#111">AI</tspan></text>
+</svg>
