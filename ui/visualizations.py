@@ -156,7 +156,7 @@ def tarjeta_recomendacion(carrera: dict, posicion: int) -> None:
     st.markdown(
         f"""
         <div class="recom-card">
-            <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div class="recom-inner" style="display:flex; align-items:center; justify-content:space-between;">
                 <div style="display:flex; align-items:baseline; gap:0.9rem;">
                     <span style="
                         font-family:'JetBrains Mono', monospace;

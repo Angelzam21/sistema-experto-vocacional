@@ -358,6 +358,56 @@ hr {
     opacity: 0.12;
     margin: 1.5rem 0 !important;
 }
+
+/* ---------- 15. Atajo de teclado (oculto en mobile) ---------- */
+.keyboard-hint {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 0.3rem;
+}
+
+/* ---------- 16. Mobile / Responsive ---------- */
+@media (max-width: 640px) {
+
+    /* Radios: de fila a columna */
+    div[role="radiogroup"] {
+        flex-direction: column !important;
+    }
+    div[role="radiogroup"] > label {
+        padding: 0.7rem 1.0rem;
+    }
+
+    /* Columnas Streamlit: apilar verticalmente */
+    [data-testid="column"] {
+        min-width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+
+    /* Reducir padding del bloque central */
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stAppViewBlockContainer"] {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+
+    /* Tipografía reducida */
+    h1 { font-size: 2rem !important; }
+    h3 { font-size: 1.15rem !important; }
+
+    /* Tarjeta de recomendación: wrap en pantallas chicas */
+    .recom-inner {
+        flex-wrap: wrap !important;
+        gap: 0.4rem;
+    }
+    .recom-pct {
+        text-align: left !important;
+        width: 100%;
+        font-size: 1.3rem;
+    }
+
+    /* Ocultar atajos de teclado (no aplican en mobile) */
+    .keyboard-hint { display: none; }
+}
 </style>
 """
 

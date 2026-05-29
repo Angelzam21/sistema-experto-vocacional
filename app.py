@@ -216,7 +216,10 @@ def pantalla_test() -> None:
     st.session_state["respuestas"][pregunta["id"]] = int(seleccion)
 
     # Pista de descubribilidad de los atajos de teclado.
-    st.caption("Atajos: teclas **1–5** para responder · **Enter** para avanzar.")
+    st.markdown(
+        '<div class="keyboard-hint">Atajos: teclas <strong>1–5</strong> para responder · <strong>Enter</strong> para avanzar.</div>',
+        unsafe_allow_html=True,
+    )
 
     st.markdown("---")
     col_a, col_b, col_c = st.columns([1, 1, 1])
