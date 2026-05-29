@@ -104,7 +104,7 @@ header         { visibility: hidden; }
 }
 .orientai-subtitle {
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 1.4rem;
     color: var(--ink);
     line-height: 1.3;
 }
