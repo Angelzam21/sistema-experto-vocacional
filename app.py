@@ -245,7 +245,7 @@ def pantalla_test() -> None:
         # Mensaje de validación (si intentó avanzar sin responder ESTA pregunta).
         if (st.session_state.get("_error_seleccion")
                 and st.session_state.get("_error_q_idx") == idx):
-            st.error("Debés seleccionar una opción para continuar.")
+            st.error("Debes seleccionar una opción para continuar.")
 
         # Pista de los atajos de teclado. Además de su rol informativo, este
         # nodo (.keyboard-hint) es el MARCADOR que usa ui/keyboard.py para
