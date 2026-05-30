@@ -62,20 +62,31 @@ body,
     background-color: transparent !important;
 }
 
-/* ---------- 3. Ocultar marca Streamlit ---------- */
+/* ---------- 3. Ocultar marca Streamlit + matar espacio muerto superior ---------- */
 #MainMenu      { visibility: hidden; }
 footer         { visibility: hidden; }
-header         { visibility: hidden; }
+/* CLAVE (bug del espacio muerto): el header se ocultaba con visibility:hidden,
+   pero así SEGUÍA reservando su altura -> ése era el hueco que empujaba todo
+   hacia abajo. Con display:none lo sacamos del flujo del layout por completo. */
+header[data-testid="stHeader"] { display: none !important; }
 [data-testid="stToolbar"]      { visibility: hidden; }
 [data-testid="stDecoration"]   { visibility: hidden; }
 [data-testid="stStatusWidget"] { visibility: hidden; }
+
+/* El contenedor central de Streamlit trae un padding-top enorme (~6rem) por
+   defecto: lo recortamos a 1rem y anulamos cualquier margin-top heredado para
+   que el contenido quede pegado al borde superior. */
+.block-container {
+    padding-top: 1rem !important;
+    margin-top: 0 !important;
+}
 
 /* ---------- 4. Header / Navbar ORIENTAI ---------- */
 .orientai-header {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 20px;
+    padding: 12px 20px;   /* logo pegado al borde superior (~12px) */
     border-bottom: 2px solid var(--ink);
     background: var(--paper);
     margin-bottom: 1.5rem;
@@ -473,55 +484,65 @@ hr {
 /* ============================================================== */
 /* 17. LAYOUT DEL TEST — botonera lateral + barra inferior        */
 /*                                                                */
-/* Todo se escopa con :has(.orientai-header--quiz) para afectar   */
-/* SOLO la pantalla del test, no la bienvenida/filtros/resultados.*/
-/* La botonera lateral y la barra inferior aplican en todos los   */
-/* anchos; el "zero-scroll" 100dvh se reserva para mobile.        */
+/* El split opciones|botonera se escopa con .st-key-quiz_split:    */
+/* la clase que aporta el wrapper st.container(key="quiz_split")   */
+/* de app.py. Es un hook estable que NO depende de :has(), así el  */
+/* layout en fila se garantiza también en mobile. El nivel de      */
+/* página (zero-scroll 100dvh) sigue detectando la pantalla de     */
+/* test vía :has(.orientai-header--quiz). La botonera lateral y la  */
+/* barra inferior aplican en todos los anchos; el 100dvh es mobile. */
 /* ============================================================== */
 
-/* --- 17a. Split horizontal opciones | botonera (no se apila) --- */
-[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
-        [data-testid="stHorizontalBlock"] {
+/* --- 17a. Contenedor PADRE (wrapper) en FILA: opciones | botonera ---
+   Dentro de .st-key-quiz_split vive UN stHorizontalBlock (las 2 columnas de
+   st.columns): ése es el flex-row que jamás debe apilarse, ni en mobile. */
+.st-key-quiz_split [data-testid="stHorizontalBlock"] {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: stretch !important;
     flex-wrap: nowrap !important;
     gap: 12px !important;
-    align-items: stretch;
+    width: 100% !important;
 }
-/* Columna izquierda: opciones Likert, ocupa todo el espacio libre. */
-[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
-        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child {
+/* Columna IZQUIERDA (opciones Likert 1-5): toma todo el espacio libre. */
+.st-key-quiz_split [data-testid="stHorizontalBlock"]
+        > [data-testid="stColumn"]:first-child {
+    display: flex !important;
+    flex-direction: column !important;
     flex: 1 1 auto !important;
     min-width: 0 !important;
     width: auto !important;
+    gap: 10px;
 }
-/* Columna derecha: rail de acciones de ancho fijo (~56px), centrado. */
-[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
-        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child {
-    flex: 0 0 56px !important;
-    min-width: 56px !important;
-    width: 56px !important;
+/* Columna DERECHA (rail X / ← / →): ancho FIJO estricto para no colapsar. */
+.st-key-quiz_split [data-testid="stHorizontalBlock"]
+        > [data-testid="stColumn"]:last-child {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    flex: 0 0 50px !important;
+    min-width: 50px !important;
+    width: 50px !important;
 }
-[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
-        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child
-        [data-testid="stVerticalBlock"] {
+.st-key-quiz_split [data-testid="stHorizontalBlock"]
+        > [data-testid="stColumn"]:last-child [data-testid="stVerticalBlock"] {
     align-items: center;
     gap: 0.6rem;
 }
 /* Los botones tienen ancho fijo y el tooltip de `help` envuelve al <button>;
    centramos toda la cadena para que el rail quede prolijo. */
-[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
-        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child
-        .stButton,
-[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
-        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child
-        [data-testid="stTooltipHoverTarget"] {
+.st-key-quiz_split [data-testid="stHorizontalBlock"]
+        > [data-testid="stColumn"]:last-child .stButton,
+.st-key-quiz_split [data-testid="stHorizontalBlock"]
+        > [data-testid="stColumn"]:last-child [data-testid="stTooltipHoverTarget"] {
     display: flex !important;
     justify-content: center !important;
     width: 100%;
 }
 
 /* --- 17b. Opciones Likert del MISMO tamaño (no varían con el texto) --- */
-[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
-        div[role="radiogroup"] > label {
+.st-key-quiz_split div[role="radiogroup"] > label {
     min-height: 48px;
     justify-content: flex-start;
     white-space: nowrap;       /* texto en 1 línea => todas iguales */
@@ -644,12 +665,10 @@ hr {
         gap: 0.5rem;
     }
     /* Opciones Likert un poco más compactas en mobile. */
-    [data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
-            div[role="radiogroup"] {
+    .st-key-quiz_split div[role="radiogroup"] {
         gap: 0.5rem !important;
     }
-    [data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
-            div[role="radiogroup"] > label {
+    .st-key-quiz_split div[role="radiogroup"] > label {
         min-height: 44px;
         padding: 0.45rem 0.8rem;
     }

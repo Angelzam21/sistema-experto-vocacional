@@ -214,9 +214,14 @@ def pantalla_test() -> None:
     st.markdown(f"### ¿Cuánto te gustaría {pregunta['pregunta'].lower()}?")
 
     # Cuerpo en 2 columnas: opciones (flexible) | botonera lateral (fija).
-    # El CSS de quiz fuerza este split a mantenerse horizontal también en
-    # mobile (sin él, Streamlit apilaría las columnas).
-    col_opts, col_actions = st.columns([8, 1])
+    # Las envolvemos en un CONTENEDOR PADRE (key="quiz_split"): su clase
+    # `st-key-quiz_split` es el hook CSS estable que fuerza el split a
+    # mantenerse en FILA también en mobile (sin él, Streamlit apila las
+    # columnas y la botonera cae debajo de las opciones). Ver sección 17 de
+    # ui/styles.py. Las columnas se siguen usando con `with` más abajo: el
+    # DeltaGenerator recuerda su contenedor padre aunque salgamos del `with`.
+    with st.container(key="quiz_split"):
+        col_opts, col_actions = st.columns([8, 1])
 
     with col_opts:
         # None si el usuario aún no respondió esta pregunta: SIN selección
