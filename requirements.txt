@@ -7,7 +7,12 @@
 # =========================================================
 
 # --- Framework de la app web + motor algorítmico ---
-streamlit>=1.31.0
+# Versión FIJADA: el CSS del layout depende de los data-testid y de la clase
+# `st-key-*` (st.container(key=...), disponible desde 1.39). Sin pin, el deploy
+# podía instalar una versión con otro DOM y romper el layout mobile. Esta es la
+# versión contra la que se verificó el layout (header sin espacio muerto +
+# botonera lateral en fila).
+streamlit==1.57.0
 
 # --- Cálculo vectorial (vector RIASEC y similitud de coseno) ---
 numpy>=1.26.0

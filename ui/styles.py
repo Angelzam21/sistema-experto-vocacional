@@ -67,8 +67,11 @@ body,
 footer         { visibility: hidden; }
 /* CLAVE (bug del espacio muerto): el header se ocultaba con visibility:hidden,
    pero así SEGUÍA reservando su altura -> ése era el hueco que empujaba todo
-   hacia abajo. Con display:none lo sacamos del flujo del layout por completo. */
-header[data-testid="stHeader"] { display: none !important; }
+   hacia abajo. Con display:none lo sacamos del flujo del layout por completo.
+   Lo matamos por TAG (`header`) Y por testid: el nombre del data-testid cambia
+   entre versiones de Streamlit, así que cubrimos ambos para que sea robusto. */
+header,
+[data-testid="stHeader"]       { display: none !important; }
 [data-testid="stToolbar"]      { visibility: hidden; }
 [data-testid="stDecoration"]   { visibility: hidden; }
 [data-testid="stStatusWidget"] { visibility: hidden; }
