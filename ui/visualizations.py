@@ -71,18 +71,18 @@ def radar_chart_riasec(
 
     fig = go.Figure()
 
-    # ---- Trace 1: usuario ----
+    # ---- Trace 1: usuario (acento violeta de la marca + contorno tinta) ----
     fig.add_trace(go.Scatterpolar(
         r=valores_usuario_cerrados,
         theta=etiquetas_cerradas,
         fill="toself",
         name="Tu perfil",
-        line=dict(color="#000000", width=2),
-        fillcolor="rgba(0,0,0,0.10)",
+        line=dict(color="#111111", width=2.5),
+        fillcolor="rgba(196,181,253,0.45)",   # --violet translúcido
         hovertemplate="<b>%{theta}</b><br>Tu nivel: %{r:.2f}<extra></extra>",
     ))
 
-    # ---- Trace 2 (opcional): carrera ----
+    # ---- Trace 2 (opcional): carrera (acento lima, contorno punteado) ----
     if vector_carrera is not None:
         valores_carrera = [vector_carrera[d] for d in DIMENSIONES_RIASEC]
         valores_carrera_cerrados = valores_carrera + [valores_carrera[0]]
@@ -91,32 +91,33 @@ def radar_chart_riasec(
             theta=etiquetas_cerradas,
             fill="toself",
             name="Carrera",
-            line=dict(color="#666666", width=2, dash="dot"),
-            fillcolor="rgba(102,102,102,0.08)",
+            line=dict(color="#5b5b5b", width=2, dash="dot"),
+            fillcolor="rgba(198,255,77,0.25)",   # --lime translúcido
             hovertemplate="<b>%{theta}</b><br>Carrera: %{r}<extra></extra>",
         ))
 
     fig.update_layout(
-        template="plotly_white",
+        # Fondos transparentes: dejan ver el "papel técnico" con puntos del
+        # contenedor, integrando el gráfico a la estética neo-brutalista.
         title=dict(
             text=titulo,
-            font=dict(size=18, color="#000000", family="Inter, sans-serif"),
+            font=dict(size=18, color="#111111", family="Inter, sans-serif"),
             x=0.0, xanchor="left",
         ),
         polar=dict(
-            bgcolor="#FFFFFF",
+            bgcolor="rgba(0,0,0,0)",
             radialaxis=dict(
                 visible=True,
                 range=[0, 5],
                 tickvals=[1, 2, 3, 4, 5],
                 tickfont=dict(size=10, color="#999999"),
-                gridcolor="#E5E5E5",
-                linecolor="#E5E5E5",
+                gridcolor="rgba(17,17,17,0.12)",
+                linecolor="rgba(17,17,17,0.12)",
             ),
             angularaxis=dict(
                 tickfont=dict(size=12, color="#111111", family="Inter, sans-serif"),
-                gridcolor="#EAEAEA",
-                linecolor="#CCCCCC",
+                gridcolor="rgba(17,17,17,0.10)",
+                linecolor="rgba(17,17,17,0.18)",
             ),
         ),
         showlegend=vector_carrera is not None,
@@ -127,7 +128,11 @@ def radar_chart_riasec(
             font=dict(size=11, color="#111111"),
         ),
         margin=dict(l=40, r=40, t=60, b=40),
-        paper_bgcolor="#FFFFFF",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        # dragmode=False: sin pan/zoom por arrastre. Junto con scrollZoom=False
+        # y touch-action:pan-y (CSS), el gráfico sólo reacciona a tooltips y no
+        # secuestra el scroll ni hace zoom por error en mobile.
         dragmode=False,
     )
 

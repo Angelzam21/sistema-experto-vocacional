@@ -245,6 +245,23 @@ div[role="radiogroup"] > label:has(input:checked) {
     transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
 }
 
+/* En dispositivos táctiles el :hover "se pega" tras el tap, provocando el
+   parpadeo verde→morado al seleccionar. Lo anulamos: en touch la opción pasa
+   directo a violet (seleccionada) sin teñirse de lime. */
+@media (hover: none) {
+    div[role="radiogroup"] > label:hover {
+        background-color: var(--card);
+        transform: none;
+        box-shadow: var(--shadow-sm);
+    }
+    div[role="radiogroup"] > label[data-checked="true"],
+    div[role="radiogroup"] > label:has(input:checked) {
+        background-color: var(--violet);
+        transform: translate(4px, 4px);
+        box-shadow: 0px 0px 0px var(--ink);
+    }
+}
+
 /* ---------- 8b. Atajos de teclado ("teclas físicas") ---------- */
 div[role="radiogroup"] > label::before {
     font-family: 'JetBrains Mono', 'Courier New', monospace;
@@ -382,11 +399,19 @@ hr {
         padding: 8px 12px;
         margin-bottom: 0.5rem;
     }
+    /* En mobile dejamos SOLO el logo: fuera título/subtítulo para ganar
+       espacio vertical en el layout zero-scroll. */
+    .orientai-header--quiz .orientai-title,
     .orientai-header--quiz .orientai-subtitle {
         display: none;
     }
     .orientai-header--quiz .orientai-logo-link svg {
         height: 32px;
+    }
+    /* El rect verde que resalta "AI" se desalinea en pantallas chicas:
+       lo ocultamos en todos los headers para mantener el logo limpio. */
+    .orientai-ai-rect {
+        display: none !important;
     }
 }
 
@@ -403,13 +428,18 @@ hr {
     /* Radios: de fila a columna */
     div[role="radiogroup"] {
         flex-direction: column !important;
+        align-items: stretch !important;
     }
+    /* Al apilarse, cada opción ocupa TODO el ancho: así todas miden lo
+       mismo y se elimina el "efecto escalera" (ancho según el texto). */
     div[role="radiogroup"] > label {
         padding: 0.7rem 1.0rem;
+        width: 100% !important;
+        box-sizing: border-box;
     }
 
     /* Columnas Streamlit: apilar verticalmente */
-    [data-testid="column"] {
+    [data-testid="stColumn"] {
         min-width: 100% !important;
         flex: 1 1 100% !important;
     }
@@ -438,6 +468,191 @@ hr {
 
     /* Ocultar atajos de teclado (no aplican en mobile) */
     .keyboard-hint { display: none; }
+}
+
+/* ============================================================== */
+/* 17. LAYOUT DEL TEST — botonera lateral + barra inferior        */
+/*                                                                */
+/* Todo se escopa con :has(.orientai-header--quiz) para afectar   */
+/* SOLO la pantalla del test, no la bienvenida/filtros/resultados.*/
+/* La botonera lateral y la barra inferior aplican en todos los   */
+/* anchos; el "zero-scroll" 100dvh se reserva para mobile.        */
+/* ============================================================== */
+
+/* --- 17a. Split horizontal opciones | botonera (no se apila) --- */
+[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
+        [data-testid="stHorizontalBlock"] {
+    flex-wrap: nowrap !important;
+    gap: 12px !important;
+    align-items: stretch;
+}
+/* Columna izquierda: opciones Likert, ocupa todo el espacio libre. */
+[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
+        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+}
+/* Columna derecha: rail de acciones de ancho fijo (~56px), centrado. */
+[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
+        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child {
+    flex: 0 0 56px !important;
+    min-width: 56px !important;
+    width: 56px !important;
+}
+[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
+        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child
+        [data-testid="stVerticalBlock"] {
+    align-items: center;
+    gap: 0.6rem;
+}
+/* Los botones tienen ancho fijo y el tooltip de `help` envuelve al <button>;
+   centramos toda la cadena para que el rail quede prolijo. */
+[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
+        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child
+        .stButton,
+[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
+        [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child
+        [data-testid="stTooltipHoverTarget"] {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100%;
+}
+
+/* --- 17b. Opciones Likert del MISMO tamaño (no varían con el texto) --- */
+[data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
+        div[role="radiogroup"] > label {
+    min-height: 48px;
+    justify-content: flex-start;
+    white-space: nowrap;       /* texto en 1 línea => todas iguales */
+}
+
+/* --- 17c. Botonera lateral neo-brutalista (Salir / Atrás / Siguiente) --- */
+.st-key-quiz_exit button,
+.st-key-quiz_prev button,
+.st-key-quiz_next button {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    min-width: 0 !important;
+    border: 2px solid var(--ink) !important;
+    border-radius: 12px !important;
+    box-shadow: 3px 3px 0px var(--ink) !important;
+    font-size: 1.4rem;
+    font-weight: 800;
+    line-height: 1;
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+/* Salir (✕): 40x40, rojo de alerta, empujado lejos de la navegación. */
+.st-key-quiz_exit { margin-bottom: 1.75rem; }   /* safety spacing */
+.st-key-quiz_exit button {
+    width: 40px; height: 40px;
+    background: #ff3333 !important;
+    color: var(--card) !important;
+}
+/* Atrás (←): 48x48, neutro. */
+.st-key-quiz_prev button {
+    width: 48px; height: 48px;
+    background: var(--card) !important;
+    color: var(--ink) !important;
+}
+/* Siguiente (→): 48x48, acción principal. */
+.st-key-quiz_next button {
+    width: 48px; height: 48px;
+    background: var(--violet) !important;
+    color: var(--ink) !important;
+}
+/* Interacción (hover/active) coherente con el sistema neo-brutalista. */
+.st-key-quiz_exit button:hover,
+.st-key-quiz_prev button:hover,
+.st-key-quiz_next button:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px var(--ink) !important;
+}
+.st-key-quiz_exit button:hover { background: #e60000 !important; }
+.st-key-quiz_prev button:hover { background: var(--lime) !important; }
+.st-key-quiz_exit button:active,
+.st-key-quiz_prev button:active,
+.st-key-quiz_next button:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px 0px var(--ink) !important;
+}
+.st-key-quiz_prev button:disabled {
+    opacity: 0.35;
+    transform: none;
+    box-shadow: 3px 3px 0px var(--ink) !important;
+}
+
+/* --- 17d. Barra de progreso FIJA al fondo de la pantalla --- */
+.quiz-progress {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: var(--paper);
+    border-top: 2px solid var(--ink);
+    padding: 8px 16px;
+    z-index: 50;
+}
+.quiz-progress__label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: center;
+    color: var(--ink);
+    margin-bottom: 5px;
+}
+.quiz-progress__track {
+    height: 10px;
+    width: 100%;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.quiz-progress__fill {
+    height: 100%;
+    background: var(--violet);
+    transition: width 0.25s ease-out;
+}
+
+/* --- 17e. Zero-Scroll 100dvh — SOLO mobile (en desktop deja fluir) --- */
+@media (max-width: 768px) {
+    [data-testid="stMain"]:has(.orientai-header--quiz) {
+        height: 100dvh;
+        overflow: hidden;
+    }
+    [data-testid="stMainBlockContainer"]:has(.orientai-header--quiz) {
+        padding-top: 0.5rem !important;
+        padding-bottom: 84px !important;   /* deja sitio a la barra inferior */
+    }
+    /* Compactar títulos de la pregunta para que todo entre sin scroll. */
+    [data-testid="stMainBlockContainer"]:has(.orientai-header--quiz) h5 {
+        margin: 0 0 0.15rem 0 !important;
+        font-size: 0.8rem !important;
+    }
+    [data-testid="stMainBlockContainer"]:has(.orientai-header--quiz) h3 {
+        margin: 0.1rem 0 0.6rem 0 !important;
+        font-size: 1.15rem !important;
+        line-height: 1.25;
+    }
+    /* Apretar los gaps verticales de los bloques del test. */
+    [data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
+            [data-testid="stVerticalBlock"] {
+        gap: 0.5rem;
+    }
+    /* Opciones Likert un poco más compactas en mobile. */
+    [data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
+            div[role="radiogroup"] {
+        gap: 0.5rem !important;
+    }
+    [data-testid="stMainBlockContainer"]:has(.orientai-header--quiz)
+            div[role="radiogroup"] > label {
+        min-height: 44px;
+        padding: 0.45rem 0.8rem;
+    }
 }
 </style>
 """

@@ -191,14 +191,21 @@ def pantalla_bienvenida() -> None:
 
 
 def pantalla_test() -> None:
-    """Test reactivo: una pregunta RIASEC a la vez con escala Likert 1-5."""
+    """Test reactivo: una pregunta RIASEC a la vez con escala Likert 1-5.
+
+    Layout "Zero-Scroll" (sobre todo en mobile, ver ui/styles.py):
+      - El header queda compacto (solo el logo en mobile).
+      - El cuerpo se parte en 2 columnas: las opciones Likert a la
+        izquierda y una botonera lateral (Salir / Atrás / Siguiente) a
+        la derecha, en lugar de los botones de texto del pie.
+      - La barra de progreso ("Pregunta X de N") se fija al fondo de la
+        pantalla con HTML propio (position: fixed).
+    """
     render_header(is_quiz=True)
     preguntas = cargar_preguntas()
     total = len(preguntas)
     idx = st.session_state["indice_pregunta"]
-
-    st.progress(idx / total, text=f"Pregunta {idx + 1} de {total}")
-    st.markdown("---")
+    es_ultima = idx == total - 1
 
     pregunta = preguntas[idx]
     dimension_humana = ETIQUETAS_RIASEC[pregunta["dimension"]]
@@ -206,50 +213,64 @@ def pantalla_test() -> None:
     st.markdown(f"##### Dimensión: *{dimension_humana}*")
     st.markdown(f"### ¿Cuánto te gustaría {pregunta['pregunta'].lower()}?")
 
-    # None si el usuario aún no respondió esta pregunta (sin selección por defecto).
-    respuesta_previa = st.session_state["respuestas"].get(pregunta["id"])
-    _opciones = list(OPCIONES_LIKERT.keys())
-    _idx = _opciones.index(respuesta_previa) if respuesta_previa is not None else None
+    # Cuerpo en 2 columnas: opciones (flexible) | botonera lateral (fija).
+    # El CSS de quiz fuerza este split a mantenerse horizontal también en
+    # mobile (sin él, Streamlit apilaría las columnas).
+    col_opts, col_actions = st.columns([8, 1])
 
-    seleccion = st.radio(
-        label="Tu respuesta",
-        options=_opciones,
-        format_func=lambda v: OPCIONES_LIKERT[v],
-        index=_idx,
-        horizontal=True,
-        label_visibility="collapsed",
-        key=f"radio_{pregunta['id']}",
-    )
-    if seleccion is not None:
-        st.session_state["respuestas"][pregunta["id"]] = int(seleccion)
+    with col_opts:
+        # None si el usuario aún no respondió esta pregunta: SIN selección
+        # por defecto (la opción del medio NO viene marcada de fábrica).
+        respuesta_previa = st.session_state["respuestas"].get(pregunta["id"])
+        _opciones = list(OPCIONES_LIKERT.keys())
+        _idx = _opciones.index(respuesta_previa) if respuesta_previa is not None else None
 
-    # Pista de descubribilidad de los atajos de teclado.
-    st.markdown(
-        '<div class="keyboard-hint">Atajos: teclas <strong>1–5</strong> para responder · <strong>Enter</strong> para avanzar.</div>',
-        unsafe_allow_html=True,
-    )
+        seleccion = st.radio(
+            label="Tu respuesta",
+            options=_opciones,
+            format_func=lambda v: OPCIONES_LIKERT[v],
+            index=_idx,
+            horizontal=True,
+            label_visibility="collapsed",
+            key=f"radio_{pregunta['id']}",
+        )
+        if seleccion is not None:
+            st.session_state["respuestas"][pregunta["id"]] = int(seleccion)
 
-    # Mensaje de validación (se muestra si el usuario intentó avanzar sin responder).
-    if (st.session_state.get("_error_seleccion")
-            and st.session_state.get("_error_q_idx") == idx):
-        st.error("Debes seleccionar una opción para continuar.")
+        # Mensaje de validación (si intentó avanzar sin responder ESTA pregunta).
+        if (st.session_state.get("_error_seleccion")
+                and st.session_state.get("_error_q_idx") == idx):
+            st.error("Debés seleccionar una opción para continuar.")
 
-    st.markdown("---")
-    col_a, col_b, col_c = st.columns([1, 1, 1])
-    with col_a:
-        if st.button("← Anterior", use_container_width=True, disabled=(idx == 0), type="secondary"):
+        # Pista de los atajos de teclado. Además de su rol informativo, este
+        # nodo (.keyboard-hint) es el MARCADOR que usa ui/keyboard.py para
+        # saber que está activa la pantalla de test (oculto en mobile vía CSS).
+        st.markdown(
+            '<div class="keyboard-hint">Atajos: teclas <strong>1–5</strong> para responder · <strong>Enter</strong> para avanzar.</div>',
+            unsafe_allow_html=True,
+        )
+
+    with col_actions:
+        # --- Salir (✕): arriba del todo, rojo de alerta. El CSS le da un
+        #     margin-bottom de "safety spacing" para alejarlo de la navegación
+        #     y evitar toques accidentales que reinicien el test. ---
+        if st.button("✕", key="quiz_exit", type="secondary", help="Salir del test"):
+            reiniciar()
+
+        # --- Atrás (←): deshabilitado en la primera pregunta. ---
+        if st.button("←", key="quiz_prev", type="secondary",
+                     disabled=(idx == 0), help="Pregunta anterior"):
             st.session_state.pop("_error_seleccion", None)
             st.session_state["indice_pregunta"] = max(0, idx - 1)
             st.rerun()
-    with col_b:
-        if st.button("Cancelar", use_container_width=True, type="secondary"):
-            reiniciar()
-    with col_c:
-        es_ultima = idx == total - 1
-        label_btn = "Definir límites →" if es_ultima else "Siguiente →"
-        if st.button(label_btn, use_container_width=True, type="primary"):
+
+        # --- Siguiente (→): acción principal (único botón primary del test,
+        #     así Enter sigue avanzando vía ui/keyboard.py). ---
+        if st.button("→", key="quiz_next", type="primary",
+                     help="Definir límites" if es_ultima else "Siguiente pregunta"):
             respuesta_actual = st.session_state["respuestas"].get(pregunta["id"])
             if respuesta_actual is None:
+                # Bloqueo de avance: no hay opción seleccionada.
                 st.session_state["_error_seleccion"] = True
                 st.session_state["_error_q_idx"] = idx
                 st.rerun()
@@ -264,6 +285,20 @@ def pantalla_test() -> None:
                 else:
                     st.session_state["indice_pregunta"] = idx + 1
                     st.rerun()
+
+    # Barra de progreso fijada al fondo de la pantalla (HTML propio). El texto
+    # "Pregunta X de N" va pequeño y centrado por encima de la barrita, que se
+    # llena con el color de acento (--violet).
+    pct = (idx + 1) / total * 100
+    st.markdown(
+        f"""<div class="quiz-progress">
+            <div class="quiz-progress__label">Pregunta {idx + 1} de {total}</div>
+            <div class="quiz-progress__track">
+                <div class="quiz-progress__fill" style="width:{pct:.1f}%;"></div>
+            </div>
+        </div>""",
+        unsafe_allow_html=True,
+    )
 
     # Atajos de teclado (1..5 = responder, Enter = avanzar). Se inyecta al
     # final, ya construido el DOM de la pregunta: el puente JS hace click

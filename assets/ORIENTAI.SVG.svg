@@ -12,6 +12,6 @@
     <path d="M90 16 l4 9 l9 4 l-9 4 l-4 9 l-4 -9 l-9 -4 l9 -4 Z" fill="#c6ff4d" stroke="#111" stroke-width="3" stroke-linejoin="round"></path>
   </g>
   <text class="orientai-wm" x="150" y="118" fill="#c4b5fd" transform="translate(4,4)">ORIENTAI</text>
-  <rect x="434" y="54" width="108" height="78" rx="9" fill="#c6ff4d" stroke="#111" stroke-width="4"></rect>
+  <rect class="orientai-ai-rect" x="434" y="54" width="108" height="78" rx="9" fill="#c6ff4d" stroke="#111" stroke-width="4"></rect>
   <text class="orientai-wm" x="150" y="118" fill="#111">ORIENT<tspan fill="#111">AI</tspan></text>
 </svg>
