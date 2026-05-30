@@ -420,7 +420,7 @@ hr {
         display: none;
     }
     .orientai-header--quiz .orientai-logo-link svg {
-        height: 32px;
+        height: 40px;
     }
     /* El rect verde que resalta "AI" se desalinea en pantallas chicas:
        lo ocultamos en todos los headers para mantener el logo limpio. */
