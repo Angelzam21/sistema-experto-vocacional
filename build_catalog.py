@@ -55,6 +55,7 @@ ETIQUETAS_VALIDAS = {
     "exposicion_publica",   # vender, persuadir, liderar o hablar en público
     "expresion_artistica",  # crear obra artística / trabajar desde la creatividad
     "dominio_politico",     # trabajar en política gubernamental o partidaria
+    "rutina_administrativa",  # tareas de oficina repetitivas / burocracia fija
 }
 
 
@@ -244,7 +245,7 @@ CARRERAS: list[dict] = [
     {"id": "comunicacion_social", "nombre": "Comunicación Social / Periodismo", "area": "Ciencias Sociales y Humanidades", "onet_soc": "27-3023.00", "onet_titulo": "News Analysts, Reporters, and Journalists", "etiquetas": ["exposicion_publica"]},
     {"id": "letras", "nombre": "Letras", "area": "Ciencias Sociales y Humanidades", "onet_soc": "27-3043.00", "onet_titulo": "Writers and Authors", "etiquetas": ["expresion_artistica"]},
     {"id": "traductorado", "nombre": "Traductorado", "area": "Ciencias Sociales y Humanidades", "onet_soc": "27-3091.00", "onet_titulo": "Interpreters and Translators", "etiquetas": []},
-    {"id": "archivologia", "nombre": "Bibliotecología y Archivología", "area": "Ciencias Sociales y Humanidades", "onet_soc": "25-4022.00", "onet_titulo": "Librarians", "etiquetas": []},
+    {"id": "archivologia", "nombre": "Bibliotecología y Archivología", "area": "Ciencias Sociales y Humanidades", "onet_soc": "25-4022.00", "onet_titulo": "Librarians", "etiquetas": ["rutina_administrativa"]},
 
     # ===================== Educación =====================
     {"id": "ciencias_educacion", "nombre": "Ciencias de la Educación", "area": "Educación", "onet_soc": "25-9031.00", "onet_titulo": "Instructional Coordinators", "etiquetas": []},
@@ -266,14 +267,14 @@ CARRERAS: list[dict] = [
     {"id": "negocios_digitales", "nombre": "Negocios Digitales", "area": "Economía y Negocios", "onet_soc": "15-1199.10", "onet_titulo": "Search Marketing Strategists", "etiquetas": ["exposicion_publica"]},
     {"id": "tec_turismo", "nombre": "Tecnicatura en Turismo", "area": "Economía y Negocios", "onet_soc": "39-7011.00", "onet_titulo": "Tour Guides and Escorts", "etiquetas": ["exposicion_publica"]},
     {"id": "martillero_publico", "nombre": "Martillero Público y Corredor Inmobiliario", "area": "Economía y Negocios", "onet_soc": "41-9022.00", "onet_titulo": "Real Estate Sales Agents", "etiquetas": ["exposicion_publica"]},
-    {"id": "contador_publico", "nombre": "Contador Público", "area": "Economía y Negocios", "onet_soc": "13-2011.00", "onet_titulo": "Accountants and Auditors", "etiquetas": []},
+    {"id": "contador_publico", "nombre": "Contador Público", "area": "Economía y Negocios", "onet_soc": "13-2011.00", "onet_titulo": "Accountants and Auditors", "etiquetas": ["rutina_administrativa"]},
     {"id": "economia", "nombre": "Licenciatura en Economía", "area": "Economía y Negocios", "onet_soc": "19-3011.00", "onet_titulo": "Economists", "etiquetas": ["matematica_intensa"]},
     {"id": "finanzas", "nombre": "Licenciatura en Finanzas", "area": "Economía y Negocios", "onet_soc": "13-2051.00", "onet_titulo": "Financial Analysts", "etiquetas": ["matematica_intensa"]},
     {"id": "actuario", "nombre": "Ciencias Actuariales (Actuario)", "area": "Economía y Negocios", "onet_soc": "15-2011.00", "onet_titulo": "Actuaries", "etiquetas": ["matematica_intensa"]},
-    {"id": "administracion_publica", "nombre": "Administración Pública", "area": "Economía y Negocios", "onet_soc": "11-3013.00", "onet_titulo": "Facilities / Public Administration Managers", "etiquetas": []},
-    {"id": "logistica", "nombre": "Licenciatura en Logística", "area": "Economía y Negocios", "onet_soc": "13-1081.00", "onet_titulo": "Logisticians", "etiquetas": []},
-    {"id": "tec_administracion_contable", "nombre": "Tecnicatura en Administración Contable", "area": "Economía y Negocios", "onet_soc": "43-3031.00", "onet_titulo": "Bookkeeping / Accounting Clerks", "etiquetas": []},
-    {"id": "secretariado_ejecutivo", "nombre": "Secretariado Ejecutivo", "area": "Economía y Negocios", "onet_soc": "43-6011.00", "onet_titulo": "Executive Secretaries", "etiquetas": []},
+    {"id": "administracion_publica", "nombre": "Administración Pública", "area": "Economía y Negocios", "onet_soc": "11-3013.00", "onet_titulo": "Facilities / Public Administration Managers", "etiquetas": ["rutina_administrativa"]},
+    {"id": "logistica", "nombre": "Licenciatura en Logística", "area": "Economía y Negocios", "onet_soc": "13-1081.00", "onet_titulo": "Logisticians", "etiquetas": ["rutina_administrativa"]},
+    {"id": "tec_administracion_contable", "nombre": "Tecnicatura en Administración Contable", "area": "Economía y Negocios", "onet_soc": "43-3031.00", "onet_titulo": "Bookkeeping / Accounting Clerks", "etiquetas": ["rutina_administrativa"]},
+    {"id": "secretariado_ejecutivo", "nombre": "Secretariado Ejecutivo", "area": "Economía y Negocios", "onet_soc": "43-6011.00", "onet_titulo": "Executive Secretaries", "etiquetas": ["rutina_administrativa"]},
 ]
 
 

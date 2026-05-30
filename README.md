@@ -35,7 +35,7 @@ No hay scraping, base de datos ni llamadas de red. El catálogo se genera offlin
 │
 ├── data/
 │   ├── carreras.json           # Catálogo: 75 carreras, vectores RIASEC float O*NET
-│   └── preguntas.json          # 36 preguntas RIASEC + 6 preguntas filtro
+│   └── preguntas.json          # 42 preguntas RIASEC + 8 preguntas filtro
 │
 ├── engine/
 │   ├── inference.py            # Vector usuario + scoring híbrido + ranking
@@ -97,7 +97,7 @@ Holland (1959) propone que los intereses vocacionales se agrupan en 6 dimensione
 | **E** — Emprendedor | Liderar, persuadir, vender |
 | **C** — Convencional | Orden, datos, normas |
 
-El test RIASEC consiste en **36 preguntas** (6 por dimensión), adaptadas del *O\*NET Interest Profiler* (dominio público, U.S. Department of Labor) con localización para Argentina. Escala Likert 1 ("Lo detestaría") a 5 ("Me encantaría").
+El test RIASEC consiste en **42 preguntas** (7 por dimensión), adaptadas del *O\*NET Interest Profiler* (dominio público, U.S. Department of Labor) con localización para Argentina. Escala Likert 1 ("Lo detestaría") a 5 ("Me encantaría").
 
 ### Construcción del vector de usuario
 
@@ -254,7 +254,7 @@ div[role="radiogroup"] > label:has(input:checked) {
 | 2da capa knockout explícita | La afinidad de intereses no captura deal-breakers (un perfil datos puede odiar pacientes). |
 | Vectores float (no enteros) | Preserva la resolución original O\*NET; elimina colisiones y carreras imán por artefacto. |
 | Stateless / `st.session_state` | Privacidad por diseño: respuestas y vector nunca tocan el disco. |
-| 36 preguntas (no más) | Monte Carlo en 2000 corridas: vector usuario ya tiene resolución prácticamente continua; la limitación es el catálogo, no el test. Ampliar solo alargaría la experiencia sin ganancia medible. |
+| 42 preguntas (7 por dimensión) | Banco simétrico: cada dimensión RIASEC se mide con la misma cantidad de ítems para no sesgar el vector. La resolución del vector usuario es prácticamente continua; el límite de precisión es el catálogo, no la cantidad de ítems. |
 | Catálogo generado por script | Trazabilidad: cada vector RIASEC sale de un código SOC oficial de O\*NET. Reproducible con `python build_catalog.py`. |
 
 ---

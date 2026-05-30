@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "descripcion": "Banco de preguntas del Sistema Experto Vocacional. Dos secciones: (1) 'preguntas' = 36 ítems RIASEC que construyen el perfil de intereses del usuario; (2) 'filtros' = 6 preguntas de aversión que actúan como SEGUNDA CAPA de filtrado (knockout) sobre el catálogo. Basado en el O*NET Interest Profiler (dominio público) con localización para Argentina.",
+    "descripcion": "Banco de preguntas del Sistema Experto Vocacional. Dos secciones: (1) 'preguntas' = 42 ítems RIASEC (7 por dimensión) que construyen el perfil de intereses del usuario; (2) 'filtros' = 8 preguntas de aversión que actúan como SEGUNDA CAPA de filtrado (knockout) sobre el catálogo. Basado en el O*NET Interest Profiler (dominio público) con localización para Argentina.",
     "modelo": "RIASEC - John L. Holland. Dimensiones: Realista (R), Investigador (I), Artístico (A), Social (S), Emprendedor (E), Convencional (C).",
     "escala_likert": {
       "1": "Lo detestaría",
@@ -10,8 +10,8 @@
       "5": "Me encantaría"
     },
     "segunda_capa": "Cada filtro tiene una 'etiqueta'. Si el usuario responde <= 2 (no le gustaría / lo detestaría), se descartan del ranking todas las carreras que lleven esa etiqueta. Ejemplo: quien 'ama los datos' pero responde 1 a F1 (atender pacientes) NO recibe Medicina ni Odontología.",
-    "total_preguntas_riasec": 36,
-    "total_filtros": 6
+    "total_preguntas_riasec": 42,
+    "total_filtros": 8
   },
 
   "preguntas": [
@@ -21,6 +21,7 @@
     { "id": "R04", "dimension": "R", "pregunta": "Trabajar al aire libre realizando tareas físicas", "ponderacion": 1.0 },
     { "id": "R05", "dimension": "R", "pregunta": "Operar maquinaria industrial o equipos pesados", "ponderacion": 1.0 },
     { "id": "R06", "dimension": "R", "pregunta": "Cultivar plantas o cuidar animales en un campo", "ponderacion": 1.0 },
+    { "id": "R07", "dimension": "R", "pregunta": "Instalar y poner a punto cañerías, gas o instalaciones eléctricas en una obra", "ponderacion": 1.0 },
 
     { "id": "I01", "dimension": "I", "pregunta": "Hacer experimentos en un laboratorio de química o biología", "ponderacion": 1.0 },
     { "id": "I02", "dimension": "I", "pregunta": "Resolver problemas matemáticos complejos", "ponderacion": 1.0 },
@@ -28,6 +29,7 @@
     { "id": "I04", "dimension": "I", "pregunta": "Analizar grandes volúmenes de datos para encontrar patrones", "ponderacion": 1.0 },
     { "id": "I05", "dimension": "I", "pregunta": "Leer artículos científicos sobre nuevos descubrimientos", "ponderacion": 1.0 },
     { "id": "I06", "dimension": "I", "pregunta": "Programar un algoritmo para resolver un problema lógico", "ponderacion": 1.0 },
+    { "id": "I07", "dimension": "I", "pregunta": "Diseñar un experimento controlado para poner a prueba una hipótesis científica", "ponderacion": 1.0 },
 
     { "id": "A01", "dimension": "A", "pregunta": "Componer música original o escribir canciones", "ponderacion": 1.0 },
     { "id": "A02", "dimension": "A", "pregunta": "Escribir cuentos, novelas o poesía", "ponderacion": 1.0 },
@@ -35,6 +37,7 @@
     { "id": "A04", "dimension": "A", "pregunta": "Actuar en una obra de teatro o participar en una película", "ponderacion": 1.0 },
     { "id": "A05", "dimension": "A", "pregunta": "Tomar fotografías artísticas o filmar cortometrajes", "ponderacion": 1.0 },
     { "id": "A06", "dimension": "A", "pregunta": "Dibujar, pintar o esculpir como forma de expresión", "ponderacion": 1.0 },
+    { "id": "A07", "dimension": "A", "pregunta": "Crear la escenografía, el vestuario o la ambientación de una obra o producción audiovisual", "ponderacion": 1.0 },
 
     { "id": "S01", "dimension": "S", "pregunta": "Dar clases particulares a chicos de primaria o secundaria", "ponderacion": 1.0 },
     { "id": "S02", "dimension": "S", "pregunta": "Cuidar a personas mayores o con alguna discapacidad", "ponderacion": 1.0 },
@@ -42,6 +45,7 @@
     { "id": "S04", "dimension": "S", "pregunta": "Coordinar actividades en un comedor o centro comunitario", "ponderacion": 1.0 },
     { "id": "S05", "dimension": "S", "pregunta": "Atender pacientes en un hospital, clínica o salita", "ponderacion": 1.0 },
     { "id": "S06", "dimension": "S", "pregunta": "Trabajar como entrenador o instructor deportivo de jóvenes", "ponderacion": 1.0 },
+    { "id": "S07", "dimension": "S", "pregunta": "Mediar entre dos personas en conflicto para ayudarlas a encontrar un acuerdo", "ponderacion": 1.0 },
 
     { "id": "E01", "dimension": "E", "pregunta": "Administrar un local comercial o una Pyme", "ponderacion": 1.0 },
     { "id": "E02", "dimension": "E", "pregunta": "Liderar un equipo de trabajo dentro de una empresa", "ponderacion": 1.0 },
@@ -49,13 +53,15 @@
     { "id": "E04", "dimension": "E", "pregunta": "Vender productos o servicios en ferias y exposiciones", "ponderacion": 1.0 },
     { "id": "E05", "dimension": "E", "pregunta": "Dar un discurso para convencer o motivar a un grupo grande", "ponderacion": 1.0 },
     { "id": "E06", "dimension": "E", "pregunta": "Iniciar tu propio emprendimiento y hacerlo crecer", "ponderacion": 1.0 },
+    { "id": "E07", "dimension": "E", "pregunta": "Conseguir inversores y financiamiento para poner en marcha un proyecto nuevo", "ponderacion": 1.0 },
 
     { "id": "C01", "dimension": "C", "pregunta": "Llevar la contabilidad y los balances de una empresa", "ponderacion": 1.0 },
     { "id": "C02", "dimension": "C", "pregunta": "Archivar y organizar documentos en una oficina", "ponderacion": 1.0 },
     { "id": "C03", "dimension": "C", "pregunta": "Controlar el stock de mercadería en un depósito", "ponderacion": 1.0 },
     { "id": "C04", "dimension": "C", "pregunta": "Armar planillas de Excel con datos detallados y fórmulas", "ponderacion": 1.0 },
     { "id": "C05", "dimension": "C", "pregunta": "Procesar formularios y gestionar trámites administrativos", "ponderacion": 1.0 },
-    { "id": "C06", "dimension": "C", "pregunta": "Auditar registros financieros buscando errores o inconsistencias", "ponderacion": 1.0 }
+    { "id": "C06", "dimension": "C", "pregunta": "Auditar registros financieros buscando errores o inconsistencias", "ponderacion": 1.0 },
+    { "id": "C07", "dimension": "C", "pregunta": "Verificar que cada trámite cumpla al detalle con las normas y reglamentos vigentes", "ponderacion": 1.0 }
   ],
 
   "filtros": [
@@ -100,6 +106,12 @@
       "etiqueta": "dominio_politico",
       "pregunta": "Trabajar en el ámbito de la política gubernamental o partidaria: gestión pública, campañas, partidos u organismos del Estado",
       "descarta": "Carreras del ámbito político (Ciencia Política, etc.)."
+    },
+    {
+      "id": "F8",
+      "etiqueta": "rutina_administrativa",
+      "pregunta": "Pasar el día en tareas administrativas repetitivas de oficina: cargar datos, completar planillas y seguir procedimientos burocráticos fijos",
+      "descarta": "Carreras de gestión administrativa y back-office (Contador, Administración Contable y Pública, Secretariado, Archivología, Logística)."
     }
   ]
 }

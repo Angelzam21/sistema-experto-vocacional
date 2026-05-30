@@ -207,6 +207,109 @@ def test_afinidad_sin_castigo_al_cubo() -> None:
 
 
 # -----------------------------------------------------------------
+# Edge cases de la auditoría del motor (casos límite que históricamente
+# producían falsos positivos o hacían colapsar el ranking)
+# -----------------------------------------------------------------
+def test_perfil_instrumentadora() -> None:
+    """Caso real que motivó la auditoría: una Instrumentadora Quirúrgica
+    (código Holland R+C alto, S medio) recibía resultados sin sentido con el
+    motor PREVIO: 'Martillero Público' arriba, 'Medicina' al 0% y su propia
+    carrera hundida por el castigo al cubo.
+
+    Con el híbrido rebalanceado hacia Pearson (PESO_COSENO=0.3) el resultado
+    es psicométricamente correcto:
+      - Su propia carrera (Instrumentación) es el #1.
+      - El área Ciencias de la Salud DOMINA el Top-5 (mayoría).
+      - Las carreras comerciales (Martillero, Administración) quedan muy por
+        debajo, fuera del Top y por detrás de Medicina/Enfermería.
+      - Medicina ya NO aparece en 0%: tiene afinidad real (>0)."""
+    rk = _evaluar({"R": 5, "I": 2, "A": 1, "S": 3, "E": 1, "C": 5})
+    idx = {c["id"]: i for i, c in enumerate(rk)}
+
+    # 1) Su propia carrera encabeza el ranking.
+    assert rk[0]["id"] == "tec_instrumentacion_quirurgica", rk[0]["id"]
+
+    # 2) Salud domina el Top-5 (mayoría: al menos 3 de 5).
+    salud_top5 = sum(c["area"] == "Ciencias de la Salud" for c in rk[:5])
+    assert salud_top5 >= 3, salud_top5
+
+    # 3) Las comerciales quedan muy por debajo (fuera del Top-20)...
+    top20 = _ids(rk, 20)
+    assert "martillero_publico" not in top20
+    assert "administracion_empresas" not in top20
+
+    # 4) ...y por detrás de las carreras de salud afines a su perfil.
+    assert idx["medicina"] < idx["martillero_publico"]
+    assert idx["enfermeria"] < idx["administracion_empresas"]
+
+    # 5) El bug histórico "Medicina 0%" no se reproduce: afinidad real.
+    medicina = next(c for c in rk if c["id"] == "medicina")
+    assert medicina["afinidad_pct"] > 0, medicina["afinidad_pct"]
+
+
+def test_perfil_plano_indeciso() -> None:
+    """Usuario indeciso que responde todo en el medio (3): perfil sin
+    preferencia. El sistema NO debe colapsar (ni NaN, ni excepción, ni
+    catálogo recortado): devuelve el catálogo completo con afinidad 0."""
+    rk = _evaluar({"R": 3, "I": 3, "A": 3, "S": 3, "E": 3, "C": 3})
+    assert len(rk) == len(CATALOGO)                  # no se cae ni recorta
+    assert all(c["afinidad_pct"] == 0 for c in rk)   # perfil no informativo
+    assert rk[0]["afinidad_pct"] == 0
+
+
+def test_perfil_extremo() -> None:
+    """Perfil extremo: 5 en una sola dimensión (R) y 1 en todas las demás.
+    El motor no debe romperse y debe priorizar el polo dominante: el #1 es
+    una carrera fuertemente Realista (R es su dimensión máxima) y los
+    porcentajes son sanos (monótonos y dentro de [0, 100])."""
+    rk = _evaluar({"R": 5, "I": 1, "A": 1, "S": 1, "E": 1, "C": 1})
+    top = rk[0]["riasec"]
+    assert top["R"] >= 4, rk[0]["id"]                  # el #1 es Realista
+    assert top["R"] == max(top.values()), rk[0]["id"]  # R es su dim dominante
+    assert rk[0]["afinidad_pct"] >= 70
+    pcts = [c["afinidad_pct"] for c in rk]
+    assert pcts == sorted(pcts, reverse=True)          # monótono no creciente
+    assert all(0 <= p <= 100 for p in pcts)
+
+
+def test_perfil_multipotencial() -> None:
+    """Perfil 'multipotencial': 5 en dos dimensiones OPUESTAS del hexágono de
+    Holland (R y S, enfrentadas). El motor no debe quedarse con un solo polo:
+    el Top debe contener carreras de AMBOS extremos y privilegiar las que
+    tienden un puente entre lo manual y lo asistencial (p. ej. Kinesiología,
+    R+S altos)."""
+    rk = _evaluar({"R": 5, "I": 1, "A": 1, "S": 5, "E": 1, "C": 1})
+    top10 = rk[:10]
+    assert any(c["riasec"]["R"] >= 4 for c in top10)   # polo Realista presente
+    assert any(c["riasec"]["S"] >= 4 for c in top10)   # polo Social presente
+    # Una carrera "puente" R+S domina el podio.
+    assert "kinesiologia" in _ids(rk, 5)
+    pcts = [c["afinidad_pct"] for c in rk]
+    assert pcts == sorted(pcts, reverse=True)
+
+
+def test_filtro_rutina_administrativa() -> None:
+    """Nuevo filtro (F8 -> etiqueta 'rutina_administrativa'): un perfil
+    Convencional puro saca arriba las carreras de back-office (Contable,
+    Secretariado, Logística, etc.). Si el usuario VETA la rutina
+    administrativa, todas esas carreras deben desaparecer del ranking."""
+    perfil = {"R": 2, "I": 2, "A": 1, "S": 2, "E": 3, "C": 5}
+    clericales = {"contador_publico", "tec_administracion_contable",
+                  "secretariado_ejecutivo", "administracion_publica",
+                  "archivologia", "logistica"}
+
+    sin_veto = _ids(_evaluar(perfil))
+    con_veto = _ids(_evaluar(perfil, {"rutina_administrativa": 1}))
+
+    # Sin veto, las administrativas son candidatas fuertes (varias en el Top-10).
+    assert len(clericales.intersection(sin_veto[:10])) >= 3
+    # Con el veto, ninguna sobrevive.
+    assert clericales.isdisjoint(con_veto)
+    # El veto recorta exactamente esas carreras del catálogo.
+    assert len(con_veto) == len(sin_veto) - len(clericales)
+
+
+# -----------------------------------------------------------------
 # Runner standalone (sin pytest)
 # -----------------------------------------------------------------
 def _main() -> int:
@@ -222,6 +325,11 @@ def _main() -> int:
         ("Sin colisiones de vectores", test_sin_colisiones_de_vectores),
         ("Desempate neutral (orden catálogo)", test_desempate_no_depende_del_orden_del_catalogo),
         ("Afinidad sin castigo al cubo", test_afinidad_sin_castigo_al_cubo),
+        ("Edge: Instrumentadora (R+C alto, S medio)", test_perfil_instrumentadora),
+        ("Edge: Plano / indeciso (no colapsa)", test_perfil_plano_indeciso),
+        ("Edge: Extremo (una dim al máximo)", test_perfil_extremo),
+        ("Edge: Multipotencial (R y S opuestos)", test_perfil_multipotencial),
+        ("Filtro nuevo: veta rutina administrativa", test_filtro_rutina_administrativa),
     ]
     fallidos = 0
     for nombre, fn in tests:

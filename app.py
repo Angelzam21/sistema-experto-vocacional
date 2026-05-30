@@ -12,9 +12,9 @@ Flujo de la aplicación (state machine sobre st.session_state):
                                   |
                               REINICIAR
 
-  - TEST     : 43 preguntas mezcladas aleatoriamente:
-                 · 36 RIASEC (1ra capa) -> construyen el perfil de intereses.
-                 · 7 de aversión (2da capa) -> descartan carreras deal-breaker.
+  - TEST     : 50 preguntas mezcladas aleatoriamente:
+                 · 42 RIASEC (1ra capa) -> construyen el perfil de intereses.
+                 · 8 de aversión (2da capa) -> descartan carreras deal-breaker.
   - RESULTADOS: ranking de carreras por afinidad de coseno, sobre el
                catálogo ya filtrado por la 2da capa.
 
@@ -109,14 +109,14 @@ def cargar_catalogo() -> list[dict]:
 
 @st.cache_data(show_spinner=False)
 def cargar_preguntas() -> list[dict]:
-    """Lee las 36 preguntas RIASEC (1ra capa)."""
+    """Lee las 42 preguntas RIASEC (1ra capa)."""
     raw = json.loads(PATH_PREGUNTAS.read_text(encoding="utf-8"))
     return raw["preguntas"]
 
 
 @st.cache_data(show_spinner=False)
 def cargar_filtros() -> list[dict]:
-    """Lee las 7 preguntas filtro de aversión (2da capa)."""
+    """Lee las 8 preguntas filtro de aversión (2da capa)."""
     raw = json.loads(PATH_PREGUNTAS.read_text(encoding="utf-8"))
     return raw["filtros"]
 
@@ -168,7 +168,7 @@ def pantalla_bienvenida() -> None:
 
         **Cómo funciona:**
 
-        1. Respondés **43 preguntas** sobre intereses y actividades cotidianas,
+        1. Respondés **50 preguntas** sobre intereses y actividades cotidianas,
            presentadas en orden aleatorio con escala del 1 al 5.
         2. El motor calcula tu perfil RIASEC y descarta las carreras que
            involucran actividades que no harías bajo ninguna circunstancia.
@@ -199,7 +199,7 @@ def pantalla_bienvenida() -> None:
 
 
 def pantalla_test() -> None:
-    """Test unificado: 43 preguntas (36 RIASEC + 7 filtros) en orden aleatorio.
+    """Test unificado: 50 preguntas (42 RIASEC + 8 filtros) en orden aleatorio.
 
     Layout "Zero-Scroll" (sobre todo en mobile, ver ui/styles.py):
       - El header queda compacto (solo el logo en mobile).

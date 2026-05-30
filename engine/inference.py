@@ -44,12 +44,31 @@ import numpy as np
 DIMENSIONES_RIASEC: tuple[str, ...] = ("R", "I", "A", "S", "E", "C")
 
 # Peso del coseno en el score híbrido (Pearson lleva el complemento).
-# Valor calibrado con la simulación Monte Carlo (scripts/montecarlo.py):
-# Pearson aporta casi toda la capacidad discriminativa (separa familias
-# y reparte el Top-1), mientras que el coseno sobre vectores 1-5 -todos
-# en el ortante positivo- está comprimido (~0.9) y sólo aporta un matiz
-# de "intensidad". El óptimo de discriminación es Pearson-dominante.
-PESO_COSENO: float = 0.4
+#
+# AUDITORÍA (caso "Instrumentadora", ver tests/test_perfiles.py):
+#   El coseno sobre vectores 1-5 vive SIEMPRE en el ortante positivo, así
+#   que para casi cualquier par usuario/carrera vale ~0.7-1.0. Es decir,
+#   INFLA la afinidad y es justamente la fuente de los falsos positivos por
+#   "coincidencia en una dimensión secundaria": un usuario alto en C
+#   (Convencional) saca un coseno espuriamente alto con carreras
+#   comerciales E/C (Martillero/bienes raíces) aunque NO compartan su R.
+#   Pearson, al centrar por la media, compara la FORMA del perfil y por
+#   ende la prominencia relativa de las letras dominantes del código
+#   Holland: discrimina el patrón dominante de la coincidencia aislada.
+#
+#   Por eso se rebalanceó hacia Pearson: 0.4 -> 0.3. La simulación Monte
+#   Carlo (scripts/montecarlo.py) confirma que mejora la dispersión
+#   (cobertura 67->69, entropía 0.894->0.899) y suprime ~3x los falsos
+#   positivos comerciales (Martillero, perfil Instrumentadora: 16%->6%)
+#   sin hundir las carreras legítimamente afines.
+#
+#   Nota: también se probó PONDERAR las dimensiones dominantes del usuario
+#   (boost a sus 2-3 letras Holland). La simulación lo DESCARTÓ: promueve
+#   los "confounds" que comparten las letras fuertes del usuario (p. ej. un
+#   técnico industrial comparte R+C con la instrumentadora) y hunde afines
+#   legítimas (Medicina). La forma (Pearson) ya prioriza el código Holland
+#   de manera robusta, sin ese efecto colateral.
+PESO_COSENO: float = 0.3
 
 # Umbral de varianza por debajo del cual consideramos que el usuario
 # "respondió todo igual": un perfil plano no contiene preferencia y no
