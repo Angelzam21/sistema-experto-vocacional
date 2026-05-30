@@ -676,6 +676,146 @@ hr {
         padding: 0.45rem 0.8rem;
     }
 }
+
+/* ============================================================== */
+/* 18. LARGE SCREENS — resoluciones 1200px+ y TV 1080p / 4K       */
+/*                                                                */
+/* Objetivo: evitar estiramiento infinito del contenido, escalar  */
+/* tipografía para lectura a distancia y mantener el efecto de    */
+/* bloque neo-brutalista visible en pantallas grandes.            */
+/*                                                                */
+/* Estas reglas usan min-width y NO tocan ni sobreescriben los    */
+/* bloques max-width: 640px y max-width: 768px de la sección 16/  */
+/* 17e que controlan el layout mobile.                            */
+/* ============================================================== */
+
+/* ---- 18a. Monitor 1200px+ (1080p estándar, proyector, laptop grande) ---- */
+@media (min-width: 1200px) {
+
+    /* Contenedor principal: máx 860px centrado para no estirar el texto
+       en todo el ancho de la pantalla. */
+    .block-container {
+        max-width: 860px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Tipografía escalada: base +10% para ganar legibilidad a distancia. */
+    html { font-size: 18px; }
+    h1   { font-size: 3.2rem !important; }
+    h3   { font-size: 1.5rem  !important; }
+    .orientai-subtitle          { font-size: 1.7rem; }
+    .orientai-logo-link svg     { height: 60px; max-width: 260px; }
+
+    /* Neo-brutalismo: sombra y bordes más gruesos para no perderse al escalar. */
+    :root { --shadow-sm: 6px 6px 0px var(--ink); }
+
+    .stButton > button {
+        border-width: 3px !important;
+        border-radius: 14px !important;
+        padding: 0.7rem 1.8rem !important;
+        font-size: 1.05rem !important;
+    }
+    div[role="radiogroup"] > label {
+        border-width: 3px !important;
+        border-radius: 14px !important;
+        padding: 0.7rem 1.2rem !important;
+        min-height: 56px !important;
+        font-size: 1.05rem !important;
+    }
+    [data-testid="stExpander"] {
+        border-width: 3px !important;
+        border-radius: 14px !important;
+    }
+    .recom-card {
+        border-width: 3px !important;
+        border-radius: 14px !important;
+        padding: 1.5rem 1.8rem !important;
+    }
+    .recom-title { font-size: 1.6rem !important; }
+    .recom-pct   { font-size: 1.9rem !important; }
+
+    /* Botonera del test: botones ligeramente más grandes para click cómodo. */
+    .st-key-quiz_exit button { width: 50px !important; height: 50px !important; }
+    .st-key-quiz_prev button,
+    .st-key-quiz_next button  { width: 58px !important; height: 58px !important; }
+    /* Ampliar la columna derecha del rail en consecuencia. */
+    .st-key-quiz_split [data-testid="stHorizontalBlock"]
+            > [data-testid="stColumn"]:last-child {
+        flex: 0 0 62px !important;
+        min-width: 62px !important;
+        width: 62px !important;
+    }
+
+    /* Barra de progreso del test: un poco más alta y legible. */
+    .quiz-progress          { padding: 10px 20px; }
+    .quiz-progress__label   { font-size: 0.85rem; }
+    .quiz-progress__track   { height: 12px; }
+}
+
+/* ---- 18b. TV 1080p completo / 4K (1920px+) ---- */
+@media (min-width: 1920px) {
+
+    /* Contenedor más amplio para TV pero todavía centrado y acotado. */
+    .block-container { max-width: 1100px !important; }
+
+    /* Tipografía para lectura a ~2-3 m de distancia. */
+    html { font-size: 20px; }
+    h1   { font-size: 4rem   !important; }
+    h3   { font-size: 1.85rem !important; }
+    .orientai-subtitle          { font-size: 2.1rem; }
+    .orientai-logo-link svg     { height: 80px; max-width: 340px; }
+
+    /* Sombra y bordes aún más pronunciados para TV. */
+    :root { --shadow-sm: 8px 8px 0px var(--ink); }
+
+    .stButton > button {
+        border-width: 4px !important;
+        border-radius: 16px !important;
+        padding: 0.9rem 2.2rem !important;
+        font-size: 1.15rem !important;
+    }
+    div[role="radiogroup"] > label {
+        border-width: 4px !important;
+        border-radius: 16px !important;
+        padding: 0.85rem 1.4rem !important;
+        min-height: 66px !important;
+        font-size: 1.15rem !important;
+    }
+    [data-testid="stExpander"] {
+        border-width: 4px !important;
+        border-radius: 16px !important;
+    }
+    .recom-card {
+        border-width: 4px !important;
+        border-radius: 16px !important;
+        padding: 1.9rem 2.2rem !important;
+    }
+    .recom-title { font-size: 2rem   !important; }
+    .recom-pct   { font-size: 2.3rem !important; }
+
+    /* Botonera del test: tamaño táctil generoso para presentación remota. */
+    .st-key-quiz_exit button {
+        width: 60px !important; height: 60px !important;
+        font-size: 1.6rem !important;
+    }
+    .st-key-quiz_prev button,
+    .st-key-quiz_next button {
+        width: 70px !important; height: 70px !important;
+        font-size: 1.6rem !important;
+    }
+    .st-key-quiz_split [data-testid="stHorizontalBlock"]
+            > [data-testid="stColumn"]:last-child {
+        flex: 0 0 74px !important;
+        min-width: 74px !important;
+        width: 74px !important;
+    }
+
+    /* Barra de progreso del test: bien visible desde lejos. */
+    .quiz-progress          { padding: 14px 24px; }
+    .quiz-progress__label   { font-size: 1rem; }
+    .quiz-progress__track   { height: 14px; }
+}
 </style>
 """
 
