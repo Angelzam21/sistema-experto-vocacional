@@ -10,7 +10,7 @@ NO querer jamás tocar un paciente.
 Esta segunda capa resuelve exactamente eso. Funciona como un sistema
 de reglas de exclusión (knockout):
 
-  1. El usuario responde 6 preguntas filtro (data/preguntas.json -> "filtros").
+  1. El usuario responde 7 preguntas filtro (data/preguntas.json -> "filtros").
      Cada filtro tiene una `etiqueta` (ej. "contacto_pacientes").
   2. Si responde <= UMBRAL_VETO ("no me gustaría" / "lo detestaría"),
      esa etiqueta queda VETADA.

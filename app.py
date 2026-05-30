@@ -7,15 +7,14 @@ presentación: sin backend externo.
 
 Flujo de la aplicación (state machine sobre st.session_state):
 
-    BIENVENIDA  ->  TEST  ->  FILTROS  ->  RESULTADOS
-                                              ^
-                                              |
-                                          REINICIAR
+    BIENVENIDA  ->  TEST  ->  RESULTADOS
+                                  ^
+                                  |
+                              REINICIAR
 
-  - TEST     : 36 preguntas RIASEC (1ra capa) -> construyen el perfil
-               de intereses del usuario.
-  - FILTROS  : 6 preguntas de aversión (2da capa) -> descartan carreras
-               cuyo trabajo diario el usuario rechaza de plano.
+  - TEST     : 43 preguntas mezcladas aleatoriamente:
+                 · 36 RIASEC (1ra capa) -> construyen el perfil de intereses.
+                 · 7 de aversión (2da capa) -> descartan carreras deal-breaker.
   - RESULTADOS: ranking de carreras por afinidad de coseno, sobre el
                catálogo ya filtrado por la 2da capa.
 
@@ -31,6 +30,7 @@ Ejecución:
 from __future__ import annotations
 
 import json
+import random
 from pathlib import Path
 
 import streamlit as st
@@ -61,7 +61,6 @@ PATH_PREGUNTAS = DATA_DIR / "preguntas.json"
 # Etapas del flujo (state machine).
 ETAPA_BIENVENIDA = "bienvenida"
 ETAPA_TEST = "test"
-ETAPA_FILTROS = "filtros"
 ETAPA_RESULTADOS = "resultados"
 
 # Claves propias en session_state (todo lo que reseteamos al reiniciar).
@@ -69,7 +68,7 @@ ETAPA_RESULTADOS = "resultados"
 # reinicio y disparen un error fantasma en una pregunta recién cargada.
 CLAVES_SESION = (
     "etapa", "respuestas", "respuestas_filtro", "vector_usuario", "indice_pregunta",
-    "_error_seleccion", "_error_q_idx",
+    "orden_preguntas", "_error_seleccion", "_error_q_idx",
 )
 
 # Escala Likert compartida por el test y los filtros. El número de atajo
@@ -117,7 +116,7 @@ def cargar_preguntas() -> list[dict]:
 
 @st.cache_data(show_spinner=False)
 def cargar_filtros() -> list[dict]:
-    """Lee las 6 preguntas filtro de aversión (2da capa)."""
+    """Lee las 7 preguntas filtro de aversión (2da capa)."""
     raw = json.loads(PATH_PREGUNTAS.read_text(encoding="utf-8"))
     return raw["filtros"]
 
@@ -128,10 +127,11 @@ def cargar_filtros() -> list[dict]:
 def init_session() -> None:
     """Inicializa las claves de session_state (patrón defensivo)."""
     st.session_state.setdefault("etapa", ETAPA_BIENVENIDA)
-    st.session_state.setdefault("respuestas", {})         # {qid: 1..5}
-    st.session_state.setdefault("respuestas_filtro", {})  # {fid: 1..5}
-    st.session_state.setdefault("vector_usuario", None)   # dict RIASEC
-    st.session_state.setdefault("indice_pregunta", 0)     # progreso del test
+    st.session_state.setdefault("respuestas", {})          # {qid: 1..5} — solo RIASEC
+    st.session_state.setdefault("respuestas_filtro", {})   # {fid: 1..5} — solo filtros
+    st.session_state.setdefault("vector_usuario", None)    # dict RIASEC calculado al final
+    st.session_state.setdefault("indice_pregunta", 0)      # progreso del test unificado
+    st.session_state.setdefault("orden_preguntas", None)   # lista mezclada de dicts {tipo, item}
 
 
 def avanzar_a(etapa: str) -> None:
@@ -168,12 +168,11 @@ def pantalla_bienvenida() -> None:
 
         **Cómo funciona:**
 
-        1. Respondés un test de **36 preguntas** sobre lo que te gusta hacer.
-        2. Definís tus **límites**: 6 preguntas para descartar trabajos que
-           no harías bajo ninguna circunstancia (atender pacientes, programar, vender, etc.).
-        3. El motor calcula tu perfil y mide matemáticamente la afinidad con
-           cada carrera.
-        4. Recibís un **ranking de carreras** y un análisis visual de tu perfil.
+        1. Respondés **43 preguntas** sobre intereses y actividades cotidianas,
+           presentadas en orden aleatorio con escala del 1 al 5.
+        2. El motor calcula tu perfil RIASEC y descarta las carreras que
+           involucran actividades que no harías bajo ninguna circunstancia.
+        3. Recibís un **ranking de carreras** y un análisis visual de tu perfil.
 
         **Privacidad:** tus respuestas viven sólo en esta sesión. Nada se
         guarda ni se envía a servidores externos.
@@ -182,8 +181,17 @@ def pantalla_bienvenida() -> None:
 
     st.markdown("&nbsp;")
     if st.button("Comenzar →", type="primary", use_container_width=True):
-        # Arrancamos el test desde cero (incluida cualquier flag de validación).
+        # Generamos el orden aleatorio una sola vez al iniciar el test.
+        preguntas = cargar_preguntas()
+        filtros = cargar_filtros()
+        orden = (
+            [{"tipo": "riasec", "item": p} for p in preguntas]
+            + [{"tipo": "filtro", "item": f} for f in filtros]
+        )
+        random.shuffle(orden)
+        st.session_state["orden_preguntas"] = orden
         st.session_state["respuestas"] = {}
+        st.session_state["respuestas_filtro"] = {}
         st.session_state["indice_pregunta"] = 0
         st.session_state.pop("_error_seleccion", None)
         st.session_state.pop("_error_q_idx", None)
@@ -191,7 +199,7 @@ def pantalla_bienvenida() -> None:
 
 
 def pantalla_test() -> None:
-    """Test reactivo: una pregunta RIASEC a la vez con escala Likert 1-5.
+    """Test unificado: 43 preguntas (36 RIASEC + 7 filtros) en orden aleatorio.
 
     Layout "Zero-Scroll" (sobre todo en mobile, ver ui/styles.py):
       - El header queda compacto (solo el logo en mobile).
@@ -202,16 +210,28 @@ def pantalla_test() -> None:
         pantalla con HTML propio (position: fixed).
     """
     render_header(is_quiz=True)
-    preguntas = cargar_preguntas()
-    total = len(preguntas)
+
+    orden = st.session_state["orden_preguntas"]
+    total = len(orden)
     idx = st.session_state["indice_pregunta"]
     es_ultima = idx == total - 1
 
-    pregunta = preguntas[idx]
-    dimension_humana = ETIQUETAS_RIASEC[pregunta["dimension"]]
+    entrada = orden[idx]
+    tipo = entrada["tipo"]
+    item = entrada["item"]
 
-    st.markdown(f"##### Dimensión: *{dimension_humana}*")
-    st.markdown(f"### ¿Cuánto te gustaría {pregunta['pregunta'].lower()}?")
+    # Subtítulo y dict de respuestas según el tipo de pregunta.
+    if tipo == "riasec":
+        dimension_humana = ETIQUETAS_RIASEC[item["dimension"]]
+        st.markdown(f"##### Dimensión: *{dimension_humana}*")
+        respuestas_dict = st.session_state["respuestas"]
+        radio_key = f"radio_{item['id']}"
+    else:  # filtro
+        st.markdown("##### Actividades cotidianas")
+        respuestas_dict = st.session_state["respuestas_filtro"]
+        radio_key = f"filtro_{item['id']}"
+
+    st.markdown(f"### ¿Cuánto te gustaría {item['pregunta'].lower()}?")
 
     # Cuerpo en 2 columnas: opciones (flexible) | botonera lateral (fija).
     # Las envolvemos en un CONTENEDOR PADRE (key="quiz_split"): su clase
@@ -226,7 +246,7 @@ def pantalla_test() -> None:
     with col_opts:
         # None si el usuario aún no respondió esta pregunta: SIN selección
         # por defecto (la opción del medio NO viene marcada de fábrica).
-        respuesta_previa = st.session_state["respuestas"].get(pregunta["id"])
+        respuesta_previa = respuestas_dict.get(item["id"])
         _opciones = list(OPCIONES_LIKERT.keys())
         _idx = _opciones.index(respuesta_previa) if respuesta_previa is not None else None
 
@@ -237,19 +257,26 @@ def pantalla_test() -> None:
             index=_idx,
             horizontal=True,
             label_visibility="collapsed",
-            key=f"radio_{pregunta['id']}",
+            key=radio_key,
         )
         if seleccion is not None:
-            st.session_state["respuestas"][pregunta["id"]] = int(seleccion)
+            respuestas_dict[item["id"]] = int(seleccion)
 
         # Mensaje de validación (si intentó avanzar sin responder ESTA pregunta).
         if (st.session_state.get("_error_seleccion")
                 and st.session_state.get("_error_q_idx") == idx):
             st.error("Debes seleccionar una opción para continuar.")
 
+        # En filtros mostramos qué carreras se descartarían al vetar esta actividad.
+        if tipo == "filtro":
+            st.caption(
+                f"Si elegís \"Lo detestaría\" o \"No me gustaría\", "
+                f"se descartan: {item['descarta']}"
+            )
+
         # Pista de los atajos de teclado. Además de su rol informativo, este
         # nodo (.keyboard-hint) es el MARCADOR que usa ui/keyboard.py para
-        # saber que está activa la pantalla de test (oculto en mobile vía CSS).
+        # saber que está activa la pantalla de test (único radiogroup visible).
         st.markdown(
             '<div class="keyboard-hint">Atajos: teclas <strong>1–5</strong> para responder · <strong>Enter</strong> para avanzar.</div>',
             unsafe_allow_html=True,
@@ -272,8 +299,8 @@ def pantalla_test() -> None:
         # --- Siguiente (→): acción principal (único botón primary del test,
         #     así Enter sigue avanzando vía ui/keyboard.py). ---
         if st.button("→", key="quiz_next", type="primary",
-                     help="Definir límites" if es_ultima else "Siguiente pregunta"):
-            respuesta_actual = st.session_state["respuestas"].get(pregunta["id"])
+                     help="Ver resultados" if es_ultima else "Siguiente pregunta"):
+            respuesta_actual = respuestas_dict.get(item["id"])
             if respuesta_actual is None:
                 # Bloqueo de avance: no hay opción seleccionada.
                 st.session_state["_error_seleccion"] = True
@@ -282,11 +309,12 @@ def pantalla_test() -> None:
             else:
                 st.session_state.pop("_error_seleccion", None)
                 if es_ultima:
-                    # Calculamos el vector RIASEC ANTES de pasar a la 2da capa.
+                    # Calculamos el vector RIASEC solo con las preguntas RIASEC.
+                    preguntas_riasec = [e["item"] for e in orden if e["tipo"] == "riasec"]
                     st.session_state["vector_usuario"] = calcular_vector_usuario(
-                        st.session_state["respuestas"], preguntas,
+                        st.session_state["respuestas"], preguntas_riasec,
                     )
-                    avanzar_a(ETAPA_FILTROS)
+                    avanzar_a(ETAPA_RESULTADOS)
                 else:
                     st.session_state["indice_pregunta"] = idx + 1
                     st.rerun()
@@ -307,54 +335,9 @@ def pantalla_test() -> None:
 
     # Atajos de teclado (1..5 = responder, Enter = avanzar). Se inyecta al
     # final, ya construido el DOM de la pregunta: el puente JS hace click
-    # sobre el radio / botón primario de ARRIBA. Sólo en la pantalla de test,
-    # donde hay un único radiogroup (en FILTROS habría 6 y sería ambiguo).
-    # El componente se re-inyecta en cada rerun pero mantiene UN solo
-    # listener vivo (ver cleanup en ui/keyboard.py).
+    # sobre el radio / botón primario de ARRIBA. Hay un único radiogroup
+    # visible por pantalla, así que no hay ambigüedad de target.
     inyectar_navegacion_teclado(num_opciones=len(OPCIONES_LIKERT))
-
-
-def pantalla_filtros() -> None:
-    """Segunda capa: preguntas de aversión que descartan carreras."""
-    render_header()
-    filtros = cargar_filtros()
-
-    st.markdown("# Tus límites")
-    st.markdown("##### Última parte: ¿hay cosas que NO harías ni en tu peor día?")
-    st.markdown(
-        "Marcá cada actividad según cuánto estarías dispuesto/a a hacerla. "
-        "Todo lo que respondas **\"No me gustaría\"** o **\"Lo detestaría\"** "
-        "se usará para **descartar** las carreras que dependen de eso, aunque "
-        "tu perfil de intereses se les parezca."
-    )
-    st.markdown("---")
-
-    for f in filtros:
-        st.markdown(f"### {f['pregunta']}")
-        previa = st.session_state["respuestas_filtro"].get(f["id"], 3)
-        seleccion = st.radio(
-            label=f["pregunta"],
-            options=list(OPCIONES_LIKERT.keys()),
-            format_func=lambda v: OPCIONES_LIKERT[v],
-            index=list(OPCIONES_LIKERT.keys()).index(previa),
-            horizontal=True,
-            label_visibility="collapsed",
-            key=f"filtro_{f['id']}",
-        )
-        st.session_state["respuestas_filtro"][f["id"]] = int(seleccion)
-        st.caption(f"Si lo evitás, se descartan: {f['descarta']}")
-        st.markdown("&nbsp;")
-
-    st.markdown("---")
-    col_a, col_b = st.columns([1, 1])
-    with col_a:
-        if st.button("← Volver al test", type="secondary", use_container_width=True):
-            # Volvemos a la última pregunta del test.
-            st.session_state["indice_pregunta"] = len(cargar_preguntas()) - 1
-            avanzar_a(ETAPA_TEST)
-    with col_b:
-        if st.button("Ver resultados →", type="primary", use_container_width=True):
-            avanzar_a(ETAPA_RESULTADOS)
 
 
 def pantalla_resultados() -> None:
@@ -451,8 +434,6 @@ def main() -> None:
         pantalla_bienvenida()
     elif etapa == ETAPA_TEST:
         pantalla_test()
-    elif etapa == ETAPA_FILTROS:
-        pantalla_filtros()
     elif etapa == ETAPA_RESULTADOS:
         pantalla_resultados()
     else:
