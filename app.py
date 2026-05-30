@@ -267,13 +267,6 @@ def pantalla_test() -> None:
                 and st.session_state.get("_error_q_idx") == idx):
             st.error("Debes seleccionar una opción para continuar.")
 
-        # En filtros mostramos qué carreras se descartarían al vetar esta actividad.
-        if tipo == "filtro":
-            st.caption(
-                f"Si elegís \"Lo detestaría\" o \"No me gustaría\", "
-                f"se descartan: {item['descarta']}"
-            )
-
         # Pista de los atajos de teclado. Además de su rol informativo, este
         # nodo (.keyboard-hint) es el MARCADOR que usa ui/keyboard.py para
         # saber que está activa la pantalla de test (único radiogroup visible).
